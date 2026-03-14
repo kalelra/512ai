@@ -1204,7 +1204,7 @@ Do NOT mention that you are an AI.`;
       try {
         // NOTE: This call works in Claude artifact environments where the API is proxied.
         // For standalone deployment, add your API key as the x-api-key header or route through a backend proxy.
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const response = await fetch("/.netlify/functions/claude-proxy", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
