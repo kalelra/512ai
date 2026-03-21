@@ -774,6 +774,109 @@
       .demo-panel { padding: 24px 20px; }
       .contact-option { padding: 28px 20px; }
     }
+
+    /* ── Intake Form Section ── */
+    #intake { padding: 96px 0; background: var(--bg-alt); }
+    #intake .intake-header { text-align: center; margin-bottom: 48px; }
+    #intake .form-wrap { max-width: 680px; margin: 0 auto; }
+    #intake .form-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+    #intake .intake-section { margin-bottom: 1.25rem; }
+    #intake label.field-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+    #intake input,
+    #intake select,
+    #intake textarea {
+      width: 100%;
+      font-size: 15px;
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    #intake input:focus,
+    #intake select:focus,
+    #intake textarea:focus { border-color: var(--accent); }
+    #intake select option { background: var(--bg-primary); }
+    #intake textarea { resize: vertical; min-height: 80px; }
+    #intake .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #intake .dynamic-block {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      background: var(--bg-primary);
+    }
+    #intake .dynamic-title {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    #intake .checkbox-group { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    #intake .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-weight: 400;
+    }
+    #intake .checkbox-group input[type=checkbox] { width: 16px; height: 16px; flex-shrink: 0; }
+    #intake .submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background var(--transition), transform var(--transition);
+    }
+    #intake .submit-btn:hover { background: var(--accent-hover); transform: scale(1.02); }
+    #intake .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.5rem; }
+    #intake .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+    #intake .intake-badge {
+      display: inline-block;
+      font-size: 11px;
+      background: var(--accent);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    #intake .success-msg { text-align: center; padding: 2rem 1rem; }
+    #intake .success-icon { font-size: 40px; margin-bottom: 1rem; }
+    #intake .success-title { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px; }
+    #intake .success-sub { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+    #intake .cal-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background var(--transition);
+    }
+    #intake .cal-btn:hover { background: var(--accent-hover); }
+    @media (max-width: 600px) {
+      #intake .row2 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -788,6 +891,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#demo">Demo</a></li>
         <li><a href="#about">About</a></li>
+        <li><a href="#intake">Intake Form</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Open menu">
@@ -798,6 +902,7 @@
       <a href="#services" class="mobile-link">Services</a>
       <a href="#demo" class="mobile-link">Demo</a>
       <a href="#about" class="mobile-link">About</a>
+      <a href="#intake" class="mobile-link">Intake Form</a>
       <a href="#contact" class="mobile-link">Contact</a>
     </div>
   </nav>
@@ -817,7 +922,6 @@
         </p>
         <div class="hero-ctas">
           <a href="#demo" class="btn-primary">Try the Demo →</a>
-          <!-- TODO: Verify Calendly URL is correct -->
           <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-outline">Book a Free Call</a>
         </div>
         <div class="trust-badges">
@@ -845,7 +949,7 @@
         <div class="card fade-up">
           <div class="card-icon">🚀</div>
           <div class="card-name">Starter</div>
-          <div class="card-price">$500</div>
+          <div class="card-price">Custom Pricing</div>
           <p class="card-description">Get AI answering customer questions on your website 24/7 — even when you're closed.</p>
           <ul class="card-features">
             <li>AI chatbot for your website</li>
@@ -862,7 +966,7 @@
           <div class="popular-badge">Most Popular</div>
           <div class="card-icon">📈</div>
           <div class="card-name">Growth</div>
-          <div class="card-price">$1,500</div>
+          <div class="card-price">Custom Pricing</div>
           <p class="card-description">Everything in Starter, plus AI that helps you get more reviews and stay top-of-mind with customers.</p>
           <ul class="card-features">
             <li>Everything in Starter</li>
@@ -878,7 +982,7 @@
         <div class="card fade-up">
           <div class="card-icon">⚙️</div>
           <div class="card-name">Done-For-You</div>
-          <div class="card-price">Starting at $3,000</div>
+          <div class="card-price">Custom Pricing</div>
           <p class="card-description">A fully custom AI system built around how your business actually operates — from booking to follow-up.</p>
           <ul class="card-features">
             <li>Everything in Growth</li>
@@ -890,6 +994,10 @@
           <div class="card-cta"><a href="#contact">Get Started →</a></div>
         </div>
 
+      </div>
+      <div class="fade-up" style="text-align:center;margin-top:40px;">
+        <p style="color:var(--text-muted);font-size:16px;margin-bottom:20px;">Every business is different — pricing is based on your specific needs.</p>
+        <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-primary">Get a Free Quote →</a>
       </div>
     </div>
   </section>
@@ -1026,10 +1134,134 @@
             <span class="credential">CSPO Certified — Scrum Alliance</span>
             <span class="credential">10+ Years Technical Program Management</span>
           </div>
-          <!-- TODO: Verify Calendly URL is correct -->
           <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-primary">Let's Talk →</a>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════
+       INTAKE FORM
+  ═══════════════════════════════ -->
+  <section id="intake">
+    <div class="container">
+      <div class="intake-header fade-up">
+        <h2 class="section-headline">Before We Talk — Tell Us About Your Business</h2>
+        <p class="section-subheadline">Takes 3 minutes. Helps Ricardo come prepared with real ideas specific to your business.</p>
+      </div>
+
+      <div class="form-wrap fade-up">
+        <div id="form-view">
+          <p class="form-sub">Answer a few quick questions so Ricardo can come to your first call prepared — with AI automation ideas specific to your business type.</p>
+          <div class="progress-bar"><div class="progress-fill" id="progress" style="width:10%"></div></div>
+
+          <div class="intake-section">
+            <label class="field-label">Your name</label>
+            <input type="text" id="f-name" placeholder="First and last name" oninput="updateProgress()">
+          </div>
+          <div class="row2">
+            <div class="intake-section">
+              <label class="field-label">Business name</label>
+              <input type="text" id="f-biz" placeholder="Your business name" oninput="updateProgress()">
+            </div>
+            <div class="intake-section">
+              <label class="field-label">Phone number</label>
+              <input type="tel" id="f-phone" placeholder="(512) 000-0000" oninput="updateProgress()">
+            </div>
+          </div>
+          <div class="intake-section">
+            <label class="field-label">Email address</label>
+            <input type="email" id="f-email" placeholder="you@yourbusiness.com" oninput="updateProgress()">
+          </div>
+          <div class="intake-section">
+            <label class="field-label">Business category <span class="intake-badge">Changes questions below</span></label>
+            <select id="f-category" onchange="renderDynamic(); updateProgress();">
+              <option value="">— Select your business type —</option>
+              <option value="restaurant">Restaurant / Food Service</option>
+              <option value="foodtruck">Food Truck / Mobile Vendor</option>
+              <option value="hvac">HVAC / Plumbing / Electrical</option>
+              <option value="landscape">Landscaping, Lawn Care &amp; Sprinkler / Irrigation</option>
+              <option value="salon">Salon / Barbershop / Beauty</option>
+              <option value="legal">Law Office / Legal Services</option>
+              <option value="medical">Medical / Dental / Healthcare</option>
+              <option value="realestate">Real Estate Agent / Brokerage</option>
+              <option value="contractor">General Contractor / Remodeling</option>
+              <option value="gym">Gym / Fitness Studio</option>
+              <option value="autorepair">Auto Repair / Body Shop</option>
+              <option value="cleaning">Cleaning Service</option>
+              <option value="petservice">Pet Services</option>
+              <option value="accounting">Accounting / Tax Prep</option>
+              <option value="insurance">Insurance Agency</option>
+              <option value="retail">Retail Store</option>
+              <option value="other">Other / Not listed</option>
+            </select>
+          </div>
+
+          <div id="dynamic-section"></div>
+
+          <div class="intake-section">
+            <label class="field-label">Biggest daily pain point</label>
+            <textarea id="f-pain" placeholder="What takes up the most time or costs you the most business right now?" oninput="updateProgress()"></textarea>
+          </div>
+          <div class="row2">
+            <div class="intake-section">
+              <label class="field-label">Inbound calls / day (approx.)</label>
+              <select id="f-calls">
+                <option value="">Select range</option>
+                <option>Under 5</option><option>5–15</option><option>15–30</option><option>30–50</option><option>50+</option>
+              </select>
+            </div>
+            <div class="intake-section">
+              <label class="field-label">Monthly software budget</label>
+              <select id="f-budget">
+                <option value="">Select range</option>
+                <option>Under $200</option><option>$200–500</option><option>$500–1,000</option><option>$1,000+</option>
+              </select>
+            </div>
+          </div>
+          <div class="intake-section">
+            <label class="field-label">What's your Google rating? (if known)</label>
+            <select id="f-rating">
+              <option value="">Select rating</option>
+              <option>5.0 ★</option><option>4.5–4.9 ★</option><option>4.0–4.4 ★</option><option>Under 4.0 ★</option><option>Not on Google yet</option>
+            </select>
+          </div>
+          <div class="intake-section">
+            <label class="field-label">After-hours calls — what happens?</label>
+            <select id="f-afterhours">
+              <option value="">Select option</option>
+              <option>Voicemail (we call back next day)</option>
+              <option>Answering service</option>
+              <option>They go unanswered / missed</option>
+              <option>We have 24/7 coverage</option>
+            </select>
+          </div>
+          <div class="intake-section">
+            <label class="field-label">Have you tried AI tools before?</label>
+            <select id="f-aiexp">
+              <option value="">Select option</option>
+              <option>No — this is new to me</option>
+              <option>Yes — it was helpful</option>
+              <option>Yes — but it didn't work well</option>
+              <option>Currently using some tools</option>
+            </select>
+          </div>
+          <div class="intake-section">
+            <label class="field-label">Anything else you want Ricardo to know before the call?</label>
+            <textarea id="f-notes" placeholder="Goals, questions, concerns — anything helps." oninput="updateProgress()"></textarea>
+          </div>
+
+          <button class="submit-btn" onclick="submitIntakeForm()">Submit &amp; Book Your Free Call →</button>
+          <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;">No spam. Your info goes directly to Ricardo at 512AI.</p>
+        </div>
+
+        <div id="success-view" style="display:none" class="success-msg">
+          <div class="success-icon">✅</div>
+          <p class="success-title">You're all set — Ricardo will be in touch soon.</p>
+          <p class="success-sub">Your intake form has been received. To lock in your free 30-minute call, book a time that works for you below.</p>
+          <button class="cal-btn" onclick="window.open('https://calendly.com/avilaricardoe/free-ai-strategy-call','_blank')">Book Your Free Call on Calendly →</button>
+        </div>
       </div>
     </div>
   </section>
@@ -1050,14 +1282,12 @@
         <div class="contact-option">
           <h3 class="contact-option-title">Book a Call</h3>
           <p class="contact-option-desc">Pick a time that works for you. 30 minutes, free, no obligation. We'll talk through your business and map out what AI could do for you.</p>
-          <!-- TODO: Verify Calendly URL is correct -->
           <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-primary">Schedule on Calendly →</a>
         </div>
 
         <!-- Option B: Send a Message -->
         <div class="contact-option">
           <h3 class="contact-option-title">Send a Message</h3>
-          <!-- TODO: Replace PLACEHOLDER with your Formspree form ID -->
           <form id="contact-form" action="https://formspree.io/f/mojklvjq" method="POST">
             <div class="form-group">
               <label for="form-name">Name</label>
@@ -1237,6 +1467,258 @@ Do NOT mention that you are an AI.`;
         runDemo();
       }
     });
+  </script>
+
+  <script>
+    /* ── Intake Form Logic ── */
+    const dynamicQuestions = {
+      restaurant: {
+        title: "Restaurant & food service",
+        questions: [
+          { id: "q1", label: "Restaurant type", type: "select", options: ["Full-service / fine dining","Casual / bar & grill","Fast-casual","Quick-service / counter","Food hall stall"] },
+          { id: "q2", label: "Do you take reservations? Through what?", type: "select", options: ["Phone only","OpenTable","Resy","No reservations — walk-in","Online ordering only"] },
+          { id: "q3", label: "POS system", type: "select", options: ["Toast","Square","Clover","Aloha / NCR","Other / none"] },
+          { id: "q4", label: "How do you handle online reviews?", type: "select", options: ["Manually reply to each","Rarely respond","Use a service","Don't manage them"] },
+          { id: "q5", label: "Affected by Austin events (SXSW, ACL, F1)?", type: "select", options: ["Yes — big surge","Somewhat","Not really"] }
+        ]
+      },
+      foodtruck: {
+        title: "Food truck & mobile vendor",
+        questions: [
+          { id: "q1", label: "Where do you primarily operate?", type: "select", options: ["Fixed lot / food truck park","Rotating locations","Events & festivals","Catering only","Mix of all"] },
+          { id: "q2", label: "POS system", type: "select", options: ["Square","Toast Go","Clover Go","Cash only","Other"] },
+          { id: "q3", label: "How do customers find your daily location?", type: "select", options: ["Instagram / Facebook","Text list / SMS","Website","Word of mouth","Google Business"] },
+          { id: "q4", label: "Do you take catering orders, and how?", type: "select", options: ["Yes — phone/email only","Yes — online form","Rarely","No catering"] }
+        ]
+      },
+      hvac: {
+        title: "HVAC, plumbing & electrical",
+        questions: [
+          { id: "q1", label: "Primary trade", type: "select", options: ["HVAC","Plumbing","Electrical","Multi-trade","Roofing / other"] },
+          { id: "q2", label: "Residential, commercial, or both?", type: "select", options: ["Mostly residential","Mostly commercial","50/50 mix"] },
+          { id: "q3", label: "Job / dispatch software", type: "select", options: ["ServiceTitan","Housecall Pro","Jobber","QuickBooks only","Paper / spreadsheet","None"] },
+          { id: "q4", label: "What happens when a call comes in mid-job?", type: "select", options: ["Goes to voicemail","Office staff answers","Third-party answering service","Usually missed"] },
+          { id: "q5", label: "Experience seasonal demand spikes?", type: "select", options: ["Yes — summer HVAC surge","Yes — freeze emergencies","Both","No major spikes"] }
+        ]
+      },
+      landscape: {
+        title: "Landscaping, lawn care & sprinkler / irrigation",
+        questions: [
+          { id: "q1", label: "Services offered", type: "checkbox", options: ["Lawn mowing / maintenance","Landscaping / design","Sprinkler install","Sprinkler repair / maintenance","Irrigation audits","Tree trimming","Drainage solutions","Fertilization / pest control"] },
+          { id: "q2", label: "Residential, commercial, or both?", type: "select", options: ["Mostly residential","Mostly commercial","50/50 mix"] },
+          { id: "q3", label: "How do customers request quotes?", type: "select", options: ["Phone only","Website form","Angi / Thumbtack","Google LSA","Referrals only","Multiple channels"] },
+          { id: "q4", label: "Job management software", type: "select", options: ["Jobber","LMN","Service Autopilot","Housecall Pro","Spreadsheet","None"] },
+          { id: "q5", label: "Biggest sprinkler / irrigation challenge", type: "select", options: ["Scheduling repair calls efficiently","Quoting irrigation installs fast","Seasonal startup / winterization reminders","Upselling maintenance contracts","Customer education on water savings"] },
+          { id: "q6", label: "Do you offer recurring maintenance contracts?", type: "select", options: ["Yes — most clients are recurring","Some recurring, mostly one-time","No — all one-time"] }
+        ]
+      },
+      salon: {
+        title: "Salon, barbershop & beauty",
+        questions: [
+          { id: "q1", label: "Business model", type: "select", options: ["Full-service salon (employees)","Booth rental / suite (Sola, Phenix)","Barbershop","Mobile / in-home stylist","Spa / nail salon"] },
+          { id: "q2", label: "Booking system", type: "select", options: ["Phone only","Vagaro","Square Appointments","GlossGenius","Fresha","Booksy","Boulevard","Walk-in only"] },
+          { id: "q3", label: "No-show / late cancel rate (estimate)", type: "select", options: ["Under 5%","5–15%","15–30%","Over 30%","Not tracked"] },
+          { id: "q4", label: "Primary new-client source", type: "select", options: ["Instagram","Google Search","Referrals","Yelp","TikTok","Walk-by traffic"] }
+        ]
+      },
+      legal: {
+        title: "Law office & legal services",
+        questions: [
+          { id: "q1", label: "Practice areas", type: "checkbox", options: ["Personal injury","Family / divorce","Criminal defense","Immigration","Estate planning","Business / contracts","Real estate","Employment"] },
+          { id: "q2", label: "Case management software", type: "select", options: ["Clio","MyCase","PracticePanther","Smokeball","None / spreadsheet","Other"] },
+          { id: "q3", label: "How quickly do you respond to new inquiries?", type: "select", options: ["Within minutes","Within the hour","Same day","Next business day","Varies widely"] },
+          { id: "q4", label: "Biggest intake bottleneck", type: "select", options: ["Qualifying leads","After-hours inquiries","Following up on cold leads","Client communication during cases"] }
+        ]
+      },
+      medical: {
+        title: "Medical, dental & healthcare",
+        questions: [
+          { id: "q1", label: "Practice type", type: "select", options: ["General / family medicine","Dental","Dermatology","Chiropractic","Optometry","Physical therapy","Mental health","Specialty"] },
+          { id: "q2", label: "EHR / practice management system", type: "select", options: ["Epic","Athenahealth","Dentrix","Open Dental","Eaglesoft","eClinicalWorks","Other"] },
+          { id: "q3", label: "How do patients schedule?", type: "select", options: ["Phone only","Patient portal","Zocdoc","Website widget","Text message"] },
+          { id: "q4", label: "No-show rate estimate", type: "select", options: ["Under 5%","5–15%","15–30%","Over 30%","Not tracked"] },
+          { id: "q5", label: "Do you have a patient reactivation system?", type: "select", options: ["Yes — automated","Yes — manual","No — we don't reach out"] }
+        ]
+      },
+      realestate: {
+        title: "Real estate agent & brokerage",
+        questions: [
+          { id: "q1", label: "Focus area", type: "select", options: ["Residential buyer / seller","Luxury","Investment / rentals","Commercial","New construction","Property management"] },
+          { id: "q2", label: "CRM system", type: "select", options: ["Follow Up Boss","kvCORE / Lofty","LionDesk","BoomTown","Spreadsheet","None"] },
+          { id: "q3", label: "Primary lead source", type: "select", options: ["Zillow / Realtor.com","Sphere / referrals","Open houses","Google PPC","Social media","Cold outreach"] },
+          { id: "q4", label: "Average response time to a new online lead", type: "select", options: ["Under 5 minutes","Under an hour","Same day","Next day or later"] }
+        ]
+      },
+      contractor: {
+        title: "General contractor & remodeling",
+        questions: [
+          { id: "q1", label: "Type of work", type: "select", options: ["Residential remodeling","New home construction","Commercial buildout","Specialty trade (roofing, flooring, etc.)","Multi-trade"] },
+          { id: "q2", label: "Project management software", type: "select", options: ["Buildertrend","CoConstruct","Jobber","CompanyCam","QuickBooks only","None"] },
+          { id: "q3", label: "Estimate-to-close rate", type: "select", options: ["Over 50%","25–50%","Under 25%","Not tracked"] },
+          { id: "q4", label: "How do you update clients during active jobs?", type: "select", options: ["Regular calls / texts","CompanyCam updates","Email only","Client has to ask us","No formal process"] }
+        ]
+      },
+      gym: {
+        title: "Gym & fitness studio",
+        questions: [
+          { id: "q1", label: "Studio type", type: "select", options: ["Full-service gym","Yoga / Pilates","CrossFit / functional","Cycling / spin","Boxing / martial arts","Personal training"] },
+          { id: "q2", label: "Membership / booking software", type: "select", options: ["Mindbody","Glofox","Zen Planner","Wodify","Pike13","Other"] },
+          { id: "q3", label: "Monthly member churn rate (estimate)", type: "select", options: ["Under 5%","5–10%","10–20%","Over 20%","Not tracked"] },
+          { id: "q4", label: "Biggest growth challenge", type: "select", options: ["Converting trial members","Reducing churn","Filling off-peak classes","Getting new leads","Managing scheduling"] }
+        ]
+      },
+      autorepair: {
+        title: "Auto repair & body shop",
+        questions: [
+          { id: "q1", label: "Shop specialty", type: "select", options: ["General repair / maintenance","Oil change & quick service","Collision / body work","European / specialty","Transmission / drivetrain","Diesel"] },
+          { id: "q2", label: "Shop management software", type: "select", options: ["Shop-Ware","Tekmetric","Mitchell 1","Pen & paper","Other"] },
+          { id: "q3", label: "How do customers book or request estimates?", type: "select", options: ["Walk-in only","Phone only","Website / online booking","Text message"] },
+          { id: "q4", label: "Do you send automated service reminders?", type: "select", options: ["Yes — automated","Yes — manual","No"] }
+        ]
+      },
+      cleaning: {
+        title: "Cleaning service",
+        questions: [
+          { id: "q1", label: "Service type", type: "select", options: ["Residential","Commercial / office","Move-in / move-out","Airbnb & short-term rental turnover","Post-construction","All of the above"] },
+          { id: "q2", label: "Scheduling / job management", type: "select", options: ["Jobber","ZenMaid","Housecall Pro","Google Calendar","Spreadsheet","None"] },
+          { id: "q3", label: "Recurring vs. one-time booking ratio", type: "select", options: ["Mostly recurring (60%+)","50/50 mix","Mostly one-time"] },
+          { id: "q4", label: "Serve Austin's Airbnb / STR market?", type: "select", options: ["Yes — major part of business","A little","No"] }
+        ]
+      },
+      petservice: {
+        title: "Pet services",
+        questions: [
+          { id: "q1", label: "Services offered", type: "checkbox", options: ["Dog walking","Pet sitting / in-home","Boarding","Grooming","Daycare","Training","Mobile vet / veterinary"] },
+          { id: "q2", label: "Booking / management software", type: "select", options: ["MoeGo","Gingr","Time To Pet","PetExec","Manual / phone","Other"] },
+          { id: "q3", label: "How do pet parents communicate during service?", type: "select", options: ["We send photo updates","App notifications","Only if there's an issue","They call us","No communication during service"] }
+        ]
+      },
+      accounting: {
+        title: "Accounting & tax prep",
+        questions: [
+          { id: "q1", label: "Client type focus", type: "select", options: ["Individual / personal","Small business","Both"] },
+          { id: "q2", label: "Practice software", type: "select", options: ["QuickBooks / QBO","Xero","Drake Tax","Lacerte / ProConnect","TaxSlayer Pro","Other"] },
+          { id: "q3", label: "How do you collect client documents?", type: "select", options: ["Email back-and-forth","Client portal (TaxDome, ShareFile)","Physical drop-off","Mix of methods"] },
+          { id: "q4", label: "Tax season overflow level (Jan–April)", type: "select", options: ["Manageable","Stressful but ok","Chaotic — we miss things","We turn clients away"] }
+        ]
+      },
+      insurance: {
+        title: "Insurance agency",
+        questions: [
+          { id: "q1", label: "Agency type", type: "select", options: ["Independent (multiple carriers)","Captive (single carrier)","Broker"] },
+          { id: "q2", label: "Lines of business", type: "checkbox", options: ["Personal auto","Homeowners","Life","Commercial","Health","Medicare / senior"] },
+          { id: "q3", label: "Agency management system", type: "select", options: ["Applied Epic","HawkSoft","EZLynx","QQ Catalyst","Spreadsheet / none"] },
+          { id: "q4", label: "Biggest growth challenge", type: "select", options: ["Getting new quotes / leads","Policy renewal follow-up","Cross-selling existing clients","Processing speed / admin work"] }
+        ]
+      },
+      retail: {
+        title: "Retail store",
+        questions: [
+          { id: "q1", label: "Store type", type: "select", options: ["Boutique clothing / accessories","Home goods / gifts","Specialty / hobby","Health & wellness","Food / specialty grocery","Other"] },
+          { id: "q2", label: "POS / inventory system", type: "select", options: ["Shopify POS","Square","Lightspeed","Clover","Spreadsheet / manual"] },
+          { id: "q3", label: "Do you sell online?", type: "select", options: ["Yes — Shopify","Yes — Etsy / Amazon","Yes — our own website","No — in-store only","Planning to"] },
+          { id: "q4", label: "How do you drive repeat customers?", type: "select", options: ["Email list","Loyalty program","Social media","Text/SMS list","Mostly word of mouth","Nothing formal"] }
+        ]
+      },
+      other: {
+        title: "Other business",
+        questions: [
+          { id: "q1", label: "Describe your business in one sentence", type: "text", placeholder: "What do you sell or provide?" },
+          { id: "q2", label: "How do most customers find you?", type: "select", options: ["Google Search","Referrals","Social media","Walk-in","Paid ads","Other"] },
+          { id: "q3", label: "Primary customer interaction channel", type: "select", options: ["Phone calls","In-person","Email","Text / DM","Website form"] }
+        ]
+      }
+    };
+
+    function renderDynamic() {
+      const cat = document.getElementById('f-category').value;
+      const container = document.getElementById('dynamic-section');
+      if (!cat || !dynamicQuestions[cat]) { container.innerHTML = ''; return; }
+      const data = dynamicQuestions[cat];
+      let html = '<div class="dynamic-block"><p class="dynamic-title">' + data.title + ' — specific questions</p>';
+      data.questions.forEach((q, i) => {
+        html += '<div class="intake-section">';
+        html += '<label class="field-label">' + q.label + '</label>';
+        if (q.type === 'select') {
+          html += '<select id="dq-' + i + '"><option value="">Select option</option>';
+          q.options.forEach(o => html += '<option>' + o + '</option>');
+          html += '</select>';
+        } else if (q.type === 'checkbox') {
+          html += '<div class="checkbox-group">';
+          q.options.forEach((o, j) => html += '<label><input type="checkbox" id="dq-' + i + '-' + j + '"> ' + o + '</label>');
+          html += '</div>';
+        } else {
+          html += '<input type="text" id="dq-' + i + '" placeholder="' + (q.placeholder || '') + '">';
+        }
+        html += '</div>';
+      });
+      html += '</div>';
+      container.innerHTML = html;
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const fields = ['f-name','f-biz','f-email','f-category','f-pain'];
+      let filled = fields.filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
+      const pct = Math.round(10 + (filled / fields.length) * 85);
+      document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function collectDynamic() {
+      const cat = document.getElementById('f-category').value;
+      if (!cat || !dynamicQuestions[cat]) return '';
+      const data = dynamicQuestions[cat];
+      let lines = ['\n--- ' + data.title.toUpperCase() + ' ---'];
+      data.questions.forEach((q, i) => {
+        if (q.type === 'checkbox') {
+          const checked = q.options.filter((o, j) => {
+            const el = document.getElementById('dq-' + i + '-' + j);
+            return el && el.checked;
+          });
+          if (checked.length) lines.push(q.label + ': ' + checked.join(', '));
+        } else {
+          const el = document.getElementById('dq-' + i);
+          if (el && el.value) lines.push(q.label + ': ' + el.value);
+        }
+      });
+      return lines.join('\n');
+    }
+
+    async function submitIntakeForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const biz = document.getElementById('f-biz').value.trim();
+      const email = document.getElementById('f-email').value.trim();
+      if (!name || !email || !biz) { alert('Please fill in your name, business name, and email before submitting.'); return; }
+
+      const body = [
+        'Name: ' + name,
+        'Business: ' + biz,
+        'Phone: ' + document.getElementById('f-phone').value,
+        'Email: ' + email,
+        'Category: ' + document.getElementById('f-category').value,
+        collectDynamic(),
+        '\n--- GENERAL ---',
+        'Biggest pain: ' + document.getElementById('f-pain').value,
+        'Daily calls: ' + document.getElementById('f-calls').value,
+        'Monthly budget: ' + document.getElementById('f-budget').value,
+        'Google rating: ' + document.getElementById('f-rating').value,
+        'After-hours: ' + document.getElementById('f-afterhours').value,
+        'AI experience: ' + document.getElementById('f-aiexp').value,
+        'Notes: ' + document.getElementById('f-notes').value
+      ].join('\n');
+
+      try {
+        const res = await fetch('https://formspree.io/f/mojklvjq', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name, email, message: body, _subject: '512AI Intake: ' + biz + ' (' + document.getElementById('f-category').value + ')' })
+        });
+        if (res.ok) {
+          document.getElementById('form-view').style.display = 'none';
+          document.getElementById('success-view').style.display = 'block';
+        } else { alert('Submission failed — please try again or email contact@512ai.co directly.'); }
+      } catch(e) { alert('Network error — please check your connection and try again.'); }
+    }
   </script>
 
 </body>
