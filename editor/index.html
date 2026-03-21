@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>512AI Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0f;--bg2:#1a1611;--bg3:#252018;--bg4:#2e2820;
+  --accent:#C0531A;--accent2:#E8824A;--accent3:#8c3d12;
+  --text:#F5F0EA;--muted:#A89880;--dim:#6b5f52;
+  --border:#2E2418;--success:#4a9960;--warn:#c8a050;--danger:#c05050;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;overflow:hidden}
+.app{display:grid;grid-template-columns:240px 1fr 380px;height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.logo{padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+.logo-name{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:-0.5px}
+.logo-sub{font-size:11px;color:var(--dim);margin-top:2px}
+.nav{flex:1;overflow-y:auto;padding:8px 0}
+.nav-group{margin-bottom:4px}
+.nav-group-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);padding:8px 18px 4px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:8px 18px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;text-align:left;border-left:2px solid transparent;transition:all .12s}
+.nav-btn:hover{color:var(--text);background:var(--bg3)}
+.nav-btn.active{color:var(--accent2);background:var(--bg3);border-left-color:var(--accent)}
+.nav-btn .ico{font-size:14px;width:18px;text-align:center}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);flex-shrink:0}
+.deploy-btn{width:100%;padding:10px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s}
+.deploy-btn:hover{background:var(--accent2)}
+.deploy-btn:disabled{opacity:.5;cursor:not-allowed}
+.deploy-status{font-size:11px;text-align:center;margin-top:6px;min-height:14px;color:var(--muted)}
+.deploy-status.ok{color:var(--success)}
+.deploy-status.err{color:var(--danger)}
+
+/* MAIN EDITOR */
+.editor{overflow-y:auto;padding:24px 28px}
+.panel{display:none}
+.panel.active{display:block}
+.panel-title{font-size:20px;font-weight:600;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.filepath{font-family:var(--mono);font-size:11px;color:var(--dim);background:var(--bg3);padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:16px}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.card-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:12px;font-weight:500}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.field input,.field textarea,.field select{
+  width:100%;background:var(--bg4);border:1px solid var(--border);
+  color:var(--text);border-radius:6px;padding:8px 11px;font-size:13px;
+  font-family:var(--font);transition:border-color .15s;outline:none;
+}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.char-hint{font-size:11px;color:var(--dim);text-align:right;margin-top:3px}
+.badge-ok{font-size:10px;background:var(--success);color:#fff;padding:2px 7px;border-radius:99px;margin-left:6px}
+.badge-warn{font-size:10px;background:var(--warn);color:#000;padding:2px 7px;border-radius:99px;margin-left:6px}
+
+/* toggle */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info .tl{font-size:13px;color:var(--text)}
+.toggle-info .ts{font-size:11px;color:var(--dim);margin-top:2px}
+.toggle{position:relative;width:38px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:var(--border);border-radius:20px;cursor:pointer;transition:.2s}
+.tslider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.tslider{background:var(--accent)}
+.toggle input:checked+.tslider:before{transform:translateX(18px)}
+
+/* alert */
+.alert{padding:10px 14px;border-radius:7px;font-size:12px;margin-bottom:12px;line-height:1.5}
+.alert-info{background:#0d1a2e;border:1px solid #1a3a6e;color:#7ab3f5}
+.alert-warn{background:#1a1200;border:1px solid #4a3200;color:#c8a050}
+.alert-ok{background:#0d2018;border:1px solid #1a4a2e;color:#5cb85c}
+
+/* History */
+.history-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.history-item:last-child{border-bottom:none}
+.hash{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--bg3);padding:2px 7px;border-radius:4px;flex-shrink:0}
+.hmsg{flex:1;color:var(--text)}
+.htime{color:var(--dim);flex-shrink:0}
+
+/* PREVIEW PANEL */
+.preview{border-left:1px solid var(--border);display:flex;flex-direction:column}
+.preview-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.preview-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.preview-actions{display:flex;gap:6px}
+.pbtn{padding:5px 10px;font-size:11px;background:var(--bg3);border:1px solid var(--border);color:var(--muted);border-radius:5px;cursor:pointer;transition:all .12s}
+.pbtn:hover{color:var(--text);border-color:var(--muted)}
+.preview iframe{flex:1;border:none;background:#fff}
+.preview-toggle{display:flex;gap:1px;background:var(--bg3);border-radius:6px;padding:2px}
+.ptab{padding:4px 10px;font-size:11px;border:none;background:none;color:var(--muted);cursor:pointer;border-radius:4px;transition:all .12s}
+.ptab.active{background:var(--bg2);color:var(--text)}
+
+/* Changes badge */
+.changes-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent);color:#fff;border-radius:99px;font-size:10px;font-weight:700;margin-left:auto}
+
+/* Unsaved indicator */
+.unsaved-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);display:inline-block;margin-left:6px;flex-shrink:0}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-name">512AI</div>
+    <div class="logo-sub">Admin Editor · localhost:3512</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Content</div>
+      <button class="nav-btn active" onclick="show('hero',this)"><span class="ico">🏠</span>Hero</button>
+      <button class="nav-btn" onclick="show('nav',this)"><span class="ico">🔗</span>Navigation</button>
+      <button class="nav-btn" onclick="show('services',this)"><span class="ico">📦</span>Services</button>
+      <button class="nav-btn" onclick="show('demo',this)"><span class="ico">🤖</span>Demo Widget</button>
+      <button class="nav-btn" onclick="show('howitworks',this)"><span class="ico">⚡</span>How It Works</button>
+      <button class="nav-btn" onclick="show('about',this)"><span class="ico">👤</span>About / Bio</button>
+      <button class="nav-btn" onclick="show('intake',this)"><span class="ico">📋</span>Intake Form</button>
+      <button class="nav-btn" onclick="show('contact',this)"><span class="ico">📬</span>Contact & Links</button>
+      <button class="nav-btn" onclick="show('footer',this)"><span class="ico">📄</span>Footer</button>
+      <button class="nav-btn" onclick="show('seo',this)"><span class="ico">🔍</span>SEO & Meta</button>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Tools</div>
+      <button class="nav-btn" onclick="show('visibility',this)"><span class="ico">👁</span>Show / Hide</button>
+      <button class="nav-btn" id="changes-nav" onclick="show('changes',this)"><span class="ico">📝</span>Changes <span class="changes-badge" id="changes-count" style="display:none">0</span></button>
+      <button class="nav-btn" onclick="show('history',this);loadHistory()"><span class="ico">🕐</span>History</button>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="deploy-btn" id="deploy-btn" onclick="deploy()">🚀 Save & Deploy</button>
+    <div class="deploy-status" id="deploy-status"></div>
+  </div>
+</aside>
+
+<!-- EDITOR PANELS -->
+<main class="editor" id="editor-main">
+
+  <!-- HERO -->
+  <div class="panel active" id="panel-hero">
+    <div class="panel-title">Hero Section</div>
+    <div class="panel-sub">The first thing visitors see. Keep headlines punchy — 6 words max per line.</div>
+    <span class="filepath">index.html → #hero</span>
+    <div class="card">
+      <div class="card-title">Headline</div>
+      <div class="field"><label>Line 1</label><input id="hero-h1" oninput="mark('hero-h1')"></div>
+      <div class="field"><label>Line 2 (italic accent)</label><input id="hero-h2" oninput="mark('hero-h2')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Subheadline</div>
+      <div class="field"><textarea id="hero-sub" rows="3" oninput="mark('hero-sub');cc(this,'hero-sub-cc')"></textarea><div class="char-hint" id="hero-sub-cc"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">CTA Buttons</div>
+      <div class="row2">
+        <div class="field"><label>Primary button</label><input id="hero-cta1" oninput="mark('hero-cta1')"></div>
+        <div class="field"><label>Secondary button</label><input id="hero-cta2" oninput="mark('hero-cta2')"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Trust Badges</div>
+      <div class="field"><label>Badge 1</label><input id="badge1" oninput="mark('badge1')"></div>
+      <div class="field"><label>Badge 2</label><input id="badge2" oninput="mark('badge2')"></div>
+      <div class="field"><label>Badge 3</label><input id="badge3" oninput="mark('badge3')"></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="panel" id="panel-nav">
+    <div class="panel-title">Navigation</div>
+    <div class="panel-sub">The sticky top bar. Keep labels short — 1–2 words each.</div>
+    <span class="filepath">index.html → nav</span>
+    <div class="card">
+      <div class="card-title">Wordmark</div>
+      <div class="field"><label>Brand name (shown top-left)</label><input id="nav-brand" oninput="mark('nav-brand')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Nav Links</div>
+      <div class="field"><label>Link 1 text</label><input id="nav-l1" oninput="mark('nav-l1')"></div>
+      <div class="field"><label>Link 2 text</label><input id="nav-l2" oninput="mark('nav-l2')"></div>
+      <div class="field"><label>Link 3 text</label><input id="nav-l3" oninput="mark('nav-l3')"></div>
+      <div class="field"><label>Link 4 text</label><input id="nav-l4" oninput="mark('nav-l4')"></div>
+      <div class="field"><label>Link 5 text</label><input id="nav-l5" oninput="mark('nav-l5')"></div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="panel" id="panel-services">
+    <div class="panel-title">Services</div>
+    <div class="panel-sub">Three packages. Pricing is hidden by design — handled on discovery calls.</div>
+    <span class="filepath">index.html → #services</span>
+    <div class="alert alert-info">💡 No pricing shown. Edit package names, descriptions, and bullets only.</div>
+    <div class="card">
+      <div class="card-title">Section Headline</div>
+      <div class="field"><input id="svc-headline" oninput="mark('svc-headline')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Package 1 — Starter</div>
+      <div class="field"><label>Name</label><input id="svc1-name" oninput="mark('svc1-name')"></div>
+      <div class="field"><label>Description</label><textarea id="svc1-desc" rows="2" oninput="mark('svc1-desc')"></textarea></div>
+      <div class="field"><label>Bullets (one per line)</label><textarea id="svc1-bullets" rows="5" oninput="mark('svc1-bullets')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Package 2 — Growth <span class="badge-ok">Most Popular</span></div>
+      <div class="field"><label>Name</label><input id="svc2-name" oninput="mark('svc2-name')"></div>
+      <div class="field"><label>Description</label><textarea id="svc2-desc" rows="2" oninput="mark('svc2-desc')"></textarea></div>
+      <div class="field"><label>Bullets (one per line)</label><textarea id="svc2-bullets" rows="5" oninput="mark('svc2-bullets')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Package 3 — Done-For-You</div>
+      <div class="field"><label>Name</label><input id="svc3-name" oninput="mark('svc3-name')"></div>
+      <div class="field"><label>Description</label><textarea id="svc3-desc" rows="2" oninput="mark('svc3-desc')"></textarea></div>
+      <div class="field"><label>Bullets (one per line)</label><textarea id="svc3-bullets" rows="5" oninput="mark('svc3-bullets')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Below-Cards CTA</div>
+      <div class="field"><label>Tagline text</label><input id="svc-tagline" oninput="mark('svc-tagline')"></div>
+      <div class="field"><label>Button text</label><input id="svc-cta-btn" oninput="mark('svc-cta-btn')"></div>
+    </div>
+  </div>
+
+  <!-- DEMO -->
+  <div class="panel" id="panel-demo">
+    <div class="panel-title">Demo Widget</div>
+    <div class="panel-sub">The live AI demo visitors use on the site. Edit the section copy and default question text.</div>
+    <span class="filepath">index.html → #demo</span>
+    <div class="card">
+      <div class="card-title">Section Copy</div>
+      <div class="field"><label>Headline</label><input id="demo-headline" oninput="mark('demo-headline')"></div>
+      <div class="field"><label>Subheadline</label><textarea id="demo-sub" rows="2" oninput="mark('demo-sub')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Default Customer Question</div>
+      <div class="field"><label>Placeholder text shown in the question field</label><input id="demo-default-q" oninput="mark('demo-default-q')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Response Panel</div>
+      <div class="field"><label>Below-response tagline</label><input id="demo-tagline" oninput="mark('demo-tagline')"></div>
+      <div class="field"><label>CTA link text</label><input id="demo-cta" oninput="mark('demo-cta')"></div>
+    </div>
+    <div class="alert alert-warn">⚠️ The AI model and Netlify proxy settings are in CLAUDE.md and netlify/functions/claude-proxy.js — edit those directly in Claude Code.</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="panel" id="panel-howitworks">
+    <div class="panel-title">How It Works</div>
+    <div class="panel-sub">Three steps. Keep each title to 3–4 words.</div>
+    <span class="filepath">index.html → #how</span>
+    <div class="card">
+      <div class="card-title">Section Headline</div>
+      <div class="field"><input id="hiw-headline" oninput="mark('hiw-headline')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Step 1</div>
+      <div class="field"><label>Title</label><input id="hiw1-title" oninput="mark('hiw1-title')"></div>
+      <div class="field"><label>Description</label><textarea id="hiw1-desc" rows="3" oninput="mark('hiw1-desc')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Step 2</div>
+      <div class="field"><label>Title</label><input id="hiw2-title" oninput="mark('hiw2-title')"></div>
+      <div class="field"><label>Description</label><textarea id="hiw2-desc" rows="3" oninput="mark('hiw2-desc')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Step 3</div>
+      <div class="field"><label>Title</label><input id="hiw3-title" oninput="mark('hiw3-title')"></div>
+      <div class="field"><label>Description</label><textarea id="hiw3-desc" rows="3" oninput="mark('hiw3-desc')"></textarea></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="panel" id="panel-about">
+    <div class="panel-title">About / Meet Ricardo</div>
+    <div class="panel-sub">Your bio. Keep it human — this is what closes deals.</div>
+    <span class="filepath">index.html → #about</span>
+    <div class="card">
+      <div class="card-title">Section Headline</div>
+      <div class="field"><input id="about-headline" oninput="mark('about-headline')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bio</div>
+      <div class="field"><label>Paragraph 1</label><textarea id="bio-p1" rows="4" oninput="mark('bio-p1')"></textarea></div>
+      <div class="field"><label>Paragraph 2</label><textarea id="bio-p2" rows="4" oninput="mark('bio-p2')"></textarea></div>
+      <div class="field"><label>Paragraph 3</label><textarea id="bio-p3" rows="3" oninput="mark('bio-p3')"></textarea></div>
+      <div class="field"><label>Closing line</label><input id="bio-close" oninput="mark('bio-close')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Credentials</div>
+      <div class="field"><label>Badge 1</label><input id="cred1" oninput="mark('cred1')"></div>
+      <div class="field"><label>Badge 2</label><input id="cred2" oninput="mark('cred2')"></div>
+    </div>
+  </div>
+
+  <!-- INTAKE -->
+  <div class="panel" id="panel-intake">
+    <div class="panel-title">Intake Form</div>
+    <div class="panel-sub">The pre-consultation form. Edit the section framing copy here.</div>
+    <span class="filepath">index.html → #intake</span>
+    <div class="alert alert-info">The dynamic questions per business category are in the JavaScript inside index.html. Use Claude Code to add/modify category questions.</div>
+    <div class="card">
+      <div class="card-title">Section Copy</div>
+      <div class="field"><label>Section headline</label><input id="intake-headline" oninput="mark('intake-headline')"></div>
+      <div class="field"><label>Section subheadline</label><textarea id="intake-sub" rows="2" oninput="mark('intake-sub')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Form Labels</div>
+      <div class="field"><label>Form title (shown inside the form)</label><input id="intake-form-title" oninput="mark('intake-form-title')"></div>
+      <div class="field"><label>Form description</label><textarea id="intake-form-desc" rows="2" oninput="mark('intake-form-desc')"></textarea></div>
+      <div class="field"><label>Submit button text</label><input id="intake-submit-btn" oninput="mark('intake-submit-btn')"></div>
+      <div class="field"><label>Success title (after submission)</label><input id="intake-success-title" oninput="mark('intake-success-title')"></div>
+      <div class="field"><label>Success message</label><textarea id="intake-success-msg" rows="2" oninput="mark('intake-success-msg')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Form Endpoint</div>
+      <div class="field"><label>Formspree URL</label><input id="intake-formspree" oninput="mark('intake-formspree')"></div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="panel" id="panel-contact">
+    <div class="panel-title">Contact & Links</div>
+    <div class="panel-sub">Booking, email, and social links used throughout the site.</div>
+    <span class="filepath">index.html → #contact</span>
+    <div class="card">
+      <div class="card-title">Section Copy</div>
+      <div class="field"><label>Headline</label><input id="contact-headline" oninput="mark('contact-headline')"></div>
+      <div class="field"><label>Subheadline</label><textarea id="contact-sub" rows="2" oninput="mark('contact-sub')"></textarea></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Booking</div>
+      <div class="field"><label>Calendly URL (used site-wide)</label><input id="cal-url" oninput="mark('cal-url')"></div>
+      <div class="field"><label>Book button text</label><input id="cal-btn" oninput="mark('cal-btn')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Contact Info</div>
+      <div class="field"><label>Business email</label><input id="contact-email" type="email" oninput="mark('contact-email')"></div>
+      <div class="field"><label>Formspree endpoint</label><input id="formspree-url" oninput="mark('formspree-url')"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Social Links</div>
+      <div class="field"><label>LinkedIn URL</label><input id="linkedin-url" oninput="mark('linkedin-url')"></div>
+      <div class="field"><label>Instagram URL</label><input id="instagram-url" oninput="mark('instagram-url')"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="panel" id="panel-footer">
+    <div class="panel-title">Footer</div>
+    <div class="panel-sub">The very bottom of the page.</div>
+    <span class="filepath">index.html → footer</span>
+    <div class="card">
+      <div class="field"><label>Copyright line</label><input id="footer-copy" oninput="mark('footer-copy')"></div>
+      <div class="field"><label>Tagline</label><input id="footer-tag" oninput="mark('footer-tag')"></div>
+    </div>
+  </div>
+
+  <!-- SEO -->
+  <div class="panel" id="panel-seo">
+    <div class="panel-title">SEO & Meta</div>
+    <div class="panel-sub">Controls how 512AI appears in Google and social previews.</div>
+    <span class="filepath">index.html → &lt;head&gt;</span>
+    <div class="alert alert-warn">⚠️ Google takes 1–4 weeks to re-index. Don't change these frequently.</div>
+    <div class="card">
+      <div class="card-title">Search</div>
+      <div class="field"><label>Page title <span id="seo-title-badge"></span></label><input id="seo-title" oninput="mark('seo-title');cc(this,'seo-title-cc');seoCheck('seo-title',50,60,'seo-title-badge')"><div class="char-hint" id="seo-title-cc"></div></div>
+      <div class="field"><label>Meta description <span id="seo-desc-badge"></span></label><textarea id="seo-desc" rows="3" oninput="mark('seo-desc');cc(this,'seo-desc-cc');seoCheck('seo-desc',140,160,'seo-desc-badge')"></textarea><div class="char-hint" id="seo-desc-cc"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Social Preview (Open Graph)</div>
+      <div class="field"><label>OG title</label><input id="og-title" oninput="mark('og-title')"></div>
+      <div class="field"><label>OG description</label><textarea id="og-desc" rows="2" oninput="mark('og-desc')"></textarea></div>
+      <div class="field"><label>Canonical URL</label><input id="canonical" oninput="mark('canonical')"></div>
+    </div>
+  </div>
+
+  <!-- VISIBILITY -->
+  <div class="panel" id="panel-visibility">
+    <div class="panel-title">Show / Hide Sections</div>
+    <div class="panel-sub">Toggle sections without deleting content. Changes write to index.html directly.</div>
+    <div class="card">
+      <div id="visibility-toggles">Loading...</div>
+    </div>
+  </div>
+
+  <!-- CHANGES -->
+  <div class="panel" id="panel-changes">
+    <div class="panel-title">Pending Changes</div>
+    <div class="panel-sub">All edits staged since last deploy. Nothing touches the live site until you click Save & Deploy.</div>
+    <div class="card" id="changes-list"><p style="color:var(--dim);font-size:13px">No changes yet.</p></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="panel-history">
+    <div class="panel-title">Deploy History</div>
+    <div class="panel-sub">Recent git commits on the main branch.</div>
+    <div class="card" id="history-list"><p style="color:var(--dim);font-size:13px">Loading...</p></div>
+  </div>
+
+</main>
+
+<!-- PREVIEW PANEL -->
+<aside class="preview">
+  <div class="preview-header">
+    <span class="preview-title">Live Preview</span>
+    <div class="preview-actions">
+      <div class="preview-toggle">
+        <button class="ptab active" onclick="setPreview('local',this)">Local</button>
+        <button class="ptab" onclick="setPreview('live',this)">512ai.co</button>
+      </div>
+      <button class="pbtn" onclick="refreshPreview()">↺</button>
+      <button class="pbtn" onclick="window.open('https://512ai.co','_blank')">↗</button>
+    </div>
+  </div>
+  <iframe id="preview-frame" src="http://localhost:3512" title="Site preview"></iframe>
+</aside>
+
+</div>
+
+<script>
+const changes = {};
+let previewMode = 'local';
+
+// ── Panel navigation ──────────────────────────────────────────
+function show(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'visibility') renderVisibility();
+}
+
+// ── Change tracking ───────────────────────────────────────────
+function mark(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  changes[id] = el.value;
+  updateChangeBadge();
+  renderChangesList();
+}
+
+function updateChangeBadge() {
+  const n = Object.keys(changes).length;
+  const badge = document.getElementById('changes-count');
+  badge.style.display = n ? 'inline-flex' : 'none';
+  badge.textContent = n;
+}
+
+function renderChangesList() {
+  const list = document.getElementById('changes-list');
+  const keys = Object.keys(changes);
+  if (!keys.length) { list.innerHTML = '<p style="color:var(--dim);font-size:13px">No changes yet.</p>'; return; }
+  list.innerHTML = keys.map(k => `
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+      <div style="width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:4px;flex-shrink:0"></div>
+      <div style="color:var(--muted);width:130px;flex-shrink:0">${k}</div>
+      <div style="color:var(--text);flex:1;word-break:break-word">${String(changes[k]).substring(0,70)}${String(changes[k]).length>70?'…':''}</div>
+    </div>`).join('');
+}
+
+// ── Char counter ──────────────────────────────────────────────
+function cc(el, counterId) {
+  const out = document.getElementById(counterId);
+  if (out) out.textContent = el.value.length + ' chars';
+}
+
+function seoCheck(id, min, max, badgeId) {
+  const el = document.getElementById(id);
+  const badge = document.getElementById(badgeId);
+  if (!el || !badge) return;
+  const l = el.value.length;
+  if (l >= min && l <= max) {
+    badge.className = 'badge-ok'; badge.textContent = '✓ Good length';
+  } else if (l > max) {
+    badge.className = 'badge-warn'; badge.textContent = '⚠ Too long';
+  } else {
+    badge.className = ''; badge.textContent = '';
+  }
+}
+
+// ── Visibility toggles ────────────────────────────────────────
+const sections = [
+  { id:'hero', label:'Hero', sub:'Main headline and CTAs' },
+  { id:'services', label:'Services', sub:'Three package cards' },
+  { id:'demo', label:'Demo Widget', sub:'Live AI demo' },
+  { id:'how', label:'How It Works', sub:'Three-step process' },
+  { id:'about', label:'Meet Ricardo', sub:'Bio and headshot' },
+  { id:'intake', label:'Intake Form', sub:'Pre-consultation questionnaire' },
+  { id:'contact', label:'Contact', sub:'Booking and contact form' },
+];
+
+function renderVisibility() {
+  const wrap = document.getElementById('visibility-toggles');
+  wrap.innerHTML = sections.map(s => `
+    <div class="toggle-row">
+      <div class="toggle-info"><div class="tl">${s.label}</div><div class="ts">${s.sub}</div></div>
+      <label class="toggle"><input type="checkbox" id="vis-${s.id}" checked onchange="markVisibility('${s.id}',this.checked)"><span class="tslider"></span></label>
+    </div>`).join('');
+}
+
+function markVisibility(id, show) {
+  changes['visibility:' + id] = show;
+  updateChangeBadge();
+  renderChangesList();
+}
+
+// ── Deploy ────────────────────────────────────────────────────
+async function deploy() {
+  const btn = document.getElementById('deploy-btn');
+  const status = document.getElementById('deploy-status');
+  const keys = Object.keys(changes);
+  if (!keys.length) {
+    status.className = 'deploy-status err';
+    status.textContent = 'No changes to deploy.';
+    setTimeout(() => status.textContent = '', 3000);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+  status.className = 'deploy-status';
+  status.textContent = 'Writing to index.html...';
+
+  try {
+    // Build Claude Code prompt for semantic changes
+    const visChanges = keys.filter(k => k.startsWith('visibility:'));
+    const contentChanges = keys.filter(k => !k.startsWith('visibility:'));
+
+    const msg = 'Content update: ' + contentChanges.slice(0,3).map(k=>k).join(', ');
+
+    // Send to server
+    const r = await fetch('/api/git/deploy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: msg,
+        changes: changes
+      })
+    });
+    const d = await r.json();
+    if (d.success) {
+      status.className = 'deploy-status ok';
+      status.textContent = '✓ Deployed to Netlify!';
+      Object.keys(changes).forEach(k => delete changes[k]);
+      updateChangeBadge();
+      renderChangesList();
+      setTimeout(() => { refreshPreview(); loadHistory(); }, 2000);
+    } else {
+      throw new Error(d.error || 'Deploy failed');
+    }
+  } catch(e) {
+    status.className = 'deploy-status err';
+    status.textContent = '✗ ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 Save & Deploy';
+  setTimeout(() => status.textContent = '', 5000);
+}
+
+// ── Preview ───────────────────────────────────────────────────
+function setPreview(mode, btn) {
+  previewMode = mode;
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  refreshPreview();
+}
+
+function refreshPreview() {
+  const frame = document.getElementById('preview-frame');
+  const src = previewMode === 'live' ? 'https://512ai.co' : 'http://localhost:3512';
+  frame.src = src + '?t=' + Date.now();
+}
+
+// ── History ───────────────────────────────────────────────────
+async function loadHistory() {
+  try {
+    const r = await fetch('/api/git/status');
+    const d = await r.json();
+    const list = document.getElementById('history-list');
+    if (!d.log) return;
+    list.innerHTML = d.log.split('\n').map(line => {
+      const [hash, ...rest] = line.split(' ');
+      return `<div class="history-item"><span class="hash">${hash}</span><span class="hmsg">${rest.join(' ')}</span></div>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ── Init — load default values ────────────────────────────────
+const defaults = {
+  'hero-h1': 'AI That Works For You.',
+  'hero-h2': 'While You Sleep.',
+  'hero-sub': '512AI helps Austin small businesses automate lead responses, customer questions, and daily tasks — without hiring more staff or learning new software.',
+  'hero-cta1': 'Try the Demo →',
+  'hero-cta2': 'Book a Free Call',
+  'badge1': '🏙️ Austin-based',
+  'badge2': '⚡ Live in 7 days',
+  'badge3': '🤝 No contracts',
+  'nav-brand': '512AI',
+  'nav-l1': 'Services', 'nav-l2': 'Demo', 'nav-l3': 'About', 'nav-l4': 'Intake Form', 'nav-l5': 'Contact',
+  'svc-headline': 'What We Build For You',
+  'svc1-name': 'Starter', 'svc1-desc': 'Get AI answering customer questions on your website 24/7 — even when you\'re closed.', 'svc1-bullets': 'AI chatbot for your website\nAutomated reply for new leads\nFAQ training for your business\n30 days of support\nSetup in 7 days or less',
+  'svc2-name': 'Growth', 'svc2-desc': 'Everything in Starter, plus AI that helps you get more reviews and stay top-of-mind.', 'svc2-bullets': 'Everything in Starter\nWeekly AI-drafted social media posts\nAutomated review request after every sale\nMonthly performance report\nPriority support',
+  'svc3-name': 'Done-For-You', 'svc3-desc': 'A fully custom AI system built around how your business actually operates.', 'svc3-bullets': 'Everything in Growth\nCustom AI workflow for your business\nBooking & scheduling automation\nThird-party integrations\nOngoing 20% monthly maintenance',
+  'svc-tagline': 'Every business is different — pricing is based on your specific needs.',
+  'svc-cta-btn': 'Get a Free Quote →',
+  'demo-headline': 'Try It Yourself. No Signup Required.',
+  'demo-sub': 'Tell us what kind of business you run and watch AI handle a real customer question — right now.',
+  'demo-default-q': 'Hi, what are your hours and do you take walk-ins?',
+  'demo-tagline': 'This is what your customers would see. Automatically. 24/7.',
+  'demo-cta': 'Ready to set this up for your business?',
+  'hiw-headline': 'From "What Is AI?" to Live in 7 Days',
+  'hiw1-title': 'We Talk (30 min)', 'hiw1-desc': 'We get on a free call and learn how your business works — your hours, your common questions, your pain points. No prep needed.',
+  'hiw2-title': 'We Build', 'hiw2-desc': 'We set up your AI system, train it on your business, test it thoroughly, and connect it to your website or phone line.',
+  'hiw3-title': 'It Runs Itself', 'hiw3-desc': 'Your AI handles customers 24/7. You get a monthly report showing what it did. We handle any updates.',
+  'about-headline': 'Built by a neighbor. Powered by AI.',
+  'bio-p1': 'I grew up in Monterrey, Mexico making and selling salsa before school every morning. I moved to Austin as a kid and built my life here — 21 years married, two kids, an award-winning salsa brand, and a Star Wars-obsessed dog named Ewok.',
+  'bio-p2': 'By day I\'m a Senior Technical Program Manager with 10+ years leading engineering teams at healthcare startups and tech companies. I\'ve shipped products on AWS, Azure, and GCP.',
+  'bio-p3': 'I built 512AI because every AI agency I found was either too expensive, too corporate, or built for Fortune 500 companies. Austin small businesses deserve the same technology — without the enterprise price tag or the jargon.',
+  'bio-close': 'I\'m not a vendor. I\'m your neighbor.',
+  'cred1': 'CSPO Certified — Scrum Alliance',
+  'cred2': '10+ Years Technical Program Management',
+  'intake-headline': 'Before We Talk — Tell Us About Your Business',
+  'intake-sub': 'Takes 3 minutes. Helps Ricardo come prepared with real ideas specific to your business.',
+  'intake-form-title': 'Tell us about your business',
+  'intake-form-desc': 'Answer a few quick questions so Ricardo can come to your first call prepared.',
+  'intake-submit-btn': 'Submit & Book Your Free Call →',
+  'intake-success-title': 'You\'re all set — Ricardo will be in touch soon.',
+  'intake-success-msg': 'Your intake form has been received. Book a time for your free call below.',
+  'intake-formspree': 'https://formspree.io/f/mojklvjq',
+  'contact-headline': 'Ready to Put AI to Work?',
+  'contact-sub': 'Book a free 30-minute call. No pressure — just an honest conversation about your business.',
+  'cal-url': 'https://calendly.com/avilaricardoe/free-ai-strategy-call',
+  'cal-btn': 'Schedule on Calendly →',
+  'contact-email': 'contact@512ai.co',
+  'formspree-url': 'https://formspree.io/f/mojklvjq',
+  'linkedin-url': 'https://linkedin.com/in/avilaricardoe',
+  'instagram-url': 'https://www.instagram.com/kalelra',
+  'footer-copy': '© 2025 512AI · Austin, Texas · contact@512ai.co',
+  'footer-tag': 'Built with AI. Powered by 512.',
+  'seo-title': '512AI — AI Automation for Austin Small Businesses',
+  'seo-desc': '512AI builds AI chatbots, voice assistants, and automation tools for Austin small businesses. Simple setup. No contracts. Live demo on site.',
+  'og-title': '512AI — AI Tools for Austin Small Businesses',
+  'og-desc': 'Austin\'s local AI automation agency. Try our live demo — no signup required.',
+  'canonical': 'https://512ai.co',
+};
+
+Object.entries(defaults).forEach(([id, val]) => {
+  const el = document.getElementById(id);
+  if (el) el.value = val;
+});
+
+// Init char counts
+['hero-sub','seo-title','seo-desc'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) cc(el, id + '-cc');
+});
+seoCheck('seo-title', 50, 60, 'seo-title-badge');
+seoCheck('seo-desc', 140, 160, 'seo-desc-badge');
+
+renderVisibility();
+loadHistory();
+</script>
+</body>
+</html>
