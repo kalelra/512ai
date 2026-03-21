@@ -886,7 +886,7 @@
   ═══════════════════════════════ -->
   <nav id="navbar">
     <div class="container nav-inner">
-      <a href="#hero" class="nav-logo">512AI</a>
+      <a href="#hero" class="nav-logo" data-field="nav-brand">512AI</a>
       <ul class="nav-links">
         <li><a href="#services">Services</a></li>
         <li><a href="#demo">Demo</a></li>
@@ -914,20 +914,20 @@
     <div class="container">
       <div class="hero-content fade-up visible">
         <h1 class="hero-headline">
-          AI That Works For You.<br>
-          <em>While You Sleep.</em>
+          <span data-field="hero-h1">AI That Works For You.</span><br>
+          <em data-field="hero-h2">While You Sleep.</em>
         </h1>
-        <p class="hero-subheadline">
+        <p class="hero-subheadline" data-field="hero-sub">
           512AI helps Austin small businesses automate lead responses, customer questions, and daily tasks — without hiring more staff or learning new software.
         </p>
         <div class="hero-ctas">
-          <a href="#demo" class="btn-primary">Try the Demo →</a>
-          <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-outline">Book a Free Call</a>
+          <a href="#demo" class="btn-primary" data-field="hero-cta1">Try the Demo →</a>
+          <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" rel="noopener" class="btn-outline" data-field="hero-cta2">Book a Free Call</a>
         </div>
         <div class="trust-badges">
-          <span class="trust-badge">🏙️ Austin-based</span>
-          <span class="trust-badge">⚡ Live in 7 days</span>
-          <span class="trust-badge">🤝 No contracts</span>
+          <span class="trust-badge" data-field="badge1">🏙️ Austin-based</span>
+          <span class="trust-badge" data-field="badge2">⚡ Live in 7 days</span>
+          <span class="trust-badge" data-field="badge3">🤝 No contracts</span>
         </div>
       </div>
     </div>
@@ -940,7 +940,7 @@
   <section id="services">
     <div class="container">
       <div class="section-header fade-up">
-        <h2 class="section-headline">What We Build For You</h2>
+        <h2 class="section-headline" data-field="svc-headline">What We Build For You</h2>
         <p class="section-subheadline">Three straightforward packages. No jargon. No surprises.</p>
       </div>
       <div class="cards-grid">
@@ -948,9 +948,9 @@
         <!-- Card 1: Starter -->
         <div class="card fade-up">
           <div class="card-icon">🚀</div>
-          <div class="card-name">Starter</div>
+          <div class="card-name" data-field="svc1-name">Starter</div>
           <div class="card-price">Custom Pricing</div>
-          <p class="card-description">Get AI answering customer questions on your website 24/7 — even when you're closed.</p>
+          <p class="card-description" data-field="svc1-desc">Get AI answering customer questions on your website 24/7 — even when you're closed.</p>
           <ul class="card-features">
             <li>AI chatbot for your website</li>
             <li>Automated reply for new leads</li>
@@ -965,9 +965,9 @@
         <div class="card fade-up">
           <div class="popular-badge">Most Popular</div>
           <div class="card-icon">📈</div>
-          <div class="card-name">Growth</div>
+          <div class="card-name" data-field="svc2-name">Growth</div>
           <div class="card-price">Custom Pricing</div>
-          <p class="card-description">Everything in Starter, plus AI that helps you get more reviews and stay top-of-mind with customers.</p>
+          <p class="card-description" data-field="svc2-desc">Everything in Starter, plus AI that helps you get more reviews and stay top-of-mind with customers.</p>
           <ul class="card-features">
             <li>Everything in Starter</li>
             <li>Weekly AI-drafted social media posts</li>
@@ -981,9 +981,9 @@
         <!-- Card 3: Done-For-You -->
         <div class="card fade-up">
           <div class="card-icon">⚙️</div>
-          <div class="card-name">Done-For-You</div>
+          <div class="card-name" data-field="svc3-name">Done-For-You</div>
           <div class="card-price">Custom Pricing</div>
-          <p class="card-description">A fully custom AI system built around how your business actually operates — from booking to follow-up.</p>
+          <p class="card-description" data-field="svc3-desc">A fully custom AI system built around how your business actually operates — from booking to follow-up.</p>
           <ul class="card-features">
             <li>Everything in Growth</li>
             <li>Custom AI workflow for your business</li>
@@ -996,8 +996,8 @@
 
       </div>
       <div class="fade-up" style="text-align:center;margin-top:40px;">
-        <p style="color:var(--text-muted);font-size:16px;margin-bottom:20px;">Every business is different — pricing is based on your specific needs.</p>
-        <a href="#intake" class="btn-primary">Get a Free Quote →</a>
+        <p style="color:var(--text-muted);font-size:16px;margin-bottom:20px;" data-field="svc-tagline">Every business is different — pricing is based on your specific needs.</p>
+        <a href="#intake" class="btn-primary" data-field="svc-cta-btn">Get a Free Quote →</a>
       </div>
     </div>
   </section>
@@ -1008,8 +1008,8 @@
   <section id="demo">
     <div class="container">
       <div class="section-header fade-up">
-        <h2 class="section-headline">Try It Yourself. No Signup Required.</h2>
-        <p class="section-subheadline">Tell us what kind of business you run and watch AI handle a real customer question — right now.</p>
+        <h2 class="section-headline" data-field="demo-headline">Try It Yourself. No Signup Required.</h2>
+        <p class="section-subheadline" data-field="demo-sub">Tell us what kind of business you run and watch AI handle a real customer question — right now.</p>
       </div>
 
       <div class="demo-grid fade-up">
@@ -1068,7 +1068,7 @@
           </div>
 
           <div class="response-footer">
-            <p>This is what your customers would see. Automatically. 24/7.</p>
+            <p data-field="demo-tagline">This is what your customers would see. Automatically. 24/7.</p>
             <p style="margin-top:8px"><a href="#intake">Ready to set this up for your business?</a></p>
           </div>
         </div>
@@ -1083,30 +1083,30 @@
   <section id="how">
     <div class="container">
       <div class="section-header fade-up">
-        <h2 class="section-headline">From "What Is AI?" to Live in 7 Days</h2>
+        <h2 class="section-headline" data-field="hiw-headline">From "What Is AI?" to Live in 7 Days</h2>
       </div>
       <div class="steps-row fade-up">
 
         <div class="step">
           <div class="step-icon">💬</div>
-          <h3 class="step-title">Step 1 — We Talk (30 min)</h3>
-          <p class="step-desc">We get on a free call and learn how your business works — your hours, your common questions, your pain points. No prep needed.</p>
+          <h3 class="step-title" data-field="hiw1-title">Step 1 — We Talk (30 min)</h3>
+          <p class="step-desc" data-field="hiw1-desc">We get on a free call and learn how your business works — your hours, your common questions, your pain points. No prep needed.</p>
         </div>
 
         <div class="step-arrow">→</div>
 
         <div class="step">
           <div class="step-icon">🔧</div>
-          <h3 class="step-title">Step 2 — We Build</h3>
-          <p class="step-desc">We set up your AI system, train it on your business, test it thoroughly, and connect it to your website or phone line.</p>
+          <h3 class="step-title" data-field="hiw2-title">Step 2 — We Build</h3>
+          <p class="step-desc" data-field="hiw2-desc">We set up your AI system, train it on your business, test it thoroughly, and connect it to your website or phone line.</p>
         </div>
 
         <div class="step-arrow">→</div>
 
         <div class="step">
           <div class="step-icon">⚡</div>
-          <h3 class="step-title">Step 3 — It Runs Itself</h3>
-          <p class="step-desc">Your AI handles customers 24/7. You get a monthly report showing what it did. We handle any updates.</p>
+          <h3 class="step-title" data-field="hiw3-title">Step 3 — It Runs Itself</h3>
+          <p class="step-desc" data-field="hiw3-desc">Your AI handles customers 24/7. You get a monthly report showing what it did. We handle any updates.</p>
         </div>
 
       </div>
@@ -1131,16 +1131,16 @@
 
         <!-- Bio column -->
         <div class="about-text-col">
-          <h2 class="about-headline">Built by a neighbor. Powered by AI.</h2>
+          <h2 class="about-headline" data-field="about-headline">Built by a neighbor. Powered by AI.</h2>
           <div class="about-bio">
-            <p>I grew up in Monterrey, Mexico making and selling salsa before school every morning. I moved to Austin as a kid and built my life here — 21 years married, two kids, an award-winning salsa brand, and a Star Wars-obsessed dog named Ewok.</p>
-            <p>By day I'm a Senior Technical Program Manager with 10+ years leading engineering teams at healthcare startups and tech companies. I've shipped products on AWS, Azure, and GCP. I've kept C-suites aligned on multi-million dollar programs. I know how technology works — and more importantly, I know how to make it work for people who didn't go to tech school.</p>
-            <p>I built 512AI because every AI agency I found was either too expensive, too corporate, or built for Fortune 500 companies. Austin small businesses deserve the same technology — without the enterprise price tag or the jargon.</p>
-            <p>I'm not a vendor. I'm your neighbor.</p>
+            <p data-field="bio-p1">I grew up in Monterrey, Mexico making and selling salsa before school every morning. I moved to Austin as a kid and built my life here — 21 years married, two kids, an award-winning salsa brand, and a Star Wars-obsessed dog named Ewok.</p>
+            <p data-field="bio-p2">By day I'm a Senior Technical Program Manager with 10+ years leading engineering teams at healthcare startups and tech companies. I've shipped products on AWS, Azure, and GCP. I've kept C-suites aligned on multi-million dollar programs. I know how technology works — and more importantly, I know how to make it work for people who didn't go to tech school.</p>
+            <p data-field="bio-p3">I built 512AI because every AI agency I found was either too expensive, too corporate, or built for Fortune 500 companies. Austin small businesses deserve the same technology — without the enterprise price tag or the jargon.</p>
+            <p data-field="bio-close">I'm not a vendor. I'm your neighbor.</p>
           </div>
           <div class="credentials">
-            <span class="credential">CSPO Certified — Scrum Alliance</span>
-            <span class="credential">10+ Years Technical Program Management</span>
+            <span class="credential" data-field="cred1">CSPO Certified — Scrum Alliance</span>
+            <span class="credential" data-field="cred2">10+ Years Technical Program Management</span>
           </div>
           <a href="#intake" class="btn-primary">Let's Talk →</a>
         </div>
@@ -1155,13 +1155,13 @@
   <section id="intake">
     <div class="container">
       <div class="intake-header fade-up">
-        <h2 class="section-headline">Before We Talk — Tell Us About Your Business</h2>
-        <p class="section-subheadline">Takes 3 minutes. Helps Ricardo come prepared with real ideas specific to your business.</p>
+        <h2 class="section-headline" data-field="intake-headline">Before We Talk — Tell Us About Your Business</h2>
+        <p class="section-subheadline" data-field="intake-sub">Takes 3 minutes. Helps Ricardo come prepared with real ideas specific to your business.</p>
       </div>
 
       <div class="form-wrap fade-up">
         <div id="form-view">
-          <p class="form-sub">Answer a few quick questions so Ricardo can come to your first call prepared — with AI automation ideas specific to your business type.</p>
+          <p class="form-sub" data-field="intake-form-title">Answer a few quick questions so Ricardo can come to your first call prepared — with AI automation ideas specific to your business type.</p>
           <div class="progress-bar"><div class="progress-fill" id="progress" style="width:10%"></div></div>
 
           <div class="intake-section">
@@ -1260,13 +1260,13 @@
             <textarea id="f-notes" placeholder="Goals, questions, concerns — anything helps." oninput="updateProgress()"></textarea>
           </div>
 
-          <button class="submit-btn" onclick="submitIntakeForm()">Submit &amp; Book Your Free Call →</button>
+          <button class="submit-btn" data-field="intake-submit-btn" onclick="submitIntakeForm()">Submit &amp; Book Your Free Call →</button>
           <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;">No spam. Your info goes directly to Ricardo at 512AI.</p>
         </div>
 
         <div id="success-view" style="display:none" class="success-msg">
           <div class="success-icon">✅</div>
-          <p class="success-title">You're all set — Ricardo will be in touch soon.</p>
+          <p class="success-title" data-field="intake-success-title">You're all set — Ricardo will be in touch soon.</p>
           <p class="success-sub">Your intake form has been received. To lock in your free 30-minute call, book a time that works for you below.</p>
           <button class="cal-btn" onclick="window.open('https://calendly.com/avilaricardoe/free-ai-strategy-call','_blank')">Book Your Free Call on Calendly →</button>
         </div>
@@ -1280,8 +1280,8 @@
   <section id="contact">
     <div class="container">
       <div class="contact-header fade-up">
-        <h2 class="section-headline">Ready to Put AI to Work?</h2>
-        <p class="section-subheadline">Book a free 30-minute call. No pressure, no pitch deck — just an honest conversation about your business.</p>
+        <h2 class="section-headline" data-field="contact-headline">Ready to Put AI to Work?</h2>
+        <p class="section-subheadline" data-field="contact-sub">Book a free 30-minute call. No pressure, no pitch deck — just an honest conversation about your business.</p>
       </div>
 
       <div class="contact-options fade-up">
@@ -1290,7 +1290,7 @@
         <div class="contact-option">
           <h3 class="contact-option-title">Book a Call</h3>
           <p class="contact-option-desc">Pick a time that works for you. 30 minutes, free, no obligation. We'll talk through your business and map out what AI could do for you.</p>
-          <a href="#intake" class="btn-primary">Fill Out Intake Form →</a>
+          <a href="#intake" class="btn-primary" data-field="cal-btn">Fill Out Intake Form →</a>
         </div>
 
         <!-- Option B: Send a Message -->
@@ -1339,8 +1339,8 @@
     <!-- Footer bar -->
     <div class="footer-bar">
       <div class="container footer-bar-inner">
-        <span class="footer-copy">© 2025 512AI · Austin, Texas · avilaricardoe@gmail.com</span>
-        <span class="footer-tagline">Built with AI. Powered by 512.</span>
+        <span class="footer-copy" data-field="footer-copy">© 2025 512AI · Austin, Texas · avilaricardoe@gmail.com</span>
+        <span class="footer-tagline" data-field="footer-tag">Built with AI. Powered by 512.</span>
       </div>
     </div>
   </section>
