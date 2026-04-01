@@ -51,8 +51,8 @@ exports.handler = async (event) => {
     // Bland.ai call configuration
     const blandPayload = {
       phone_number: formattedPhone,
-      task: `You are a friendly AI assistant demo from 512AI, an AI automation company based in Austin, Texas. 
-      
+      task: `You are a friendly AI assistant demo from 512AI, an AI automation company based in Austin, Texas.
+
 You are calling ${name}, who owns or works at a ${businessType} business.
 
 Your goal is to give them a 60-second taste of what AI automation can do for their specific business.
@@ -84,6 +84,18 @@ Keep the entire call under 90 seconds. Be conversational, not salesy. Sound like
       }
     };
 
+    // Log request payload (no sensitive data)
+    console.log('Bland.ai request payload:', JSON.stringify({
+      phone_number: formattedPhone,
+      model: blandPayload.model,
+      language: blandPayload.language,
+      voice: blandPayload.voice,
+      max_duration: blandPayload.max_duration,
+      wait_for_greeting: blandPayload.wait_for_greeting,
+      record: blandPayload.record,
+      metadata: blandPayload.metadata
+    }));
+
     // Call Bland.ai API
     const response = await fetch('https://api.bland.ai/v1/calls', {
       method: 'POST',
@@ -96,12 +108,20 @@ Keep the entire call under 90 seconds. Be conversational, not salesy. Sound like
 
     const result = await response.json();
 
+    // Log full Bland.ai response
+    console.log('Bland.ai full response — status:', response.status, 'body:', JSON.stringify(result));
+
     if (!response.ok) {
-      console.error('Bland.ai error:', result);
+      console.error('Bland.ai error — status:', response.status, 'body:', JSON.stringify(result));
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, error: 'Failed to initiate call. Please try again.' })
+        body: JSON.stringify({
+          success: false,
+          error: 'Bland.ai returned an error',
+          blandStatus: response.status,
+          blandResponse: result
+        })
       };
     }
 
@@ -122,7 +142,7 @@ Keep the entire call under 90 seconds. Be conversational, not salesy. Sound like
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ success: false, error: 'Something went wrong. Please try again.' })
+      body: JSON.stringify({ success: false, error: err.message, stack: err.stack })
     };
   }
 };
