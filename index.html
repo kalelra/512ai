@@ -890,6 +890,7 @@
       <ul class="nav-links">
         <li><a href="#services">Services</a></li>
         <li><a href="#demo">Demo</a></li>
+        <li><a href="#voice-demo">Voice Demo</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#intake">Intake Form</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -901,6 +902,7 @@
     <div class="mobile-menu" id="mobile-menu">
       <a href="#services" class="mobile-link">Services</a>
       <a href="#demo" class="mobile-link">Demo</a>
+      <a href="#voice-demo" class="mobile-link">Voice Demo</a>
       <a href="#about" class="mobile-link">About</a>
       <a href="#intake" class="mobile-link">Intake Form</a>
       <a href="#contact" class="mobile-link">Contact</a>
@@ -1076,6 +1078,352 @@
       </div>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       VOICE DEMO SECTION — Add to index.html nav as "Voice Demo"
+       ═══════════════════════════════════════════════════════ -->
+<section id="voice-demo" style="
+  background: #0F0F0F;
+  padding: 100px 40px;
+  position: relative;
+  overflow: hidden;
+">
+  <!-- Background texture -->
+  <div style="
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(192,83,26,0.06) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(192,83,26,0.04) 0%, transparent 40%);
+    pointer-events: none;
+  "></div>
+
+  <div style="max-width: 900px; margin: 0 auto; position: relative;">
+
+    <!-- Section header -->
+    <div style="text-align: center; margin-bottom: 60px;">
+      <div style="
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(192,83,26,0.12); border: 1px solid rgba(192,83,26,0.3);
+        border-radius: 99px; padding: 6px 16px; margin-bottom: 20px;
+      ">
+        <span style="width: 8px; height: 8px; background: #C0531A; border-radius: 50%; animation: pulse512 2s infinite;"></span>
+        <span style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: #C0531A; letter-spacing: 1px; font-weight: 500;">LIVE AI VOICE DEMO</span>
+      </div>
+      <h2 style="
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(32px, 5vw, 52px);
+        color: #F5F0EA;
+        margin: 0 0 16px;
+        line-height: 1.1;
+      ">
+        Hear It For Yourself.
+        <em style="color: #C0531A; font-style: italic;">Right Now.</em>
+      </h2>
+      <p style="
+        font-family: 'DM Sans', sans-serif;
+        font-size: 18px; color: #A89880;
+        max-width: 560px; margin: 0 auto;
+        line-height: 1.6;
+      ">
+        Enter your info below and an AI voice assistant will call your phone in under 30 seconds — personalized to your business type.
+      </p>
+    </div>
+
+    <!-- Demo card -->
+    <div style="
+      background: #1A1611;
+      border: 1px solid #2E2418;
+      border-radius: 20px;
+      padding: 48px;
+      max-width: 640px;
+      margin: 0 auto;
+    ">
+
+      <!-- Step indicator -->
+      <div style="
+        display: flex; gap: 8px; margin-bottom: 36px;
+        align-items: center;
+      ">
+        <div id="step-dot-1" style="width: 10px; height: 10px; border-radius: 50%; background: #C0531A;"></div>
+        <div style="flex: 1; height: 1px; background: #2E2418;"></div>
+        <div id="step-dot-2" style="width: 10px; height: 10px; border-radius: 50%; background: #2E2418;"></div>
+        <div style="flex: 1; height: 1px; background: #2E2418;"></div>
+        <div id="step-dot-3" style="width: 10px; height: 10px; border-radius: 50%; background: #2E2418;"></div>
+      </div>
+
+      <!-- Form -->
+      <div id="voice-form-view">
+
+        <div style="margin-bottom: 20px;">
+          <label style="
+            display: block; font-family: 'DM Sans', sans-serif;
+            font-size: 12px; font-weight: 500; color: #A89880;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+          ">Your Name</label>
+          <input
+            id="vd-name"
+            type="text"
+            placeholder="First name"
+            style="
+              width: 100%; background: #0F0F0F; border: 1px solid #2E2418;
+              color: #F5F0EA; border-radius: 10px; padding: 14px 16px;
+              font-size: 16px; font-family: 'DM Sans', sans-serif;
+              outline: none; box-sizing: border-box; transition: border-color 0.15s;
+            "
+            onfocus="this.style.borderColor='#C0531A'"
+            onblur="this.style.borderColor='#2E2418'"
+          >
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="
+            display: block; font-family: 'DM Sans', sans-serif;
+            font-size: 12px; font-weight: 500; color: #A89880;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+          ">Your Business Type</label>
+          <select
+            id="vd-business"
+            style="
+              width: 100%; background: #0F0F0F; border: 1px solid #2E2418;
+              color: #F5F0EA; border-radius: 10px; padding: 14px 16px;
+              font-size: 16px; font-family: 'DM Sans', sans-serif;
+              outline: none; box-sizing: border-box; transition: border-color 0.15s;
+              appearance: none; cursor: pointer;
+            "
+            onfocus="this.style.borderColor='#C0531A'"
+            onblur="this.style.borderColor='#2E2418'"
+          >
+            <option value="">— Select your business type —</option>
+            <option>Restaurant / Food Service</option>
+            <option>HVAC / Plumbing / Electrical</option>
+            <option>Landscaping & Sprinkler / Irrigation</option>
+            <option>Salon / Barbershop / Beauty</option>
+            <option>Auto Repair / Body Shop</option>
+            <option>Medical / Dental / Healthcare</option>
+            <option>Real Estate Agent / Brokerage</option>
+            <option>General Contractor / Remodeling</option>
+            <option>Gym / Fitness Studio</option>
+            <option>Cleaning Service</option>
+            <option>Law Office / Legal Services</option>
+            <option>Retail Store</option>
+            <option>Pet Services</option>
+            <option>Food Truck / Mobile Vendor</option>
+            <option>Accounting / Tax Prep</option>
+            <option>Insurance Agency</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 32px;">
+          <label style="
+            display: block; font-family: 'DM Sans', sans-serif;
+            font-size: 12px; font-weight: 500; color: #A89880;
+            letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;
+          ">Your Phone Number</label>
+          <input
+            id="vd-phone"
+            type="tel"
+            placeholder="(512) 000-0000"
+            style="
+              width: 100%; background: #0F0F0F; border: 1px solid #2E2418;
+              color: #F5F0EA; border-radius: 10px; padding: 14px 16px;
+              font-size: 16px; font-family: 'DM Sans', sans-serif;
+              outline: none; box-sizing: border-box; transition: border-color 0.15s;
+            "
+            onfocus="this.style.borderColor='#C0531A'"
+            onblur="this.style.borderColor='#2E2418'"
+          >
+          <p style="
+            font-family: 'DM Sans', sans-serif; font-size: 12px;
+            color: #6b5f52; margin: 8px 0 0; line-height: 1.5;
+          ">
+            🔒 US numbers only. We'll call you once for the demo — no spam, no follow-up calls.
+          </p>
+        </div>
+
+        <button
+          id="vd-call-btn"
+          onclick="initiateVoiceDemo()"
+          style="
+            width: 100%; padding: 18px;
+            background: #C0531A; color: white;
+            border: none; border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 17px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+          "
+          onmouseover="this.style.background='#E8824A'; this.style.transform='translateY(-1px)'"
+          onmouseout="this.style.background='#C0531A'; this.style.transform='translateY(0)'"
+        >
+          <span>📞</span>
+          <span>Call Me Now — It's Free</span>
+        </button>
+
+        <p id="vd-error" style="
+          display: none; color: #e05c5c;
+          font-family: 'DM Sans', sans-serif; font-size: 14px;
+          text-align: center; margin-top: 12px;
+        "></p>
+
+      </div>
+
+      <!-- Loading state -->
+      <div id="voice-loading-view" style="display: none; text-align: center; padding: 20px 0;">
+        <div style="
+          width: 60px; height: 60px; border-radius: 50%;
+          border: 3px solid #2E2418; border-top-color: #C0531A;
+          animation: spin512 0.8s linear infinite; margin: 0 auto 20px;
+        "></div>
+        <p style="
+          font-family: 'Playfair Display', serif; font-size: 22px;
+          color: #F5F0EA; margin-bottom: 8px;
+        ">Connecting your call...</p>
+        <p style="font-family: 'DM Sans', sans-serif; font-size: 15px; color: #A89880;">
+          Your phone will ring in a few seconds. Pick up — it's the AI!
+        </p>
+      </div>
+
+      <!-- Success state -->
+      <div id="voice-success-view" style="display: none; text-align: center; padding: 20px 0;">
+        <div style="
+          font-size: 56px; margin-bottom: 20px;
+        ">📱</div>
+        <p style="
+          font-family: 'Playfair Display', serif; font-size: 26px;
+          color: #F5F0EA; margin-bottom: 12px;
+        ">Your phone is ringing!</p>
+        <p style="
+          font-family: 'DM Sans', sans-serif; font-size: 16px;
+          color: #A89880; line-height: 1.6; margin-bottom: 32px;
+        ">
+          That's the 512AI voice assistant. This is exactly what your customers would experience when they call your business.
+        </p>
+        <div style="
+          background: rgba(192,83,26,0.1); border: 1px solid rgba(192,83,26,0.3);
+          border-radius: 12px; padding: 20px; margin-bottom: 24px;
+        ">
+          <p style="
+            font-family: 'DM Sans', sans-serif; font-size: 15px;
+            color: #F5F0EA; margin: 0 0 12px;
+          ">Ready to set this up for your business?</p>
+          <a
+            href="https://calendly.com/avilaricardoe/free-ai-strategy-call"
+            target="_blank"
+            style="
+              display: inline-block; background: #C0531A; color: white;
+              text-decoration: none; padding: 12px 28px; border-radius: 8px;
+              font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+            "
+          >Book Your Free Strategy Call →</a>
+        </div>
+        <button
+          onclick="resetVoiceDemo()"
+          style="
+            background: none; border: 1px solid #2E2418; color: #A89880;
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            font-family: 'DM Sans', sans-serif; font-size: 14px;
+          "
+        >Try Another Business Type</button>
+      </div>
+
+    </div>
+
+    <!-- Social proof below card -->
+    <div style="
+      display: flex; justify-content: center; gap: 40px;
+      margin-top: 40px; flex-wrap: wrap;
+    ">
+      <div style="text-align: center;">
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; color: #C0531A;">30s</div>
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: #6b5f52;">Call connects in</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; color: #C0531A;">24/7</div>
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: #6b5f52;">Always available</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 28px; font-weight: 700; color: #C0531A;">17</div>
+        <div style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: #6b5f52;">Business types covered</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Animations -->
+<style>
+@keyframes pulse512 {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+@keyframes spin512 {
+  to { transform: rotate(360deg); }
+}
+</style>
+
+<!-- Voice Demo JavaScript -->
+<script>
+async function initiateVoiceDemo() {
+  const name = document.getElementById('vd-name').value.trim();
+  const business = document.getElementById('vd-business').value;
+  const phone = document.getElementById('vd-phone').value.trim();
+  const errorEl = document.getElementById('vd-error');
+
+  errorEl.style.display = 'none';
+
+  if (!name) { showVoiceError('Please enter your name.'); return; }
+  if (!business) { showVoiceError('Please select your business type.'); return; }
+  if (!phone || phone.replace(/\D/g, '').length < 10) {
+    showVoiceError('Please enter a valid US phone number.');
+    return;
+  }
+
+  // Switch to loading state
+  document.getElementById('voice-form-view').style.display = 'none';
+  document.getElementById('voice-loading-view').style.display = 'block';
+  document.getElementById('step-dot-2').style.background = '#C0531A';
+
+  try {
+    const response = await fetch('/.netlify/functions/voice-demo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, businessType: business, phone })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      document.getElementById('voice-loading-view').style.display = 'none';
+      document.getElementById('voice-success-view').style.display = 'block';
+      document.getElementById('step-dot-3').style.background = '#C0531A';
+    } else {
+      document.getElementById('voice-loading-view').style.display = 'none';
+      document.getElementById('voice-form-view').style.display = 'block';
+      showVoiceError(data.error || 'Something went wrong. Please try again.');
+    }
+  } catch (err) {
+    document.getElementById('voice-loading-view').style.display = 'none';
+    document.getElementById('voice-form-view').style.display = 'block';
+    showVoiceError('Network error. Please check your connection and try again.');
+  }
+}
+
+function showVoiceError(msg) {
+  const el = document.getElementById('vd-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function resetVoiceDemo() {
+  document.getElementById('voice-success-view').style.display = 'none';
+  document.getElementById('voice-form-view').style.display = 'block';
+  document.getElementById('step-dot-2').style.background = '#2E2418';
+  document.getElementById('step-dot-3').style.background = '#2E2418';
+  document.getElementById('vd-name').value = '';
+  document.getElementById('vd-business').value = '';
+  document.getElementById('vd-phone').value = '';
+}
+</script>
 
   <!-- ═══════════════════════════════
        HOW IT WORKS
