@@ -51,7 +51,6 @@ exports.handler = async (event) => {
     // Bland.ai call configuration
     const blandPayload = {
       phone_number: formattedPhone,
-      from: process.env.TWILIO_PHONE_NUMBER, // Your 512 number
       task: `You are a friendly AI assistant demo from 512AI, an AI automation company based in Austin, Texas. 
       
 You are calling ${name}, who owns or works at a ${businessType} business.
