@@ -84,6 +84,9 @@ Keep the entire call under 90 seconds. Be conversational, not salesy. Sound like
       }
     };
 
+    // Debug: confirm env var is present
+    console.log('BLAND_API_KEY present:', !!process.env.BLAND_API_KEY, '| length:', process.env.BLAND_API_KEY ? process.env.BLAND_API_KEY.length : 0);
+
     // Log request payload (no sensitive data)
     console.log('Bland.ai request payload:', JSON.stringify({
       phone_number: formattedPhone,
