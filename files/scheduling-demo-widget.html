@@ -1,0 +1,249 @@
+<!-- 512AI Scheduling & Routing Demo Section -->
+<!-- Add to index.html between #voice-demo and #how sections -->
+
+<section id="scheduling" style="background:#1A1611;padding:100px 40px;position:relative;overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:radial-gradient(circle at 80% 50%,rgba(192,83,26,0.05) 0%,transparent 50%);pointer-events:none;"></div>
+<div style="max-width:960px;margin:0 auto;position:relative;">
+
+  <div style="text-align:center;margin-bottom:60px;">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(192,83,26,0.12);border:1px solid rgba(192,83,26,0.3);border-radius:99px;padding:6px 16px;margin-bottom:20px;">
+      <span style="width:8px;height:8px;background:#C0531A;border-radius:50%;animation:vdpulse 2s infinite;"></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:#C0531A;letter-spacing:1px;font-weight:500;">LIVE SCHEDULING DEMO</span>
+    </div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#F5F0EA;margin:0 0 16px;line-height:1.1;">Smart Scheduling.<br><em style="color:#C0531A;">Zero Overbooking.</em></h2>
+    <p style="font-family:'DM Sans',sans-serif;font-size:17px;color:#A89880;max-width:580px;margin:0 auto;line-height:1.6;">Pick your business type, enter a zipcode, and see how AI instantly routes the job to the right crew — checking availability in real time.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+    <!-- Input panel -->
+    <div style="background:#0F0F0F;border:1px solid #2E2418;border-radius:16px;padding:32px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#A89880;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">Try it — enter a customer's info</p>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Business Type</label>
+        <select id="sched-biztype" onchange="updateServiceTypes()"
+          style="width:100%;background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='#C0531A'" onblur="this.style.borderColor='#2E2418'">
+          <option value="">— Select business type —</option>
+          <option value="sprinkler">Sprinkler Repair &amp; Installation</option>
+          <option value="landscape">Landscaping &amp; Lawn Care</option>
+          <option value="hvac">HVAC / Plumbing / Electrical</option>
+          <option value="restaurant">Restaurant / Food Service</option>
+          <option value="salon">Salon / Barbershop / Beauty</option>
+          <option value="autorepair">Auto Repair / Body Shop</option>
+          <option value="medical">Medical / Dental / Healthcare</option>
+          <option value="realestate">Real Estate Agent</option>
+          <option value="contractor">General Contractor / Remodeling</option>
+          <option value="gym">Gym / Fitness Studio</option>
+          <option value="cleaning">Cleaning Service</option>
+          <option value="legal">Law Office</option>
+          <option value="pet">Pet Services</option>
+          <option value="foodtruck">Food Truck / Mobile Vendor</option>
+          <option value="accounting">Accounting / Tax Prep</option>
+          <option value="insurance">Insurance Agency</option>
+          <option value="retail">Retail Store</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Service Type</label>
+        <select id="sched-service"
+          style="width:100%;background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;border-radius:8px;padding:12px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='#C0531A'" onblur="this.style.borderColor='#2E2418'">
+          <option value="">— Select business type first —</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Austin Area Zipcode</label>
+        <input id="sched-zip" type="text" placeholder="e.g. 78701, 78660, 78613..." maxlength="5"
+          style="width:100%;background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;border-radius:8px;padding:12px 14px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='#C0531A'" onblur="this.style.borderColor='#2E2418'"
+          oninput="if(this.value.length===5)checkAvailability()">
+      </div>
+
+      <button onclick="checkAvailability()" style="width:100%;padding:14px;background:#C0531A;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s;"
+        onmouseover="this.style.background='#E8824A'" onmouseout="this.style.background='#C0531A'">
+        Check Availability →
+      </button>
+
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #2E2418;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6b5f52;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">Service Zones</p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:9px;height:9px;border-radius:50%;background:#C0531A;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#A89880;">Central Austin — Team A</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:9px;height:9px;border-radius:50%;background:#2563eb;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#A89880;">North / Round Rock / Cedar Park — Team B</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:9px;height:9px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#A89880;">South / Buda / Kyle — Team C</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;"><div style="width:9px;height:9px;border-radius:50%;background:#9333ea;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#A89880;">East / Pflugerville / Manor — Team D</span></div>
+        <div style="display:flex;align-items:center;gap:8px;"><div style="width:9px;height:9px;border-radius:50%;background:#d97706;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#A89880;">West / Lakeway / Bee Cave — Team E</span></div>
+      </div>
+    </div>
+
+    <!-- Results panel -->
+    <div id="sched-results" style="background:#0F0F0F;border:1px solid #2E2418;border-radius:16px;padding:32px;min-height:300px;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;">
+        <div style="font-size:40px;margin-bottom:12px;">📍</div>
+        <p style="font-family:'DM Sans',sans-serif;font-size:15px;color:#6b5f52;line-height:1.6;">Select your business type<br>and enter a zipcode</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;justify-content:center;gap:48px;margin-top:48px;flex-wrap:wrap;">
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">5</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Service zones</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">0</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Overbookings</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">24/7</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Booking available</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">SMS</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Auto-confirmation</div></div>
+  </div>
+
+</div>
+</section>
+
+<script>
+const SERVICE_TYPES = {
+  sprinkler: ['Sprinkler Repair','New System Installation','System Inspection','Zone Not Working','Broken Sprinkler Head','Leak Detection & Repair','Winterization / Blowout','Spring Startup','Controller/Timer Repair','Irrigation Audit','Backflow Testing','Pressure Adjustment'],
+  landscape: ['Lawn Mowing & Maintenance','Landscape Design & Installation','Tree Trimming & Pruning','Tree Removal','Stump Grinding','Mulching & Bed Edging','Sod Installation','Fertilization','Pest & Weed Control','Drainage Solutions','Retaining Wall','Seasonal Cleanup'],
+  hvac: ['AC Repair','AC Installation','Heating Repair','Heating Installation','HVAC Maintenance Tune-Up','Duct Cleaning','Thermostat Installation','Plumbing Repair','Water Heater Install','Pipe Inspection','Electrical Panel Upgrade','Outlet/Switch Repair','Ceiling Fan Install','Generator Install'],
+  restaurant: ['Table Reservation','Private Event Booking','Catering Inquiry','Group Dining (10+)','Takeout Order','Delivery Setup','Chef Table Experience','Happy Hour Reservation','Brunch Booking','Late Night Seating'],
+  salon: ['Haircut — Men','Haircut — Women','Color & Highlights','Balayage','Blowout & Style','Keratin Treatment','Perm','Extensions Consultation','Nail Services','Waxing','Facial','Full Makeover'],
+  autorepair: ['Oil Change','Tire Rotation & Balance','Brake Service','Engine Diagnostic','Transmission Service','AC Recharge','Battery Replacement','Wheel Alignment','Suspension Repair','Body Work Estimate','State Inspection','Check Engine Light'],
+  medical: ['New Patient Appointment','Follow-up Visit','Annual Physical','Sick Visit','Vaccination','Lab Work','Specialist Referral','Telehealth Visit','Dental Cleaning','Dental X-Rays','Emergency Dental','Orthodontic Consultation'],
+  realestate: ['Buyer Consultation','Seller Consultation','Home Valuation / CMA','Property Showing','Open House','Investment Property Review','First-Time Buyer Session','Relocation Consultation','Rental Property Inquiry','Commercial Property Inquiry'],
+  contractor: ['Kitchen Remodel Estimate','Bathroom Remodel Estimate','Flooring Installation','Painting — Interior','Painting — Exterior','Deck / Patio Build','Fence Installation','Roofing Estimate','Windows & Doors','Home Addition','Garage Conversion','ADU / Guest House'],
+  gym: ['Free Trial Class','Membership Tour','Personal Training Consult','Group Fitness Class','Yoga Class','Spin / Cycling Class','Boxing Class','CrossFit Intro','Kids Program','Senior Fitness','Nutrition Consult','Corporate Wellness'],
+  cleaning: ['Standard Home Cleaning','Deep Clean','Move-In / Move-Out Clean','Airbnb Turnover','Office Cleaning','Post-Construction Cleanup','Carpet Cleaning','Window Washing','Pressure Washing','One-Time Cleaning','Recurring Weekly','Recurring Bi-Weekly'],
+  legal: ['Free Initial Consultation','Personal Injury Case Review','Family Law Consultation','Criminal Defense Consultation','Estate Planning Session','Business Formation','Real Estate Closing','Immigration Consultation','Employment Dispute Review','Contract Review'],
+  pet: ['Dog Walking — Single','Dog Walking — Package','Pet Sitting — In-Home','Boarding','Doggy Daycare','Grooming — Bath & Brush','Grooming — Full Groom','Nail Trim','Training Consultation','Puppy Training','Veterinary Checkup','Vaccination Appointment'],
+  foodtruck: ['Lunch Service Booking','Catering Quote','Corporate Event','Birthday Party','Wedding Catering','Festival Slot','Private Party','Office Lunch Weekly','School Event','Pop-Up Market'],
+  accounting: ['Tax Prep — Individual','Tax Prep — Business','Bookkeeping Setup','Monthly Bookkeeping','QuickBooks Consultation','Payroll Setup','Audit Support','Business Financial Review','IRS Issue Help','New Business Consultation'],
+  insurance: ['Auto Insurance Quote','Home Insurance Quote','Life Insurance Consultation','Business Insurance Review','Health Insurance Enrollment','Medicare Consultation','Renters Insurance','Umbrella Policy Review','Policy Renewal Review','Claims Assistance'],
+  retail: ['Product Inquiry','In-Store Appointment','Custom Order','Wholesale Inquiry','Return / Exchange','Gift Wrapping Service','Personal Shopping Session','Product Demo','Layaway Setup','Gift Registry']
+};
+
+const ZONE_DATA = {
+  central: { name:'Central Austin', team:'Team A', color:'#C0531A', zipcodes:['78701','78702','78703','78704','78705','78751','78752','78753','78754','78755','78756'] },
+  north: { name:'North Austin / Round Rock / Cedar Park', team:'Team B', color:'#2563eb', zipcodes:['78613','78628','78681','78750','78757','78758','78759','78727','78728','78729','78730','78731'] },
+  south: { name:'South Austin / Buda / Kyle', team:'Team C', color:'#16a34a', zipcodes:['78610','78640','78744','78745','78746','78747','78748','78749','78652'] },
+  east: { name:'East Austin / Pflugerville / Manor', team:'Team D', color:'#9333ea', zipcodes:['78653','78660','78661','78721','78722','78723','78724','78725','78741','78742','78743'] },
+  west: { name:'West Austin / Lakeway / Bee Cave', team:'Team E', color:'#d97706', zipcodes:['78669','78732','78733','78734','78735','78736','78737','78738','78739'] }
+};
+
+function updateServiceTypes() {
+  const bizType = document.getElementById('sched-biztype').value;
+  const serviceSelect = document.getElementById('sched-service');
+  serviceSelect.innerHTML = '';
+  if (!bizType || !SERVICE_TYPES[bizType]) {
+    serviceSelect.innerHTML = '<option value="">— Select business type first —</option>';
+    return;
+  }
+  SERVICE_TYPES[bizType].forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    serviceSelect.appendChild(opt);
+  });
+}
+
+function getZone(zip) {
+  const z = zip.replace(/\D/g,'').substring(0,5);
+  for (const [id, zone] of Object.entries(ZONE_DATA)) {
+    if (zone.zipcodes.includes(z)) return { id, ...zone };
+  }
+  return null;
+}
+
+function generateDemoSlots() {
+  const slots = [];
+  const today = new Date();
+  const times = [
+    {label:'8:00 AM - 10:00 AM'},{label:'10:00 AM - 12:00 PM'},
+    {label:'1:00 PM - 3:00 PM'},{label:'3:00 PM - 5:00 PM'}
+  ];
+  for (let i = 1; i <= 5; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    if (d.getDay() === 0) continue;
+    const dayName = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    const available = times.filter(() => Math.random() > 0.35).slice(0, Math.floor(Math.random()*2)+1);
+    if (available.length) slots.push({ date: dayName, slots: available });
+    if (slots.length >= 3) break;
+  }
+  return slots;
+}
+
+async function checkAvailability() {
+  const zip = document.getElementById('sched-zip').value.trim();
+  const service = document.getElementById('sched-service').value;
+  const bizType = document.getElementById('sched-biztype').value;
+  const results = document.getElementById('sched-results');
+
+  if (!bizType) { results.innerHTML = '<div style="text-align:center;"><p style="font-family:\'DM Sans\',sans-serif;font-size:14px;color:#e05c5c;">Please select a business type first.</p></div>'; return; }
+  if (zip.length < 5) { results.innerHTML = '<div style="text-align:center;"><p style="font-family:\'DM Sans\',sans-serif;font-size:14px;color:#e05c5c;">Please enter a 5-digit zipcode.</p></div>'; return; }
+
+  results.innerHTML = '<div style="text-align:center;"><div style="width:40px;height:40px;border-radius:50%;border:3px solid #2E2418;border-top-color:#C0531A;animation:vdspin 0.8s linear infinite;margin:0 auto 16px;"></div><p style="font-family:\'DM Sans\',sans-serif;font-size:14px;color:#A89880;">Checking crew availability...</p></div>';
+
+  await new Promise(r => setTimeout(r, 900));
+
+  const zone = getZone(zip);
+
+  if (!zone) {
+    results.innerHTML = `<div style="text-align:center;padding:20px 0;"><div style="font-size:36px;margin-bottom:12px;">⚠️</div><p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#F5F0EA;margin-bottom:8px;">Outside Service Area</p><p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#A89880;line-height:1.6;">Zipcode ${zip} is outside our current zones. We cover Austin and surrounding areas.</p></div>`;
+    return;
+  }
+
+  const slots = generateDemoSlots();
+  const slotsHTML = slots.map(day => `
+    <div style="margin-bottom:16px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:#A89880;margin-bottom:8px;">${day.date}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${day.slots.map(s => `<button onclick="selectSlot(this,'${s.label}','${zone.color}')" style="background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;padding:7px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='${zone.color}';this.style.color='${zone.color}'" onmouseout="if(!this.classList.contains('sel')){this.style.borderColor='#2E2418';this.style.color='#F5F0EA'}">${s.label}</button>`).join('')}
+      </div>
+    </div>`).join('');
+
+  results.innerHTML = `
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #2E2418;">
+        <div style="width:11px;height:11px;border-radius:50%;background:${zone.color};flex-shrink:0;"></div>
+        <div>
+          <p style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:#F5F0EA;margin:0;">${zone.team} assigned</p>
+          <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;margin:2px 0 0;">${zone.name} · ${service || 'General Service'}</p>
+        </div>
+        <div style="margin-left:auto;background:rgba(22,163,74,0.15);border:1px solid rgba(22,163,74,0.4);border-radius:99px;padding:3px 10px;flex-shrink:0;">
+          <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#4ade80;font-weight:500;">✓ Available</span>
+        </div>
+      </div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6b5f52;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Select a time slot</p>
+      ${slotsHTML}
+      <div id="book-btn-wrap" style="display:none;margin-top:16px;">
+        <button onclick="showBookingSuccess('${zone.team}','${zone.name}','${zone.color}')" style="width:100%;padding:12px;background:#C0531A;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#E8824A'" onmouseout="this.style.background='#C0531A'">Confirm This Appointment →</button>
+      </div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6b5f52;margin-top:12px;line-height:1.6;">📱 SMS confirmation auto-sent · 📅 Added to team calendar · 🚫 No double-booking</p>
+    </div>`;
+}
+
+function selectSlot(btn, label, color) {
+  document.querySelectorAll('#sched-results button[onclick^="selectSlot"]').forEach(b => {
+    b.classList.remove('sel');
+    b.style.borderColor='#2E2418'; b.style.color='#F5F0EA'; b.style.background='#1A1611';
+  });
+  btn.classList.add('sel');
+  btn.style.borderColor = color;
+  btn.style.color = color;
+  btn.style.background = 'rgba(192,83,26,0.1)';
+  document.getElementById('book-btn-wrap').style.display = 'block';
+}
+
+function showBookingSuccess(team, zone, color) {
+  const service = document.getElementById('sched-service').value;
+  document.getElementById('sched-results').innerHTML = `
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">✅</div>
+      <p style="font-family:'Playfair Display',serif;font-size:22px;color:#F5F0EA;margin-bottom:8px;">Appointment Confirmed!</p>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#A89880;line-height:1.6;margin-bottom:20px;"><strong style="color:#F5F0EA;">${team}</strong> assigned for <strong style="color:#F5F0EA;">${service}</strong> in <strong style="color:#F5F0EA;">${zone}</strong>.<br>SMS sent. Calendar updated. Zero conflicts.</p>
+      <div style="background:rgba(192,83,26,0.1);border:1px solid rgba(192,83,26,0.3);border-radius:10px;padding:16px;margin-bottom:16px;text-align:left;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;margin:0 0 8px;">What happened automatically:</p>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0EA;margin:0;line-height:1.9;">✓ Team calendar updated instantly<br>✓ Customer SMS confirmation sent<br>✓ No double-booking verified<br>✓ Zone routing confirmed<br>✓ Job details logged</p>
+      </div>
+      <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" style="display:inline-block;background:#C0531A;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;">Set This Up For My Business →</a>
+      <br><button onclick="document.getElementById('sched-results').innerHTML='<div style=text-align:center><div style=font-size:40px;margin-bottom:12px>📍</div><p style=font-family:DM Sans,sans-serif;font-size:15px;color:#6b5f52;line-height:1.6>Select your business type<br>and enter a zipcode</p></div>';document.getElementById('sched-zip').value=''" style="margin-top:10px;background:none;border:none;color:#6b5f52;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Try another zipcode</button>
+    </div>`;
+}
+</script>
