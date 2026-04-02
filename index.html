@@ -891,6 +891,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#demo">Demo</a></li>
         <li><a href="#voice-demo">Voice Demo</a></li>
+        <li><a href="#scheduling">Scheduling</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#intake">Intake Form</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -903,6 +904,7 @@
       <a href="#services" class="mobile-link">Services</a>
       <a href="#demo" class="mobile-link">Demo</a>
       <a href="#voice-demo" class="mobile-link">Voice Demo</a>
+      <a href="#scheduling" class="mobile-link">Scheduling</a>
       <a href="#about" class="mobile-link">About</a>
       <a href="#intake" class="mobile-link">Intake Form</a>
       <a href="#contact" class="mobile-link">Contact</a>
@@ -1422,6 +1424,216 @@ function resetVoiceDemo() {
   document.getElementById('vd-name').value = '';
   document.getElementById('vd-business').value = '';
   document.getElementById('vd-phone').value = '';
+}
+</script>
+
+<section id="scheduling" style="background:#1A1611;padding:100px 40px;position:relative;overflow:hidden;">
+<div style="position:absolute;inset:0;background-image:radial-gradient(circle at 80% 50%,rgba(192,83,26,0.05) 0%,transparent 50%);pointer-events:none;"></div>
+<div style="max-width:960px;margin:0 auto;position:relative;">
+
+  <!-- Header -->
+  <div style="text-align:center;margin-bottom:60px;">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(192,83,26,0.12);border:1px solid rgba(192,83,26,0.3);border-radius:99px;padding:6px 16px;margin-bottom:20px;">
+      <span style="width:8px;height:8px;background:#C0531A;border-radius:50%;animation:vdpulse 2s infinite;"></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:13px;color:#C0531A;letter-spacing:1px;font-weight:500;">LIVE SCHEDULING DEMO</span>
+    </div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#F5F0EA;margin:0 0 16px;line-height:1.1;">Smart Scheduling.<br><em style="color:#C0531A;">Zero Overbooking.</em></h2>
+    <p style="font-family:'DM Sans',sans-serif;font-size:17px;color:#A89880;max-width:580px;margin:0 auto;line-height:1.6;">Enter a zipcode and see how AI instantly routes the job to the right crew — checking availability and preventing double-bookings in real time.</p>
+  </div>
+
+  <!-- Two column layout -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
+
+    <!-- Left — Input panel -->
+    <div style="background:#0F0F0F;border:1px solid #2E2418;border-radius:16px;padding:32px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#A89880;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">Try it — enter a customer's info</p>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Austin Area Zipcode</label>
+        <input id="sched-zip" type="text" placeholder="e.g. 78701, 78660, 78613..." maxlength="5"
+          style="width:100%;background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;border-radius:8px;padding:12px 14px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='#C0531A'" onblur="this.style.borderColor='#2E2418'"
+          oninput="if(this.value.length===5)checkAvailability()">
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Service Type</label>
+        <select id="sched-service"
+          style="width:100%;background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;border-radius:8px;padding:12px 14px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;">
+          <option>Sprinkler Repair</option>
+          <option>New Installation</option>
+          <option>System Inspection</option>
+          <option>Winterization</option>
+          <option>Emergency Repair</option>
+        </select>
+      </div>
+
+      <button onclick="checkAvailability()" style="width:100%;padding:14px;background:#C0531A;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.2s;"
+        onmouseover="this.style.background='#E8824A'" onmouseout="this.style.background='#C0531A'">
+        Check Availability →
+      </button>
+
+      <!-- Zone map legend -->
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #2E2418;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6b5f52;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;">Service Zones</p>
+        <div id="zone-legend">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:10px;height:10px;border-radius:50%;background:#C0531A;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;">Central Austin — Crew A</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:10px;height:10px;border-radius:50%;background:#2563eb;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;">North / Round Rock / Cedar Park — Crew B</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:10px;height:10px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;">South / Buda / Kyle — Crew C</span></div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:10px;height:10px;border-radius:50%;background:#9333ea;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;">East / Pflugerville / Manor — Crew D</span></div>
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:10px;height:10px;border-radius:50%;background:#d97706;flex-shrink:0;"></div><span style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;">West / Lakeway / Bee Cave — Crew E</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right — Results panel -->
+    <div id="sched-results" style="background:#0F0F0F;border:1px solid #2E2418;border-radius:16px;padding:32px;min-height:300px;display:flex;align-items:center;justify-content:center;">
+      <div style="text-align:center;">
+        <div style="font-size:40px;margin-bottom:12px;">📍</div>
+        <p style="font-family:'DM Sans',sans-serif;font-size:15px;color:#6b5f52;line-height:1.6;">Enter a zipcode to see<br>crew assignment and availability</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom stats -->
+  <div style="display:flex;justify-content:center;gap:48px;margin-top:48px;flex-wrap:wrap;">
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">5</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Service zones</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">0</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Overbookings</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">24/7</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Booking available</div></div>
+    <div style="text-align:center;"><div style="font-family:'DM Sans',sans-serif;font-size:26px;font-weight:700;color:#C0531A;">SMS</div><div style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;margin-top:2px;">Auto-confirmation</div></div>
+  </div>
+
+</div>
+</section>
+
+<script>
+const ZONE_DATA = {
+  central: { name:'Central Austin', crew:'Crew A', color:'#C0531A', zipcodes:['78701','78702','78703','78704','78705','78751','78752','78753','78754','78755','78756'] },
+  north: { name:'North Austin / Round Rock / Cedar Park', crew:'Crew B', color:'#2563eb', zipcodes:['78613','78628','78681','78750','78757','78758','78759','78727','78728','78729','78730','78731'] },
+  south: { name:'South Austin / Buda / Kyle', crew:'Crew C', color:'#16a34a', zipcodes:['78610','78640','78744','78745','78746','78747','78748','78749','78652'] },
+  east: { name:'East Austin / Pflugerville / Manor', crew:'Crew D', color:'#9333ea', zipcodes:['78653','78660','78661','78721','78722','78723','78724','78725','78741','78742','78743'] },
+  west: { name:'West Austin / Lakeway / Bee Cave', crew:'Crew E', color:'#d97706', zipcodes:['78669','78732','78733','78734','78735','78736','78737','78738','78739'] }
+};
+
+function getZone(zip) {
+  const z = zip.replace(/\D/g,'').substring(0,5);
+  for (const [id, zone] of Object.entries(ZONE_DATA)) {
+    if (zone.zipcodes.includes(z)) return { id, ...zone };
+  }
+  return null;
+}
+
+function generateDemoSlots() {
+  const slots = [];
+  const today = new Date();
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const times = [
+    {label:'8:00 AM - 10:00 AM'},{label:'10:00 AM - 12:00 PM'},
+    {label:'1:00 PM - 3:00 PM'},{label:'3:00 PM - 5:00 PM'}
+  ];
+  for (let i = 1; i <= 3; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    if (d.getDay() === 0) continue;
+    const dayName = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    const available = times.filter(() => Math.random() > 0.35).slice(0, Math.floor(Math.random()*2)+1);
+    if (available.length) slots.push({ date: dayName, slots: available });
+    if (slots.length >= 3) break;
+  }
+  return slots;
+}
+
+async function checkAvailability() {
+  const zip = document.getElementById('sched-zip').value.trim();
+  const service = document.getElementById('sched-service').value;
+  const results = document.getElementById('sched-results');
+
+  if (zip.length < 5) {
+    results.innerHTML = '<div style="text-align:center;"><p style="font-family:\'DM Sans\',sans-serif;font-size:14px;color:#e05c5c;">Please enter a 5-digit zipcode.</p></div>';
+    return;
+  }
+
+  results.innerHTML = '<div style="text-align:center;"><div style="width:40px;height:40px;border-radius:50%;border:3px solid #2E2418;border-top-color:#C0531A;animation:vdspin 0.8s linear infinite;margin:0 auto 16px;"></div><p style="font-family:\'DM Sans\',sans-serif;font-size:14px;color:#A89880;">Checking availability...</p></div>';
+
+  await new Promise(r => setTimeout(r, 800));
+
+  const zone = getZone(zip);
+
+  if (!zone) {
+    results.innerHTML = `<div style="text-align:center;padding:20px 0;">
+      <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:16px;color:#F5F0EA;margin-bottom:8px;">Outside Service Area</p>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#A89880;line-height:1.6;">Zipcode ${zip} is outside our current service zones. We cover Austin and surrounding areas.</p>
+    </div>`;
+    return;
+  }
+
+  const slots = generateDemoSlots();
+
+  let slotsHTML = slots.map(day => `
+    <div style="margin-bottom:16px;">
+      <p style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:#A89880;margin-bottom:8px;">${day.date}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${day.slots.map(s => `<button onclick="selectSlot(this,'${s.label}')" style="background:#1A1611;border:1px solid #2E2418;color:#F5F0EA;padding:7px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='${zone.color}';this.style.color='${zone.color}'" onmouseout="if(!this.classList.contains('selected')){this.style.borderColor='#2E2418';this.style.color='#F5F0EA'}">${s.label}</button>`).join('')}
+      </div>
+    </div>`).join('');
+
+  results.innerHTML = `
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #2E2418;">
+        <div style="width:12px;height:12px;border-radius:50%;background:${zone.color};flex-shrink:0;"></div>
+        <div>
+          <p style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:#F5F0EA;margin:0;">${zone.crew} assigned</p>
+          <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;margin:2px 0 0;">${zone.name} · ${service}</p>
+        </div>
+        <div style="margin-left:auto;background:rgba(22,163,74,0.15);border:1px solid rgba(22,163,74,0.4);border-radius:99px;padding:3px 10px;">
+          <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:#4ade80;font-weight:500;">✓ Available</span>
+        </div>
+      </div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#6b5f52;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Select a time slot</p>
+      ${slotsHTML}
+      <div id="book-btn-wrap" style="display:none;margin-top:16px;">
+        <button onclick="showBookingSuccess()" style="width:100%;padding:12px;background:#C0531A;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#E8824A'" onmouseout="this.style.background='#C0531A'">Confirm This Appointment →</button>
+      </div>
+      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:#6b5f52;margin-top:12px;line-height:1.5;">📱 SMS confirmation sent automatically · 📅 Added to crew calendar · 🚫 No double-booking</p>
+    </div>`;
+}
+
+function selectSlot(btn, label) {
+  document.querySelectorAll('#sched-results button').forEach(b => {
+    b.classList.remove('selected');
+    b.style.borderColor = '#2E2418';
+    b.style.color = '#F5F0EA';
+    b.style.background = '#1A1611';
+  });
+  btn.classList.add('selected');
+  const zip = document.getElementById('sched-zip').value;
+  const zone = getZone(zip);
+  if (zone) {
+    btn.style.borderColor = zone.color;
+    btn.style.color = zone.color;
+    btn.style.background = 'rgba(192,83,26,0.1)';
+  }
+  document.getElementById('book-btn-wrap').style.display = 'block';
+}
+
+function showBookingSuccess() {
+  const zip = document.getElementById('sched-zip').value;
+  const service = document.getElementById('sched-service').value;
+  const zone = getZone(zip);
+  document.getElementById('sched-results').innerHTML = `
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">✅</div>
+      <p style="font-family:'Playfair Display',serif;font-size:22px;color:#F5F0EA;margin-bottom:8px;">Appointment Confirmed!</p>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:#A89880;line-height:1.6;margin-bottom:20px;">${zone ? zone.crew : 'A crew'} has been assigned for <strong style="color:#F5F0EA;">${service}</strong> in <strong style="color:#F5F0EA;">${zone ? zone.name : 'your area'}</strong>.<br>SMS confirmation sent. Calendar updated. Zero conflicts.</p>
+      <div style="background:rgba(192,83,26,0.1);border:1px solid rgba(192,83,26,0.3);border-radius:10px;padding:16px;margin-bottom:16px;text-align:left;">
+        <p style="font-family:'DM Sans',sans-serif;font-size:12px;color:#A89880;margin:0 0 6px;">This is what happens automatically:</p>
+        <p style="font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0EA;margin:0;line-height:1.8;">✓ Crew calendar updated<br>✓ Customer SMS sent<br>✓ No double-booking check passed<br>✓ Zone routing confirmed</p>
+      </div>
+      <a href="https://calendly.com/avilaricardoe/free-ai-strategy-call" target="_blank" style="display:inline-block;background:#C0531A;color:white;text-decoration:none;padding:12px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;">Set This Up For My Business →</a>
+      <br><button onclick="checkAvailability()" style="margin-top:10px;background:none;border:none;color:#6b5f52;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">Try another zipcode</button>
+    </div>`;
 }
 </script>
 
