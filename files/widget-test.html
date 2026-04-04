@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Hat Lawn – Local Widget Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f1f8e9;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: #2E7D32;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      height: 64px;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    nav .logo-icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+    nav .brand {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+    nav .tagline {
+      font-size: 12px;
+      color: #a5d6a7;
+      margin-left: 2px;
+    }
+    nav .nav-links {
+      margin-left: auto;
+      display: flex;
+      gap: 24px;
+    }
+    nav .nav-links a {
+      color: #c8e6c9;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color .15s;
+    }
+    nav .nav-links a:hover { color: #fff; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #2E7D32 0%, #388E3C 50%, #43A047 100%);
+      padding: 80px 32px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-emoji { font-size: 56px; display: block; margin-bottom: 16px; }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .hero p {
+      font-size: 18px;
+      opacity: .88;
+      max-width: 520px;
+      margin: 0 auto 28px;
+      line-height: 1.55;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: 2px solid transparent;
+      transition: all .18s;
+      display: inline-block;
+    }
+    .btn-white { background: #fff; color: #2E7D32; }
+    .btn-white:hover { background: #f1f8e9; }
+    .btn-outline { background: transparent; color: #fff; border-color: rgba(255,255,255,.7); }
+    .btn-outline:hover { background: rgba(255,255,255,.12); }
+
+    /* ── Services ── */
+    .services {
+      max-width: 1040px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+    .services h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #2E7D32;
+      margin-bottom: 36px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+    .card .icon { font-size: 36px; margin-bottom: 12px; }
+    .card h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .card p { font-size: 13px; color: #666; line-height: 1.5; }
+    .card .price {
+      margin-top: 14px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #2E7D32;
+    }
+
+    /* ── Why Us ── */
+    .why {
+      background: #2E7D32;
+      color: #fff;
+      padding: 60px 32px;
+      text-align: center;
+    }
+    .why h2 { font-size: 28px; font-weight: 700; margin-bottom: 36px; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .why-item .num { font-size: 36px; font-weight: 800; color: #a5d6a7; }
+    .why-item p { font-size: 14px; opacity: .85; margin-top: 6px; }
+
+    /* ── Testimonials ── */
+    .testi {
+      max-width: 860px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+    .testi h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #2E7D32;
+      margin-bottom: 32px;
+    }
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .testi-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+    }
+    .stars { color: #f9a825; font-size: 16px; margin-bottom: 10px; }
+    .testi-card p { font-size: 14px; color: #444; line-height: 1.6; font-style: italic; margin-bottom: 12px; }
+    .testi-name { font-size: 13px; font-weight: 700; color: #2E7D32; }
+
+    /* ── Footer ── */
+    footer {
+      background: #1B5E20;
+      color: #a5d6a7;
+      text-align: center;
+      padding: 28px;
+      font-size: 13px;
+    }
+    footer strong { color: #fff; }
+
+    /* ── Debug Panel ── */
+    #debug-panel {
+      position: fixed;
+      bottom: 92px;
+      left: 16px;
+      z-index: 88888;
+      background: rgba(0,0,0,.88);
+      color: #0f0;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 11px;
+      border-radius: 10px;
+      padding: 14px 16px;
+      max-width: 280px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      line-height: 1.7;
+    }
+    #debug-panel h4 {
+      color: #69ff47;
+      font-size: 12px;
+      margin-bottom: 8px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    #debug-panel .label { color: #aaa; }
+    #debug-panel .val { color: #fff; word-break: break-all; }
+    #debug-status { color: #69ff47; }
+    #debug-panel .collapse-btn {
+      position: absolute;
+      top: 8px; right: 10px;
+      background: none; border: none;
+      color: #888; cursor: pointer; font-size: 14px;
+    }
+    #debug-panel.collapsed .debug-body { display: none; }
+    #debug-panel.collapsed { padding: 10px 14px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <span class="logo-icon">🌿</span>
+    <div>
+      <div class="brand">Big Hat Lawn</div>
+      <div class="tagline">Austin's Premier Lawn Care</div>
+    </div>
+    <div class="nav-links">
+      <a href="#">Services</a>
+      <a href="#">About</a>
+      <a href="#">Reviews</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="hero-emoji">🌱</span>
+    <h1>Austin's Greenest Lawns<br>Start Here</h1>
+    <p>Professional lawn care with fast, reliable service. Get your free estimate in minutes — just chat with our assistant!</p>
+    <div class="hero-cta">
+      <a href="#" class="btn btn-white">Get a Free Estimate</a>
+      <a href="#" class="btn btn-outline">View Services</a>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services">
+    <h2>Our Services</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="icon">🌿</div>
+        <h3>Lawn Mowing</h3>
+        <p>Weekly, bi-weekly, or one-time cuts. Always clean edges.</p>
+        <div class="price">From $45</div>
+      </div>
+      <div class="card">
+        <div class="icon">🌱</div>
+        <h3>Fertilization</h3>
+        <p>Seasonal programs to keep your lawn thick and green.</p>
+        <div class="price">From $65</div>
+      </div>
+      <div class="card">
+        <div class="icon">💧</div>
+        <h3>Irrigation</h3>
+        <p>Sprinkler setup, repair, and seasonal adjustments.</p>
+        <div class="price">From $120</div>
+      </div>
+      <div class="card">
+        <div class="icon">🍂</div>
+        <h3>Leaf Cleanup</h3>
+        <p>Full yard cleanup with haul-away included.</p>
+        <div class="price">From $80</div>
+      </div>
+      <div class="card">
+        <div class="icon">🌳</div>
+        <h3>Aeration</h3>
+        <p>Core aeration to reduce compaction and improve roots.</p>
+        <div class="price">From $95</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Us -->
+  <section class="why">
+    <h2>Why Austin Trusts Big Hat Lawn</h2>
+    <div class="why-grid">
+      <div class="why-item"><div class="num">500+</div><p>Happy customers in Austin</p></div>
+      <div class="why-item"><div class="num">4.9★</div><p>Average Google rating</p></div>
+      <div class="why-item"><div class="num">Same-Day</div><p>Estimates available</p></div>
+      <div class="why-item"><div class="num">100%</div><p>Satisfaction guarantee</p></div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testi">
+    <h2>What Our Customers Say</h2>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Big Hat Lawn transformed my yard! Consistent, professional, and always on time. The lawn has never looked better."</p>
+        <div class="testi-name">— Maria T., South Austin</div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Used the chat widget to book and got a response in seconds. Crew showed up next morning. Incredible service."</p>
+        <div class="testi-name">— James R., Cedar Park</div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p>"Fair pricing, great work, no hassle. I've tried 4 lawn companies — Big Hat Lawn is the only one I've kept."</p>
+        <div class="testi-name">— Sandra L., Round Rock</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <strong>Big Hat Lawn</strong> &bull; Austin, TX &bull; (512) 555-0199 &bull; info@bighatlawn.com<br>
+    <span style="opacity:.6; font-size:11px">© 2026 Big Hat Lawn LLC. All rights reserved.</span>
+  </footer>
+
+  <!-- Debug Panel -->
+  <div id="debug-panel">
+    <button class="collapse-btn" onclick="this.closest('#debug-panel').classList.toggle('collapsed')" title="Toggle">▼</button>
+    <h4>🔧 Widget Debug</h4>
+    <div class="debug-body">
+      <div><span class="label">Session ID: </span><br><span class="val" id="debug-session">initializing…</span></div>
+      <br>
+      <div><span class="label">Widget State: </span><span id="debug-status">loading</span></div>
+      <br>
+      <div><span class="label">Last API Response:</span><br><span class="val" id="debug-reply">—</span></div>
+    </div>
+  </div>
+
+  <!-- Load the widget -->
+  <script src="widget-bighatlawn.js"></script>
+
+  <!-- Debug listener -->
+  <script>
+    // Update debug panel from widget events
+    window.addEventListener('bhl-debug', function (e) {
+      var d = e.detail;
+      var sessionEl = document.getElementById('debug-session');
+      var statusEl  = document.getElementById('debug-status');
+      var replyEl   = document.getElementById('debug-reply');
+
+      if (sessionEl && d.sessionId) sessionEl.textContent = d.sessionId;
+      if (statusEl)  statusEl.textContent = d.isOpen ? '✅ Open' : '⬜ Closed';
+      if (replyEl && d.lastReply) replyEl.textContent = d.lastReply.slice(0, 200) + (d.lastReply.length > 200 ? '…' : '');
+    });
+
+    // Fallback: poll window.BHL_SESSION_ID if events not firing
+    setTimeout(function () {
+      var s = document.getElementById('debug-session');
+      if (s && s.textContent === 'initializing…' && window.BHL_SESSION_ID) {
+        s.textContent = window.BHL_SESSION_ID;
+      }
+    }, 800);
+
+    // Log all BHL console messages visually
+    var origLog  = console.log.bind(console);
+    var origWarn = console.warn.bind(console);
+    console.log = function () {
+      if (arguments[0] && String(arguments[0]).indexOf('[BigHatLawn]') !== -1) {
+        origLog.apply(console, arguments);
+        appendDebugLog('[LOG] ' + Array.from(arguments).join(' '));
+      } else {
+        origLog.apply(console, arguments);
+      }
+    };
+    console.warn = function () {
+      if (arguments[0] && String(arguments[0]).indexOf('[BigHatLawn]') !== -1) {
+        origWarn.apply(console, arguments);
+        appendDebugLog('[WARN] ' + Array.from(arguments).join(' '));
+      } else {
+        origWarn.apply(console, arguments);
+      }
+    };
+    function appendDebugLog(msg) {
+      var panel = document.getElementById('debug-panel');
+      if (!panel) return;
+      var p = document.createElement('div');
+      p.style.cssText = 'margin-top:6px; color:#facc15; font-size:10px; word-break:break-all;';
+      p.textContent = msg.slice(0, 160);
+      var body = panel.querySelector('.debug-body');
+      if (body) body.appendChild(p);
+    }
+  </script>
+
+</body>
+</html>
