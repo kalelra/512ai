@@ -27,6 +27,23 @@
 
 ---
 
+## Directory map
+
+| What | MacBook Path | GitHub Repo | Deploy |
+|------|-------------|-------------|--------|
+| 512AI Frontend | `~/Claude_Projects/512ai/` | `kalelra/512ai` | Netlify (auto on push) |
+| 512AI Backend | `~/Claude_Projects/512ai-backend/` | `kalelra/512ai-backend` | Railway (auto on push) |
+| Business docs | `~/Claude_Projects/512ai-backend/docs/` | `kalelra/512ai-backend/docs/` | — |
+
+### Patch workflow (Claude.ai → GitHub)
+When updates arrive as a `.patch` file from Claude.ai:
+```bash
+cd ~/Downloads && bash apply-updates.sh
+```
+Script lives at `~/Downloads/apply-updates.sh` — clones/pulls backend to `~/Claude_Projects/512ai-backend`, applies patch, pushes.
+
+---
+
 ## Project: 512AI Website
 
 **Live site:** https://512ai.co
@@ -140,6 +157,44 @@ Do not mix content between 512AI and UNO MAS! projects.
 
 ---
 
+## Project: 512AI Backend
+
+**GitHub repo:** https://github.com/kalelra/512ai-backend (private)
+**Local path:** `~/Claude_Projects/512ai-backend/`
+**Deploy:** Railway — auto-deploys on push to `main`
+**Health check:** `https://YOUR-RAILWAY-URL/health/deep`
+
+### Tech stack
+- Node.js / Express, Railway-hosted
+- Supabase (Postgres + RLS) for all data
+- JWT + RBAC auth, API keys per tenant
+- 6 agents: Voice (Bland.ai), Chat (Anthropic), Scheduler, Notification (Twilio/SendGrid), Integration, QA
+- Multi-tenant — one backend serves all 512AI clients
+
+### Key files
+- `src/index.js` — Express app entry, all middleware wired
+- `src/routes/` — auth, tenants, bookings, voice, chat, leads, health
+- `src/agents/index.js` — all 6 agent handlers
+- `supabase/migrations/001_initial_schema.sql` — full DB schema with RLS
+- `.env.example` — all required env vars (set in Railway dashboard, never commit `.env`)
+- `docs/BUSINESS_MASTER.md` — pricing, SLA, client tracker
+
+### Environment variables (set in Railway dashboard)
+- `NODE_ENV`, `JWT_SECRET`, `ALLOWED_ORIGINS`
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- `ANTHROPIC_API_KEY`, `BLAND_API_KEY`, `BLAND_WEBHOOK_SECRET`
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_DEFAULT_FROM`
+- `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`
+
+### Backend maintenance tasks (monthly)
+- `npm audit` in `~/Claude_Projects/512ai-backend`
+- Check Railway logs for errors: Railway dashboard → Deployments → Logs
+- Check Supabase dashboard for slow queries or storage growth
+- Verify `/health/deep` still returns `supabase: connected`
+- Review Anthropic API usage at console.anthropic.com
+
+---
+
 ## Project 2 — UNO MAS! Salsa (queued, not started)
 
 When Ricardo says "start Project 2" or "let's work on UNO MAS!", initialize a new repo:
@@ -168,4 +223,4 @@ At the start of every session, Claude Code should silently:
 
 ---
 
-*Last updated: March 2026 — Ricardo Avila / 512AI*
+*Last updated: April 2026 — Ricardo Avila / 512AI*
