@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Hat Lawn — Chat Widget Setup Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8faf8; color: #1a1a1a; line-height: 1.6;
+    }
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1B5E20, #2E7D32);
+      color: #fff; padding: 48px 40px 40px;
+    }
+    .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+    .logo { font-size: 44px; }
+    .header-text h1 { font-size: 28px; font-weight: 800; letter-spacing: -.4px; }
+    .header-text p { font-size: 16px; opacity: .85; margin-top: 4px; }
+    .version-badge {
+      background: rgba(255,255,255,.2); border-radius: 20px;
+      padding: 4px 12px; font-size: 12px; font-weight: 600; margin-top: 10px; display: inline-block;
+    }
+
+    /* Main */
+    main { max-width: 860px; margin: 40px auto; padding: 0 24px 80px; }
+
+    /* Status bar */
+    .status-bar {
+      background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 12px;
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 36px;
+    }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #43a047; flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba(67,160,71,.2); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 4px rgba(67,160,71,.2)} 50%{box-shadow:0 0 0 8px rgba(67,160,71,.05)} }
+    .status-text { font-size: 14px; color: #2E7D32; font-weight: 600; }
+    .status-sub { font-size: 12px; color: #555; margin-top: 2px; }
+
+    /* Sections */
+    section { margin-bottom: 40px; }
+    h2 {
+      font-size: 20px; font-weight: 700; color: #1B5E20;
+      margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+    }
+    h2 .num {
+      background: #2E7D32; color: #fff; width: 28px; height: 28px;
+      border-radius: 50%; font-size: 13px; display: inline-flex;
+      align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800;
+    }
+    p { font-size: 15px; color: #333; margin-bottom: 12px; }
+
+    /* Code blocks */
+    .code-block {
+      background: #1e2a1e; color: #d4edda; border-radius: 12px;
+      padding: 20px 24px; font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 13px; line-height: 1.7; overflow-x: auto; position: relative;
+    }
+    .code-block .comment { color: #6a9955; }
+    .code-block .tag { color: #569cd6; }
+    .code-block .attr { color: #9cdcfe; }
+    .code-block .val { color: #ce9178; }
+    .code-block .url { color: #4ec9b0; }
+
+    .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,.12); border: none; color: #ccc;
+      border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer;
+      transition: background .15s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
+    .copy-btn.copied { color: #69f542; }
+
+    /* Inline code */
+    code {
+      background: #e8f5e9; color: #1B5E20; border-radius: 4px;
+      padding: 2px 7px; font-family: 'Menlo', monospace; font-size: 13px;
+    }
+
+    /* Info cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .info-card {
+      background: #fff; border-radius: 14px; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07); border: 1px solid #e8e8e8;
+    }
+    .info-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; color: #1a1a1a; }
+    .info-card p { font-size: 13px; color: #555; margin: 0; }
+    .info-card .icon { font-size: 22px; margin-bottom: 8px; }
+
+    /* Feature list */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .feature {
+      background: #fff; border-radius: 10px; padding: 12px 14px;
+      border: 1px solid #e0e0e0; font-size: 13px; color: #333;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feature .check { color: #2E7D32; font-weight: 700; font-size: 15px; }
+
+    /* Warning/note box */
+    .note {
+      background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px;
+      padding: 14px 16px; font-size: 13px; color: #5d4037; margin-top: 12px;
+    }
+    .note strong { color: #e65100; }
+
+    /* Config table */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #2E7D32; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+    th:first-child { border-radius: 8px 0 0 0; }
+    th:last-child { border-radius: 0 8px 0 0; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+    tr:nth-child(even) td { background: #f9fdf9; }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-family: 'Menlo', monospace; color: #1B5E20; font-size: 12px; }
+    td:last-child { color: #555; }
+
+    /* Footer */
+    .page-footer {
+      background: #1B5E20; color: #a5d6a7; text-align: center;
+      padding: 24px; font-size: 13px; margin-top: 60px;
+    }
+    .page-footer strong { color: #fff; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">🌿</div>
+    <div class="header-text">
+      <h1>Big Hat Lawn — Chat Widget</h1>
+      <p>Embed guide &amp; configuration reference for your web developer</p>
+      <span class="version-badge">v1.1 &nbsp;·&nbsp; Ready to deploy</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- Status -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div>
+      <div class="status-text">✅ Widget &amp; AI backend are live and tested</div>
+      <div class="status-sub">AI responds to lawn service questions, estimates, and scheduling requests</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Embed -->
+  <section>
+    <h2><span class="num">1</span> Add the widget to your website</h2>
+    <p>Paste this <strong>single line</strong> anywhere before the closing <code>&lt;/body&gt;</code> tag on every page you want the chat to appear. That's it — no other files, no npm, no configuration needed.</p>
+
+    <div class="code-block" id="embed-code">
+      <button class="copy-btn" onclick="copyCode('embed-code', this)">Copy</button>
+<span class="comment">&lt;!-- Big Hat Lawn Chat Widget — paste before &lt;/body&gt; --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="val">"<span class="url">https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js</span>"</span>
+        <span class="attr">defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+    </div>
+
+    <div class="note">
+      <strong>Note for web developers:</strong> The CDN URL is served via jsDelivr (global CDN backed by Cloudflare + Fastly).
+      Loads in &lt;50ms. The <code>defer</code> attribute ensures it never blocks page rendering.
+    </div>
+  </section>
+
+  <!-- Step 2: WordPress / Squarespace / Wix -->
+  <section>
+    <h2><span class="num">2</span> Platform-specific instructions</h2>
+
+    <div class="cards">
+      <div class="info-card">
+        <div class="icon">🔷</div>
+        <h3>WordPress</h3>
+        <p>Go to <strong>Appearance → Theme Editor → footer.php</strong> and paste the script tag just before <code>&lt;/body&gt;</code>. Or use the <strong>WPCode</strong> plugin and add it as a "Footer" snippet.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">⬛</div>
+        <h3>Squarespace</h3>
+        <p>Go to <strong>Settings → Advanced → Code Injection → Footer</strong> and paste the script tag there. It applies site-wide automatically.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🔶</div>
+        <h3>Wix</h3>
+        <p>Open the <strong>Wix Editor → Add → Embed Code → Embed HTML</strong>. Paste the script tag. Then drag the element to the bottom of the page.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🟣</div>
+        <h3>Webflow</h3>
+        <p>Go to <strong>Project Settings → Custom Code → Footer Code</strong> and paste the script tag. Publish to apply site-wide.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🟠</div>
+        <h3>Shopify</h3>
+        <p>Go to <strong>Online Store → Themes → Edit Code → layout/theme.liquid</strong> and paste the script tag before <code>&lt;/body&gt;</code>.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📄</div>
+        <h3>Static HTML</h3>
+        <p>Paste the script tag before <code>&lt;/body&gt;</code> in any HTML file. Works on any standard website without any framework or build tool.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: What the visitor sees -->
+  <section>
+    <h2><span class="num">3</span> What visitors experience</h2>
+    <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(200px,1fr));">
+      <div class="info-card">
+        <div class="icon">💬</div>
+        <h3>Proactive greeting</h3>
+        <p>After 8 seconds on the page, a friendly bubble pops up: <em>"Need a lawn quote? I can get you one in 2 minutes!"</em></p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🔴</div>
+        <h3>Unread badge</h3>
+        <p>A red badge appears on the chat button so visitors notice the greeting even without the bubble.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">⏱️</div>
+        <h3>Typing indicator</h3>
+        <p>Animated dots show while the AI is thinking — feels like a real person responding.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📅</div>
+        <h3>Booking confirmation</h3>
+        <p>When a booking is completed, a green confirmation card appears and the booking is recorded in the system.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">📱</div>
+        <h3>Mobile-optimized</h3>
+        <p>On phones, the widget becomes a full-width bottom sheet — matches native app feel.</p>
+      </div>
+      <div class="info-card">
+        <div class="icon">🔁</div>
+        <h3>Session memory</h3>
+        <p>Conversation context is preserved if the visitor navigates between pages on the same site.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: Features -->
+  <section>
+    <h2><span class="num">4</span> Features included</h2>
+    <div class="features">
+      <div class="feature"><span class="check">✓</span> Zero dependencies (no jQuery, no React)</div>
+      <div class="feature"><span class="check">✓</span> Works on any website or CMS</div>
+      <div class="feature"><span class="check">✓</span> AI-powered lawn service assistant</div>
+      <div class="feature"><span class="check">✓</span> Estimate &amp; booking capture</div>
+      <div class="feature"><span class="check">✓</span> Proactive chat bubble trigger</div>
+      <div class="feature"><span class="check">✓</span> Unread message badge</div>
+      <div class="feature"><span class="check">✓</span> Typing indicator animation</div>
+      <div class="feature"><span class="check">✓</span> Mobile bottom sheet (responsive)</div>
+      <div class="feature"><span class="check">✓</span> Session ID persists across pages</div>
+      <div class="feature"><span class="check">✓</span> Booking confirmation card</div>
+      <div class="feature"><span class="check">✓</span> Keyboard accessible (Esc to close)</div>
+      <div class="feature"><span class="check">✓</span> Close on outside click</div>
+      <div class="feature"><span class="check">✓</span> Message timestamps</div>
+      <div class="feature"><span class="check">✓</span> 30-second API timeout &amp; retry UX</div>
+      <div class="feature"><span class="check">✓</span> Non-blocking page load (defer)</div>
+      <div class="feature"><span class="check">✓</span> Global CDN via jsDelivr</div>
+    </div>
+  </section>
+
+  <!-- Step 5: Config reference -->
+  <section>
+    <h2><span class="num">5</span> Configuration reference</h2>
+    <p>These settings are at the top of <code>widget-bighatlawn.js</code>. Update them when you have final business details:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Setting</th>
+          <th>Current Value</th>
+          <th>What it does</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>brandName</td><td>Big Hat Lawn</td><td>Name shown in the chat header</td></tr>
+        <tr><td>brandTagline</td><td>🌿 Lawn Care Assistant • Online now</td><td>Subtitle under the brand name</td></tr>
+        <tr><td>brandColor</td><td>#2E7D32</td><td>Primary green color (button, bubbles, header)</td></tr>
+        <tr><td>greeting</td><td>Hi! I'm the Big Hat Lawn assistant…</td><td>First message shown when widget opens</td></tr>
+        <tr><td>proactiveMsg</td><td>Need a lawn quote? I can get you one in 2 minutes! 👋</td><td>Tooltip text that appears after X seconds</td></tr>
+        <tr><td>proactiveMsgDelay</td><td>8000 (ms)</td><td>Delay before proactive tooltip appears. Set to 0 to disable.</td></tr>
+        <tr><td>storageType</td><td>'local'</td><td>'local' = persists across pages, 'session' = tab only</td></tr>
+        <tr><td>tenantId</td><td>1d7a261e-…</td><td>Links conversations to Big Hat Lawn's account</td></tr>
+        <tr><td>apiKey</td><td>512ai_713664dd…</td><td>Authentication key for the AI backend</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Step 6: JavaScript API -->
+  <section>
+    <h2><span class="num">6</span> Optional: control widget from your site's code</h2>
+    <p>After the widget loads, two global functions are available if you want to trigger it programmatically:</p>
+    <div class="code-block">
+<span class="comment">// Open the chat widget from any button or link on your site</span>
+<span class="tag">BHL_OPEN</span>();
+
+<span class="comment">// Close the chat widget</span>
+<span class="tag">BHL_CLOSE</span>();
+
+<span class="comment">// Example: open widget when "Get a Quote" button is clicked</span>
+document.getElementById(<span class="val">'quote-btn'</span>)
+  .addEventListener(<span class="val">'click'</span>, BHL_OPEN);
+    </div>
+  </section>
+
+  <!-- Step 7: Testing -->
+  <section>
+    <h2><span class="num">7</span> How to test before going live</h2>
+    <p>Open <code>widget-test.html</code> from the files folder — it's a full Big Hat Lawn mock site with a live debug panel showing the session ID and every API response in real time.</p>
+    <p>Or simply add the embed script to any staging page and start chatting. The AI is already trained for Big Hat Lawn. Try messages like:</p>
+    <div class="features" style="margin-top: 8px;">
+      <div class="feature" style="font-style:italic;">"How much does lawn mowing cost?"</div>
+      <div class="feature" style="font-style:italic;">"I need my yard mowed this Friday"</div>
+      <div class="feature" style="font-style:italic;">"Do you offer fertilization?"</div>
+      <div class="feature" style="font-style:italic;">"Can I get a free estimate?"</div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section>
+    <h2>📞 Questions?</h2>
+    <p>Built and maintained by 512ai. Contact <strong>contact@512ai.co</strong> for any changes — updating the AI's personality, services, pricing, or booking flow.</p>
+  </section>
+
+</main>
+
+<div class="page-footer">
+  <strong>Big Hat Lawn Chat Widget v1.1</strong> &bull; Built by
+  <a href="https://512ai.co" style="color:#a5d6a7">512ai.co</a> &bull;
+  Powered by <a href="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js" style="color:#a5d6a7">jsDelivr CDN</a>
+</div>
+
+<script>
+function copyCode(blockId, btn) {
+  // Get text content, strip HTML tags
+  var raw = document.getElementById(blockId).innerText.replace('Copy','').replace('Copied!','').trim();
+  // Just copy the script tag line
+  var match = raw.match(/(<script[\s\S]*?<\/script>)/);
+  var text = match ? match[1] : raw;
+  navigator.clipboard.writeText(text).then(function() {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(function() {
+    btn.textContent = 'Copy failed';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
