@@ -1,0 +1,190 @@
+From 0000000000000000000000000000000000000001 Mon Sep 17 00:00:00 2001
+From: Ricardo 512AI <contact@512ai.co>
+Date: Sun, 5 Apr 2026 00:00:00 +0000
+Subject: [PATCH] feat: add /api/v1/voice/call endpoint for Big Hat Lawn voice widget
+
+Adds Bland.ai outbound call route. Validates API key + tenant, calls
+Bland.ai with BHL-specific lawn care AI script, returns callId to widget.
+
+ENV VARS NEEDED on Railway (add in Railway → 512ai-backend → Variables):
+  BLAND_API_KEY_BHL       = Rudy's Bland.ai API key (or shared 512ai key)
+  TWILIO_FROM_BHL         = Outbound caller ID for BHL (+1512xxxxxxx)
+---
+ src/routes/voice.js | 148 ++++++++++++++++++++++++++++++++++++++++++++
+ src/index.js        |   3 +
+ 2 files changed, 151 insertions(+)
+ create mode 100644 src/routes/voice.js
+
+diff --git a/src/routes/voice.js b/src/routes/voice.js
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/src/routes/voice.js
+@@ -0,0 +1,148 @@
++// src/routes/voice.js
++// 512AI — Voice AI Route
++// POST /api/v1/voice/call
++// Validates tenant + API key, then fires Bland.ai outbound call
++
++const express = require('express');
++const router = express.Router();
++
++// ─── Tenant config ─────────────────────────────────────────────────────────
++// Maps tenantId → Bland.ai key + from-number + AI script
++// Add a new entry here for each client that uses voice
++const TENANT_VOICE_CONFIG = {
++  '1d7a261e-5e86-4037-b28a-8b7d7e583c8f': {
++    name: 'Big Hat Lawn',
++    blandApiKey: () => process.env.BLAND_API_KEY_BHL || process.env.BLAND_API_KEY,
++    fromPhone:   () => process.env.TWILIO_FROM_BHL   || process.env.TWILIO_PHONE_NUMBER,
++    aiName:      'Lily',
++    maxDuration: 3,
++    buildScript: (name) => `You are "Lily", the friendly AI lawn care assistant for Big Hat Lawn, a professional lawn care company in Austin, Texas.
++
++You are calling ${name}, who just requested a callback from the Big Hat Lawn website.
++
++GOAL: Welcome them, give a fast estimate or book a service call, end with a clear next step.
++
++=== SCRIPT ===
++1. GREETING: "Hi, is this ${name}? This is Lily calling from Big Hat Lawn — you just requested a call on our website! I'm the AI assistant and I can help get you a quick quote right now. Is this a good time?"
++
++2. QUALIFY — ask ONE:
++- "What can I help you with — regular lawn mowing, a one-time cleanup, or something else?"
++- If mowing: "What's the approximate size of your lawn? Does it take about 20 minutes, or is it a bigger yard?"
++- If cleanup: "Are we talking leaf cleanup, overgrown areas, or the whole yard?"
++
++3. QUOTE RANGES:
++- Small (≤5k sq ft): "You're probably looking at around $35–$50 per mow."
++- Medium (5k–10k sq ft): "$50–$80 per mow."
++- Large (10k+ sq ft): "We'd want to come take a look, but typically $80–$150."
++- One-time cleanup: "$75–$200 depending on the work needed."
++- Mention: "We have weekly and bi-weekly recurring plans that get you a discount."
++
++4. CLOSE — offer one:
++- "I can have someone text or call you back to confirm and get you on the schedule — text or call?"
++- OR: "Would you like to lock in a time this week? I'll note your preferred day."
++
++5. WRAP UP: "Awesome! We'll take great care of you. Big Hat Lawn will be in touch shortly. Anything else you want me to note for the team?"
++
++=== TONE: friendly neighbor, NOT call center. Under 2 minutes. ===
++=== If they want a human: "I'll have Rudy call you back shortly!" ===
++=== If not interested: "No problem — visit bighatlawn.com anytime!" ===`
++  }
++  // Add next client here:
++  // 'NEW-TENANT-UUID': { name: 'Client Name', blandApiKey: ..., ... }
++};
++
++// ─── POST /api/v1/voice/call ────────────────────────────────────────────────
++router.post('/call', async (req, res) => {
++  try {
++    const { tenantId, phone, name, source } = req.body;
++
++    // Validate required fields
++    if (!tenantId || !phone || !name) {
++      return res.status(400).json({ error: 'Missing required fields: tenantId, phone, name' });
++    }
++
++    // Validate tenant has voice config
++    const config = TENANT_VOICE_CONFIG[tenantId];
++    if (!config) {
++      return res.status(404).json({ error: 'Voice not configured for this tenant' });
++    }
++
++    // Normalize phone to E.164
++    const digits = phone.replace(/\D/g, '');
++    if (digits.length < 10) {
++      return res.status(400).json({ error: 'Invalid phone number — need at least 10 digits' });
++    }
++    const e164 = digits.startsWith('1') && digits.length === 11
++      ? '+' + digits
++      : '+1' + digits.slice(-10);
++
++    // Build Bland.ai payload
++    const blandPayload = {
++      phone_number:           e164,
++      from:                   config.fromPhone(),
++      task:                   config.buildScript(name),
++      model:                  'enhanced',
++      language:               'en',
++      voice:                  'nat',
++      max_duration:           config.maxDuration,
++      wait_for_greeting:      true,
++      record:                 true,
++      interruption_threshold: 50,
++      temperature:            0.7,
++      metadata: {
++        source:    source || 'widget',
++        tenantId,
++        name,
++        phone:     e164,
++        timestamp: new Date().toISOString()
++      }
++    };
++
++    // Call Bland.ai
++    const blandRes = await fetch('https://api.bland.ai/v1/calls', {
++      method:  'POST',
++      headers: {
++        'Authorization': config.blandApiKey(),
++        'Content-Type':  'application/json'
++      },
++      body: JSON.stringify(blandPayload)
++    });
++
++    const blandData = await blandRes.json();
++
++    if (!blandRes.ok) {
++      console.error(`[voice] Bland.ai error for tenant ${tenantId}:`, blandData);
++      return res.status(502).json({ error: 'Failed to initiate call — Bland.ai returned an error' });
++    }
++
++    console.log(`[voice] Call initiated: ${blandData.call_id} → ${e164} (${config.name})`);
++
++    return res.status(200).json({
++      success: true,
++      callId:  blandData.call_id,
++      message: `Calling you now at ${phone}. Pick up in the next 30 seconds!`
++    });
++
++  } catch (err) {
++    console.error('[voice] Unhandled error:', err);
++    return res.status(500).json({ error: 'Internal server error' });
++  }
++});
++
++// ─── GET /api/v1/voice/status/:callId ──────────────────────────────────────
++// Check call status (used by widget to show call outcome)
++router.get('/status/:callId', async (req, res) => {
++  const { callId } = req.params;
++  const { tenantId } = req.query;
++
++  if (!tenantId || !TENANT_VOICE_CONFIG[tenantId]) {
++    return res.status(400).json({ error: 'Invalid or missing tenantId' });
++  }
++
++  try {
++    const config = TENANT_VOICE_CONFIG[tenantId];
++    const blandRes = await fetch(`https://api.bland.ai/v1/calls/${callId}`, {
++      headers: { 'Authorization': config.blandApiKey() }
++    });
++    const data = await blandRes.json();
++    return res.status(200).json({ callId, status: data.status, duration: data.call_length });
++  } catch (err) {
++    return res.status(500).json({ error: 'Could not fetch call status' });
++  }
++});
++
++module.exports = router;
+
+diff --git a/src/index.js b/src/index.js
+index 0000000..2222222 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,3 +1,6 @@
+ // ... existing routes ...
++
++// Voice AI routes
++const voiceRouter = require('./routes/voice');
++app.use('/api/v1/voice', validateApiKey, voiceRouter);
++
+ // ... rest of index.js unchanged ...

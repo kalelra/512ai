@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Hat Lawn — Pre-Launch QA Checklist</title>
+<style>
+  :root {
+    --green:#2E7D32;--green-light:#e8f5e9;--green-pale:#f1f8f1;
+    --amber:#e65100;--amber-light:#fff3e0;
+    --red:#c62828;--red-light:#ffebee;
+    --blue:#1565C0;--blue-light:#e3f2fd;
+    --border:#e0e0e0;--text:#1a1a1a;--muted:#666;--bg:#f4f6f9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:var(--bg); }
+  .hero { background:linear-gradient(135deg,var(--green),#1B5E20); color:#fff; padding:36px 24px; text-align:center; }
+  .hero h1 { font-size:22px; font-weight:800; margin-bottom:6px; }
+  .hero p { opacity:.85; font-size:13px; }
+  .container { max-width:780px; margin:0 auto; padding:28px 20px 80px; }
+
+  /* Progress */
+  .progress-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:24px; }
+  .progress-top { display:flex; justify-content:space-between; font-size:13px; font-weight:700; margin-bottom:8px; }
+  .progress-track { background:#e0e0e0; border-radius:20px; height:10px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--green); border-radius:20px; transition:width .3s; }
+  .progress-note { font-size:12px; color:var(--muted); margin-top:6px; }
+
+  /* Section */
+  .section { background:#fff; border:1px solid var(--border); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+  .section-head { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; background:var(--green-pale); }
+  .section-icon { font-size:18px; }
+  .section-title { font-size:14px; font-weight:700; flex:1; }
+  .section-count { font-size:12px; color:var(--muted); font-weight:600; }
+
+  /* Test items */
+  .test-item { display:flex; gap:12px; padding:13px 18px; border-bottom:1px solid var(--border); align-items:flex-start; }
+  .test-item:last-child { border-bottom:none; }
+  .test-check { width:22px; height:22px; border:2px solid var(--border); border-radius:6px; flex-shrink:0; margin-top:1px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+  .test-check:hover { border-color:var(--green); }
+  .test-check.pass { background:var(--green); border-color:var(--green); }
+  .test-check.pass::after { content:'✓'; color:#fff; font-size:12px; font-weight:700; }
+  .test-check.fail { background:var(--red-light); border-color:var(--red); }
+  .test-check.fail::after { content:'✕'; color:var(--red); font-size:12px; font-weight:700; }
+  .test-body { flex:1; }
+  .test-title { font-size:13px; font-weight:600; margin-bottom:3px; }
+  .test-desc { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .test-expected { font-size:11px; background:var(--green-light); color:var(--green); border-radius:6px; padding:4px 8px; display:inline-block; font-weight:600; }
+  .test-expected.warn { background:var(--amber-light); color:var(--amber); }
+  .test-expected.fail-exp { background:var(--red-light); color:var(--red); }
+  .test-actions { display:flex; gap:6px; margin-top:8px; }
+  .test-btn { font-size:11px; padding:4px 10px; border-radius:6px; border:1.5px solid var(--border); background:transparent; cursor:pointer; font-weight:600; transition:all .15s; }
+  .test-btn:hover { background:var(--green); color:#fff; border-color:var(--green); }
+  .test-btn.red-btn:hover { background:var(--red); color:#fff; border-color:var(--red); }
+  .priority { font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
+  .priority.critical { background:var(--red-light); color:var(--red); }
+  .priority.high { background:var(--amber-light); color:var(--amber); }
+  .priority.medium { background:var(--blue-light); color:var(--blue); }
+
+  /* Notes field */
+  .notes-field { width:100%; border:1px solid var(--border); border-radius:6px; padding:6px 8px; font-size:12px; margin-top:6px; resize:none; font-family:inherit; outline:none; color:var(--text); display:none; }
+  .notes-field:focus { border-color:var(--green); }
+
+  /* Test data box */
+  .test-data { background:#1e1e1e; border-radius:8px; padding:10px 12px; font-family:monospace; font-size:11px; color:#d4d4d4; line-height:1.5; margin-top:8px; }
+
+  /* Status bar */
+  .status-bar { position:sticky; bottom:0; background:#fff; border-top:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; z-index:100; box-shadow:0 -4px 16px rgba(0,0,0,.06); }
+  .status-counts { display:flex; gap:20px; font-size:13px; }
+  .count-item { font-weight:700; }
+  .count-pass { color:var(--green); }
+  .count-fail { color:var(--red); }
+  .count-skip { color:var(--muted); }
+  .export-btn { background:var(--green); color:#fff; border:none; border-radius:8px; padding:8px 18px; font-size:13px; font-weight:600; cursor:pointer; }
+  .export-btn:hover { background:#1B5E20; }
+
+  /* Env var table */
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; padding:9px 12px; background:var(--green-pale); font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; border-bottom:1px solid var(--border); }
+  td { padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  .env-key { font-family:monospace; background:#f5f5f5; border-radius:4px; padding:2px 6px; }
+  .env-status { font-weight:700; font-size:11px; }
+  .env-status.set { color:var(--green); }
+  .env-status.missing { color:var(--red); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🔍 Pre-Launch QA Checklist — Big Hat Lawn</h1>
+  <p>Run through every test before going live on bighatlawn.com. Check off each item as you verify.</p>
+</div>
+
+<div class="container">
+
+  <!-- Progress -->
+  <div class="progress-card">
+    <div class="progress-top">
+      <span>QA Progress</span>
+      <span id="progress-label">0 / 0 tests passed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-note" id="progress-note">Click each checkbox after testing — green = pass, click again for fail</div>
+  </div>
+
+  <!-- Environment Variables -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">🔑</span>
+      <span class="section-title">Phase 0 — Environment Variables Checklist</span>
+    </div>
+    <div style="padding:16px 18px;">
+      <table>
+        <thead><tr><th>Variable</th><th>Where</th><th>Used For</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><span class="env-key">BLAND_API_KEY_BHL</span></td><td>Railway</td><td>Voice AI calls</td><td><span class="env-status missing" id="env-bland">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">TWILIO_ACCOUNT_SID</span></td><td>Railway + Netlify</td><td>SMS notifications</td><td><span class="env-status missing" id="env-twilio-sid">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">TWILIO_AUTH_TOKEN</span></td><td>Railway + Netlify</td><td>SMS notifications</td><td><span class="env-status missing" id="env-twilio-token">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">BHL_TWILIO_FROM</span></td><td>Railway + Netlify</td><td>SMS from-number</td><td><span class="env-status missing" id="env-twilio-from">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">BHL_OWNER_PHONE</span></td><td>Railway + Netlify</td><td>Rudy's alert SMS</td><td><span class="env-status missing" id="env-owner-phone">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">BHL_GOOGLE_REVIEW_LINK</span></td><td>Railway + Netlify</td><td>Post-job review SMS</td><td><span class="env-status missing" id="env-review-link">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">LAWNPRO_WEBHOOK_SECRET</span></td><td>Netlify + LawnPro</td><td>Webhook auth</td><td><span class="env-status missing" id="env-lawnpro">⚠️ Missing</span></td></tr>
+          <tr><td><span class="env-key">NOTIFICATION_SECRET</span></td><td>Railway + Netlify</td><td>Internal API auth</td><td><span class="env-status set" id="env-notif">— Set when deployed</span></td></tr>
+        </tbody>
+      </table>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px">Mark each as ✅ Set once you've added the value in Railway/Netlify. Ricardo sets these via MCP once you provide the credentials.</div>
+    </div>
+  </div>
+
+  <!-- Chat Widget -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">💬</span>
+      <span class="section-title">Phase 1 — Chat Widget</span>
+      <span class="section-count" id="chat-count">0/6</span>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Widget appears on bighatlawn.com <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Visit https://bighatlawn.com on desktop. Green circle bubble should appear bottom-right within 2 seconds of page load.</div>
+        <div class="test-expected">✅ Green bubble visible bottom-right corner</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Chat opens and shows greeting <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Click the bubble. Panel should slide up and show the greeting message immediately.</div>
+        <div class="test-expected">✅ "Hi! I'm the Big Hat Lawn assistant..." appears</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">AI responds to a quote request <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Type: "How much do you charge for lawn mowing?" — should respond with pricing info and qualify the customer.</div>
+        <div class="test-data">Test message: "How much do you charge for lawn mowing?"<br>Expected: Price range + qualifying question (yard size?)</div>
+        <div class="test-expected">✅ AI responds in under 3 seconds with relevant answer</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">BOOKING_CONFIRMED tag fires correctly <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Walk through a booking conversation until the AI confirms the booking. Check the 512ai backend logs to verify the /api/v1/bookings POST was fired.</div>
+        <div class="test-data">Test messages:<br>"I'd like to schedule a mowing for next Monday"<br>→ Give name, address, and confirm<br>→ Verify BOOKING_CONFIRMED tag in AI reply</div>
+        <div class="test-expected">✅ Booking POST fires, owner SMS received (if Twilio set)</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Proactive bubble appears after 8 seconds <span class="priority high">High</span></div>
+        <div class="test-desc">Load the page and don't click anything. After 8 seconds a speech bubble should appear above the chat button.</div>
+        <div class="test-expected">✅ "Need a lawn quote? I can get you one in 2 minutes! 👋" appears</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="chat">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Mobile bottom sheet works <span class="priority high">High</span></div>
+        <div class="test-desc">Open on a phone (or Chrome DevTools → iPhone view). Chat should slide up from the bottom as a full-width sheet.</div>
+        <div class="test-expected">✅ Full-width bottom sheet on screens &lt; 480px</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Voice AI -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">📞</span>
+      <span class="section-title">Phase 2 — Voice AI (requires Bland.ai key)</span>
+      <span class="section-count" id="voice-count">0/5</span>
+    </div>
+
+    <div class="test-item" data-section="voice">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Voice button appears on site <span class="priority critical">Critical</span></div>
+        <div class="test-desc">After deploying voice-bighatlawn.js, a phone icon button should appear above (or near) the chat bubble, bottom-right.</div>
+        <div class="test-expected">✅ Phone icon visible, not overlapping chat bubble</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="voice">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Voice modal opens with form <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Click the phone button. An overlay should appear with name and phone number fields.</div>
+        <div class="test-expected">✅ "Talk to Our AI Assistant" modal with name + phone fields</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="voice">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Voice call initiates successfully <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Enter your real name and phone number. Click "Call Me Now". Should show "Calling you now" status and your phone rings within 30 seconds.</div>
+        <div class="test-data">Use: Your name + your cell phone number<br>Expected: Phone rings, Lily (AI) speaks, gives a lawn care quote</div>
+        <div class="test-expected">✅ Phone rings, AI says "Hi [name], this is Lily from Big Hat Lawn..."</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="voice">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Voice AI gives accurate pricing <span class="priority high">High</span></div>
+        <div class="test-desc">During the test call, ask about pricing for a small yard. Lily should respond with the ranges configured in the script.</div>
+        <div class="test-expected">✅ Quote matches configured pricing ranges</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="voice">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Input validation blocks bad phone numbers <span class="priority medium">Medium</span></div>
+        <div class="test-desc">Enter "123" as a phone number and click "Call Me Now". Should show an error, not fire an API call.</div>
+        <div class="test-expected">✅ Error message: "Please enter a valid 10-digit US phone number"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMS Notifications -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">📱</span>
+      <span class="section-title">Phase 3 — SMS Notifications (requires Twilio)</span>
+      <span class="section-count" id="sms-count">0/5</span>
+    </div>
+
+    <div class="test-item" data-section="sms">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Booking confirmation SMS delivers <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Fire a test notification manually using the curl command below. Should deliver SMS within 30 seconds.</div>
+        <div class="test-data">curl -s -X POST "https://512ai-backend-production.up.railway.app/api/v1/notify" \<br>  -H "Content-Type: application/json" \<br>  -H "X-Notification-Secret: YOUR_SECRET" \<br>  -d '{"type":"booking_confirmed","data":{"customerName":"Test","customerPhone":"YOUR_CELL","appointmentDate":"Monday, April 7","appointmentTime":"10:00 AM","address":"Test Address","serviceType":"Lawn Mowing"}}'</div>
+        <div class="test-expected">✅ SMS received on test phone with booking details</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="sms">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Owner alert SMS delivers to Rudy's cell <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Same booking_confirmed test — Rudy should also receive a "New Booking" SMS on his cell simultaneously.</div>
+        <div class="test-expected">✅ Rudy receives owner alert SMS within 30 seconds</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="sms">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">24h reminder SMS template is correct <span class="priority high">High</span></div>
+        <div class="test-desc">Fire reminder_24h notification. Check that all template variables (name, date, time, address) are filled in — no [undefined] or blank fields.</div>
+        <div class="test-expected">✅ SMS reads naturally with all variables populated</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="sms">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Job complete + review request SMS includes Google link <span class="priority high">High</span></div>
+        <div class="test-desc">Fire job_complete notification. SMS should end with the Google review link.</div>
+        <div class="test-expected">✅ Google review URL appears at end of job_complete SMS</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="sms">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Auth check blocks unauthorized requests <span class="priority medium">Medium</span></div>
+        <div class="test-desc">Fire a notification request with wrong or missing X-Notification-Secret header. Should return 401, not send any SMS.</div>
+        <div class="test-expected">✅ Returns 401 Unauthorized, no SMS sent</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">🔍</span>
+      <span class="section-title">Phase 4 — SEO Verification</span>
+      <span class="section-count" id="seo-count">0/5</span>
+    </div>
+
+    <div class="test-item" data-section="seo">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Schema markup validates in Google's Rich Results Test <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Go to: search.google.com/test/rich-results → Enter bighatlawn.com → Run test. Should show LandscapingBusiness with no errors.</div>
+        <div class="test-expected">✅ No errors in Rich Results Test, LocalBusiness data detected</div>
+        <div class="test-actions">
+          <button class="test-btn" onclick="window.open('https://search.google.com/test/rich-results','_blank')">Open Rich Results Test ↗</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="seo">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Homepage title tag is correct in browser <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Visit bighatlawn.com. Check the browser tab — should show: "Big Hat Lawn | Austin Lawn Care & Mowing Service"</div>
+        <div class="test-expected">✅ Browser tab shows correct title (not Squarespace default)</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="seo">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Google Business Profile is verified and complete <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Search "Big Hat Lawn" on Google Maps. GBP listing should appear with correct name, phone, address, hours, and at least 5 photos.</div>
+        <div class="test-expected">✅ GBP visible in Maps with all fields complete</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="seo">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Google Search Console shows sitemap submitted <span class="priority high">High</span></div>
+        <div class="test-desc">In Google Search Console → Sitemaps → Submitted sitemaps should show bighatlawn.com/sitemap.xml with "Success" status.</div>
+        <div class="test-expected">✅ Sitemap shows "Success" with page count</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="seo">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">All images on homepage have ALT text <span class="priority medium">Medium</span></div>
+        <div class="test-desc">In Chrome: right-click any image → Inspect → check for alt attribute that describes the image with location context.</div>
+        <div class="test-expected">✅ Images have descriptive alt text mentioning "Austin" or service type</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Integration -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-icon">🔗</span>
+      <span class="section-title">Phase 5 — End-to-End Integration Test</span>
+      <span class="section-count" id="e2e-count">0/3</span>
+    </div>
+
+    <div class="test-item" data-section="e2e">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Full lead → booking → SMS flow <span class="priority critical">Critical</span></div>
+        <div class="test-desc">Simulate a real customer: Open chat → ask about mowing → provide name + address → confirm booking → verify: (1) BOOKING_CONFIRMED fired, (2) customer SMS received, (3) Rudy SMS received.</div>
+        <div class="test-expected">✅ All 3 legs of the flow complete without errors</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="e2e">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Both widgets (chat + voice) coexist without overlap <span class="priority high">High</span></div>
+        <div class="test-desc">With both widgets deployed, verify the chat bubble and phone button are both visible and don't cover each other on desktop and mobile.</div>
+        <div class="test-expected">✅ Both buttons visible, no overlapping on any screen size</div>
+      </div>
+    </div>
+
+    <div class="test-item" data-section="e2e">
+      <div class="test-check" onclick="toggleCheck(this)"></div>
+      <div class="test-body">
+        <div class="test-title">Page speed not degraded by widgets <span class="priority medium">Medium</span></div>
+        <div class="test-desc">Run bighatlawn.com through Google PageSpeed Insights before and after widget deployment. Score should not drop more than 5 points.</div>
+        <div class="test-expected">✅ PageSpeed score stays within 5 points of baseline</div>
+        <div class="test-actions">
+          <button class="test-btn" onclick="window.open('https://pagespeed.web.dev/','_blank')">Open PageSpeed ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Status bar -->
+<div class="status-bar">
+  <div class="status-counts">
+    <span class="count-item count-pass">✅ <span id="pass-count">0</span> pass</span>
+    <span class="count-item count-fail">❌ <span id="fail-count">0</span> fail</span>
+    <span class="count-item count-skip">⬜ <span id="skip-count">0</span> remaining</span>
+  </div>
+  <button class="export-btn" onclick="exportResults()">Export Results</button>
+</div>
+
+<script>
+  const counts = {};
+
+  function toggleCheck(el) {
+    if (!el.classList.contains('pass') && !el.classList.contains('fail')) {
+      el.classList.add('pass');
+    } else if (el.classList.contains('pass')) {
+      el.classList.remove('pass');
+      el.classList.add('fail');
+    } else {
+      el.classList.remove('fail');
+    }
+    updateCounts();
+  }
+
+  function updateCounts() {
+    const all    = document.querySelectorAll('.test-check');
+    const passed = document.querySelectorAll('.test-check.pass');
+    const failed = document.querySelectorAll('.test-check.fail');
+    const skip   = all.length - passed.length - failed.length;
+    const pct    = Math.round(passed.length / all.length * 100);
+
+    document.getElementById('pass-count').textContent = passed.length;
+    document.getElementById('fail-count').textContent = failed.length;
+    document.getElementById('skip-count').textContent = skip;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = `${passed.length} / ${all.length} tests passed`;
+
+    // Section counts
+    ['chat','voice','sms','seo','e2e'].forEach(sec => {
+      const secPassed = document.querySelectorAll(`[data-section="${sec}"] .test-check.pass`).length;
+      const secTotal  = document.querySelectorAll(`[data-section="${sec}"] .test-check`).length;
+      const el = document.getElementById(sec + '-count');
+      if (el) el.textContent = `${secPassed}/${secTotal}`;
+    });
+
+    if (skip === 0 && failed.length === 0) {
+      document.getElementById('progress-note').textContent = '🎉 All tests passed — ready to go live!';
+      document.getElementById('progress-note').style.color = '#2E7D32';
+    } else if (failed.length > 0) {
+      document.getElementById('progress-note').textContent = `⚠️ ${failed.length} test(s) failed — fix before launching`;
+      document.getElementById('progress-note').style.color = '#c62828';
+    }
+  }
+
+  function exportResults() {
+    const rows = document.querySelectorAll('.test-item');
+    const lines = ['Big Hat Lawn — Pre-Launch QA Results', new Date().toLocaleString(), ''];
+    rows.forEach(row => {
+      const check = row.querySelector('.test-check');
+      const title = row.querySelector('.test-title').textContent;
+      const status = check.classList.contains('pass') ? '✅ PASS' : check.classList.contains('fail') ? '❌ FAIL' : '⬜ NOT TESTED';
+      lines.push(`${status} — ${title}`);
+    });
+    const passed = document.querySelectorAll('.test-check.pass').length;
+    const total  = document.querySelectorAll('.test-check').length;
+    lines.push('', `Total: ${passed}/${total} passed`);
+    navigator.clipboard.writeText(lines.join('\n')).then(() => {
+      document.querySelector('.export-btn').textContent = '✅ Copied!';
+      setTimeout(() => document.querySelector('.export-btn').textContent = 'Export Results', 2000);
+    });
+  }
+
+  updateCounts();
+</script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Hat Lawn — Setup Info for Ricardo</title>
+<style>
+  :root { --green:#2E7D32;--green-light:#e8f5e9;--green-pale:#f1f8f1;--border:#e0e0e0;--text:#1a1a1a;--muted:#666; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:#fafafa; }
+
+  .hero { background:var(--green); color:#fff; padding:36px 24px; text-align:center; }
+  .hero h1 { font-size:22px; font-weight:800; margin-bottom:6px; }
+  .hero p { opacity:.85; font-size:14px; max-width:420px; margin:0 auto; }
+
+  .container { max-width:640px; margin:0 auto; padding:32px 20px 80px; }
+
+  .intro { background:var(--green-light); border:1px solid #c8e6c9; border-radius:12px; padding:18px; margin-bottom:28px; font-size:13px; }
+  .intro strong { display:block; margin-bottom:4px; font-size:14px; }
+
+  .section { background:#fff; border:1px solid var(--border); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+  .section-head { background:var(--green-pale); border-bottom:1px solid var(--border); padding:14px 18px; font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .section-body { padding:18px; display:flex; flex-direction:column; gap:14px; }
+
+  .field { }
+  .field label { display:block; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }
+  .field input, .field textarea, .field select { width:100%; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px; color:var(--text); outline:none; transition:border .15s; font-family:inherit; }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color:var(--green); }
+  .field textarea { resize:vertical; min-height:80px; }
+  .field .hint { font-size:11px; color:var(--muted); margin-top:4px; }
+  .field.required label::after { content:' *'; color:#e53935; }
+
+  .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:480px){ .row-2{grid-template-columns:1fr;} }
+
+  .service-row { display:flex; gap:10px; align-items:flex-start; }
+  .service-row input:first-child { flex:2; }
+  .service-row input:last-child { flex:1; }
+  .add-btn { background:var(--green-light); border:1.5px dashed var(--green); border-radius:8px; padding:10px; width:100%; font-size:13px; font-weight:600; color:var(--green); cursor:pointer; text-align:center; margin-top:4px; transition:background .15s; }
+  .add-btn:hover { background:#c8e6c9; }
+  .remove-btn { padding:10px 12px; border:1.5px solid #fee; border-radius:8px; background:#fff8f8; color:#c62828; cursor:pointer; font-size:14px; flex-shrink:0; transition:all .15s; }
+  .remove-btn:hover { background:#ffebee; }
+
+  .days-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+  .day-btn { padding:8px 4px; border:1.5px solid var(--border); border-radius:8px; font-size:11px; font-weight:600; text-align:center; cursor:pointer; transition:all .15s; background:#fff; color:var(--muted); }
+  .day-btn.selected { background:var(--green); border-color:var(--green); color:#fff; }
+
+  .submit-section { text-align:center; padding:24px 0; }
+  .submit-btn { background:var(--green); color:#fff; border:none; border-radius:12px; padding:16px 40px; font-size:16px; font-weight:700; cursor:pointer; transition:background .15s; }
+  .submit-btn:hover { background:#1B5E20; }
+  .result-box { display:none; background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px; margin-top:20px; font-size:13px; }
+  .result-box pre { background:#1e1e1e; color:#d4d4d4; border-radius:8px; padding:14px; font-size:11px; overflow-x:auto; line-height:1.6; margin-top:10px; }
+  .copy-result-btn { background:var(--green); color:#fff; border:none; border-radius:6px; padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; margin-top:10px; }
+
+  .optional { font-size:10px; color:#aaa; font-weight:400; text-transform:uppercase; margin-left:4px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🌿 Big Hat Lawn — AI Setup Form</h1>
+  <p>Fill this out so Ricardo can personalize your AI assistant and get everything live on your website</p>
+</div>
+
+<div class="container">
+
+  <div class="intro">
+    <strong>Hi Rudy! 👋</strong>
+    This takes about 10 minutes. The more detail you give, the better your AI assistant will answer customer questions. Anything marked with <span style="color:#e53935">*</span> is required.
+  </div>
+
+  <!-- Business Basics -->
+  <div class="section">
+    <div class="section-head">🏢 Business Basics</div>
+    <div class="section-body">
+      <div class="row-2">
+        <div class="field required">
+          <label>Business Name</label>
+          <input type="text" id="biz-name" value="Big Hat Lawn" />
+        </div>
+        <div class="field required">
+          <label>Your Name (Owner)</label>
+          <input type="text" id="owner-name" placeholder="e.g. Rudy Mendez" />
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field required">
+          <label>Business Phone (shown to customers)</label>
+          <input type="tel" id="biz-phone" placeholder="(512) 555-0100" />
+        </div>
+        <div class="field required">
+          <label>Your Cell (private — for owner alerts)</label>
+          <input type="tel" id="owner-cell" placeholder="(512) 555-0199" />
+        </div>
+      </div>
+      <div class="field required">
+        <label>Business Email</label>
+        <input type="email" id="biz-email" placeholder="info@bighatlawn.com" />
+      </div>
+      <div class="field">
+        <label>Business Address <span class="optional">if applicable</span></label>
+        <input type="text" id="biz-address" placeholder="123 Oak St, Austin TX 78701" />
+        <div class="hint">Used for SEO schema markup — can be a PO Box or just "Austin, TX" if you don't have a storefront</div>
+      </div>
+      <div class="field">
+        <label>Google Business Profile Link <span class="optional">optional but important</span></label>
+        <input type="url" id="gbp-link" placeholder="https://g.page/bighatlawn" />
+        <div class="hint">Find this in your Google Business Profile dashboard → Share profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services & Pricing -->
+  <div class="section">
+    <div class="section-head">🔧 Services & Pricing</div>
+    <div class="section-body">
+      <div class="field">
+        <label>Services You Offer — add each one with a price range</label>
+        <div id="services-list">
+          <div class="service-row" id="service-0">
+            <input type="text" placeholder="Service name (e.g. Lawn Mowing)" value="Lawn Mowing" />
+            <input type="text" placeholder="Price range (e.g. $40–$80)" value="" />
+            <button class="remove-btn" onclick="removeService(this)" style="display:none">✕</button>
+          </div>
+          <div class="service-row" id="service-1">
+            <input type="text" placeholder="Service name" value="Edging & Trimming" />
+            <input type="text" placeholder="Price range" value="" />
+            <button class="remove-btn" onclick="removeService(this)">✕</button>
+          </div>
+          <div class="service-row" id="service-2">
+            <input type="text" placeholder="Service name" value="Yard Cleanup" />
+            <input type="text" placeholder="Price range" value="" />
+            <button class="remove-btn" onclick="removeService(this)">✕</button>
+          </div>
+        </div>
+        <div class="add-btn" onclick="addService()">+ Add Another Service</div>
+        <div class="hint">The AI will use these price ranges when customers ask for quotes over chat or phone</div>
+      </div>
+
+      <div class="field">
+        <label>Recurring Plans <span class="optional">optional</span></label>
+        <textarea id="recurring-plans" placeholder="e.g. Weekly mowing: $X/mo, Bi-weekly: $X/mo, Monthly: $X/mo — does weekly get a discount?"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Anything the AI should NOT quote or discuss</label>
+        <textarea id="dont-quote" placeholder="e.g. We don't do tree removal, irrigation installation, or pest control..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Area -->
+  <div class="section">
+    <div class="section-head">📍 Service Area</div>
+    <div class="section-body">
+      <div class="field required">
+        <label>Which cities / neighborhoods do you serve?</label>
+        <textarea id="service-area" placeholder="e.g. Austin (all areas), Round Rock, Cedar Park, Pflugerville, Manor, Buda, Kyle..." rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Any areas you DON'T serve? <span class="optional">optional</span></label>
+        <input type="text" id="no-service" placeholder="e.g. We don't go past 183 North, no Lockhart..." />
+      </div>
+      <div class="field">
+        <label>ZIP codes <span class="optional">optional — helps with scheduling zones</span></label>
+        <textarea id="zipcodes" placeholder="78701, 78702, 78703, 78704, 78705..." rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hours -->
+  <div class="section">
+    <div class="section-head">🕐 Business Hours</div>
+    <div class="section-body">
+      <div class="field">
+        <label>What days do you work?</label>
+        <div class="days-grid" id="days-grid">
+          <div class="day-btn selected" onclick="toggleDay(this)" data-day="Mon">Mon</div>
+          <div class="day-btn selected" onclick="toggleDay(this)" data-day="Tue">Tue</div>
+          <div class="day-btn selected" onclick="toggleDay(this)" data-day="Wed">Wed</div>
+          <div class="day-btn selected" onclick="toggleDay(this)" data-day="Thu">Thu</div>
+          <div class="day-btn selected" onclick="toggleDay(this)" data-day="Fri">Fri</div>
+          <div class="day-btn" onclick="toggleDay(this)" data-day="Sat">Sat</div>
+          <div class="day-btn" onclick="toggleDay(this)" data-day="Sun">Sun</div>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field required">
+          <label>Start Time</label>
+          <input type="time" id="hours-start" value="07:00" />
+        </div>
+        <div class="field required">
+          <label>End Time (last job start)</label>
+          <input type="time" id="hours-end" value="17:00" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Any notes about scheduling? <span class="optional">optional</span></label>
+        <input type="text" id="schedule-notes" placeholder="e.g. No jobs after 3pm Friday, Saturdays only for existing customers..." />
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Persona -->
+  <div class="section">
+    <div class="section-head">🤖 AI Assistant Personality</div>
+    <div class="section-body">
+      <div class="field">
+        <label>What should the AI call itself?</label>
+        <input type="text" id="ai-name" value="the Big Hat Lawn assistant" placeholder="e.g. 'Max' or 'the Big Hat Lawn assistant'" />
+        <div class="hint">Customers will see this name in the chat window</div>
+      </div>
+      <div class="field">
+        <label>How should the AI greet customers when chat opens?</label>
+        <textarea id="greeting" rows="2">Hi! I'm the Big Hat Lawn assistant. I can help you get an estimate or schedule a service. What can I help you with today?</textarea>
+      </div>
+      <div class="field">
+        <label>Anything specific the AI should say or avoid?</label>
+        <textarea id="ai-notes" placeholder="e.g. Always mention we're licensed and insured, never promise same-day service, always be friendly..." rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label>Tell me about your business in 2-3 sentences (for the AI to know your story)</label>
+        <textarea id="biz-story" placeholder="e.g. Big Hat Lawn has been serving Austin families since 2018. We're a family-owned business that takes pride in showing up on time and leaving your yard looking sharp..." rows="4"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credentials -->
+  <div class="section">
+    <div class="section-head">🔑 Credentials & Accounts</div>
+    <div class="section-body">
+      <div class="intro" style="margin:0">
+        <strong>These are needed to activate each tool:</strong>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Leave blank if you don't have one yet — Ricardo will help you set them up.</div>
+      </div>
+      <div class="field">
+        <label>Squarespace Login Email (for bighatlawn.com) <span class="optional">or give Ricardo editor access</span></label>
+        <input type="email" id="squarespace-email" placeholder="yourlogin@email.com" />
+      </div>
+      <div class="field">
+        <label>LawnPro API Key <span class="optional">for scheduling sync</span></label>
+        <input type="text" id="lawnpro-key" placeholder="From LawnPro → Settings → Integrations → API" />
+      </div>
+      <div class="field">
+        <label>Twilio Account SID <span class="optional">for SMS notifications</span></label>
+        <input type="text" id="twilio-sid" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+        <div class="hint">twilio.com → Console → Account SID. Free to create an account, $1/mo for a number.</div>
+      </div>
+      <div class="field">
+        <label>Twilio Auth Token <span class="optional">for SMS notifications</span></label>
+        <input type="password" id="twilio-token" placeholder="Your Twilio auth token" />
+      </div>
+      <div class="field">
+        <label>Bland.ai API Key <span class="optional">for voice AI callbacks</span></label>
+        <input type="text" id="bland-key" placeholder="From bland.ai → Dashboard → API Keys" />
+        <div class="hint">bland.ai → sign up free → get API key. Costs ~$0.07/min per call.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="submit-section">
+    <button class="submit-btn" onclick="generateConfig()">Generate My Config →</button>
+    <div class="result-box" id="result-box">
+      <strong style="font-size:14px;">✅ Config generated! Copy and send this to Ricardo:</strong>
+      <pre id="result-pre"></pre>
+      <button class="copy-result-btn" onclick="copyResult()">Copy Config</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let serviceCount = 3;
+
+  function addService() {
+    const list = document.getElementById('services-list');
+    const div = document.createElement('div');
+    div.className = 'service-row';
+    div.id = 'service-' + serviceCount++;
+    div.innerHTML = `<input type="text" placeholder="Service name" /><input type="text" placeholder="Price range" /><button class="remove-btn" onclick="removeService(this)">✕</button>`;
+    list.appendChild(div);
+  }
+
+  function removeService(btn) {
+    btn.closest('.service-row').remove();
+  }
+
+  function toggleDay(el) { el.classList.toggle('selected'); }
+
+  function g(id) { return (document.getElementById(id)?.value || '').trim(); }
+
+  function getServices() {
+    const rows = document.querySelectorAll('.service-row');
+    const svcs = [];
+    rows.forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const name = inputs[0]?.value?.trim();
+      const price = inputs[1]?.value?.trim();
+      if (name) svcs.push({ name, price: price || 'TBD' });
+    });
+    return svcs;
+  }
+
+  function getWorkDays() {
+    return Array.from(document.querySelectorAll('.day-btn.selected')).map(d => d.dataset.day).join(', ');
+  }
+
+  function generateConfig() {
+    const config = {
+      business: {
+        name:         g('biz-name')      || '⚠️ MISSING',
+        ownerName:    g('owner-name')    || '⚠️ MISSING',
+        phone:        g('biz-phone')     || '⚠️ MISSING',
+        ownerCell:    g('owner-cell')    || '⚠️ MISSING',
+        email:        g('biz-email')     || '⚠️ MISSING',
+        address:      g('biz-address')   || 'Austin, TX',
+        googleReview: g('gbp-link')      || '⚠️ MISSING — needed for review request SMS'
+      },
+      services: getServices(),
+      recurringPlans: g('recurring-plans') || 'Not specified',
+      dontQuote:      g('dont-quote')      || 'None specified',
+      serviceArea: {
+        cities:   g('service-area') || '⚠️ MISSING',
+        excluded: g('no-service')   || 'None',
+        zipcodes: g('zipcodes')     || 'TBD'
+      },
+      hours: {
+        days:  getWorkDays() || '⚠️ MISSING',
+        start: g('hours-start') || '07:00',
+        end:   g('hours-end')   || '17:00',
+        notes: g('schedule-notes') || 'None'
+      },
+      aiPersona: {
+        name:     g('ai-name')    || 'the Big Hat Lawn assistant',
+        greeting: g('greeting')   || '⚠️ MISSING',
+        notes:    g('ai-notes')   || 'None',
+        story:    g('biz-story')  || '⚠️ MISSING — needed to personalize AI responses'
+      },
+      credentials: {
+        squarespace: g('squarespace-email') || '⚠️ MISSING — needed to deploy widgets',
+        lawnproKey:  g('lawnpro-key')  || '⚠️ MISSING — needed for scheduling sync',
+        twilioSid:   g('twilio-sid')   || '⚠️ MISSING — needed for SMS notifications',
+        twilioToken: g('twilio-token') ? '✅ provided (hidden)' : '⚠️ MISSING',
+        blandKey:    g('bland-key')    ? '✅ provided (hidden)' : '⚠️ MISSING — needed for voice AI'
+      },
+      generatedAt: new Date().toLocaleString()
+    };
+
+    document.getElementById('result-pre').textContent = JSON.stringify(config, null, 2);
+    document.getElementById('result-box').style.display = 'block';
+    document.getElementById('result-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function copyResult() {
+    const text = document.getElementById('result-pre').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      document.querySelector('.copy-result-btn').textContent = '✅ Copied!';
+      setTimeout(() => document.querySelector('.copy-result-btn').textContent = 'Copy Config', 2000);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bighatlawn.com — Squarespace Deployment Guide</title>
+<style>
+  :root {
+    --green:#2E7D32;--green-light:#e8f5e9;--green-pale:#f1f8f1;
+    --amber:#e65100;--amber-light:#fff3e0;
+    --blue:#1565C0;--blue-light:#e3f2fd;
+    --border:#e0e0e0;--text:#1a1a1a;--muted:#666;--bg:#f4f6f9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:var(--bg); }
+
+  .hero { background:linear-gradient(135deg,var(--green),#1B5E20); color:#fff; padding:36px 24px; text-align:center; }
+  .hero h1 { font-size:22px; font-weight:800; margin-bottom:6px; }
+  .hero p { opacity:.85; font-size:13px; }
+  .hero .time-est { display:inline-block; background:rgba(255,255,255,.2); border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600; margin-top:12px; }
+
+  .container { max-width:760px; margin:0 auto; padding:28px 20px 80px; }
+
+  /* Phase steps */
+  .phase { margin-bottom:28px; }
+  .phase-header { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+  .phase-num { width:32px; height:32px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; flex-shrink:0; }
+  .phase-title { font-size:16px; font-weight:700; }
+  .phase-est { font-size:12px; color:var(--muted); background:#fff; border:1px solid var(--border); border-radius:10px; padding:2px 10px; }
+
+  .step-card { background:#fff; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:10px; }
+  .step-head { padding:14px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none; }
+  .step-head:hover { background:var(--green-pale); }
+  .step-num-sm { width:24px; height:24px; border-radius:50%; background:var(--green-light); color:var(--green); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+  .step-title-sm { font-size:13px; font-weight:600; flex:1; }
+  .step-check { width:20px; height:20px; border:2px solid var(--border); border-radius:5px; flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+  .step-check:hover { border-color:var(--green); }
+  .step-check.done { background:var(--green); border-color:var(--green); }
+  .step-check.done::after { content:'✓'; color:#fff; font-size:11px; font-weight:700; }
+  .step-body { padding:0 16px 16px; display:none; }
+  .step-body.open { display:block; }
+
+  .step-sub { font-size:12px; color:var(--muted); margin-bottom:12px; }
+  .nav-path { background:var(--blue-light); border-radius:8px; padding:10px 12px; font-size:12px; font-weight:600; color:var(--blue); margin-bottom:12px; }
+  .nav-path span { opacity:.6; margin:0 6px; }
+
+  .screenshot-placeholder { background:#f0f4ff; border:2px dashed #90caf9; border-radius:8px; padding:20px; text-align:center; font-size:12px; color:var(--blue); margin:10px 0; }
+  .screenshot-placeholder strong { display:block; margin-bottom:4px; font-size:13px; }
+
+  .code-block { background:#1e1e1e; color:#d4d4d4; border-radius:8px; padding:14px 16px; font-family:monospace; font-size:12px; line-height:1.6; position:relative; overflow-x:auto; margin:10px 0; }
+  .copy-btn { position:absolute; top:8px; right:8px; background:rgba(255,255,255,.15); border:none; color:#fff; border-radius:5px; padding:4px 10px; font-size:11px; cursor:pointer; }
+  .copy-btn:hover { background:rgba(255,255,255,.25); }
+
+  .alert { border-radius:8px; padding:12px 14px; font-size:12px; margin:10px 0; }
+  .alert.info { background:var(--blue-light); border-left:3px solid var(--blue); color:#0d47a1; }
+  .alert.warn { background:var(--amber-light); border-left:3px solid var(--amber); color:#e65100; }
+  .alert.success { background:var(--green-light); border-left:3px solid var(--green); color:var(--green); }
+  .alert strong { display:block; margin-bottom:3px; }
+
+  ol.steps-list { margin-left:16px; }
+  ol.steps-list li { font-size:13px; margin-bottom:8px; line-height:1.5; }
+  ol.steps-list li strong { color:var(--text); }
+
+  .result-check { background:var(--green-pale); border:1px solid #c8e6c9; border-radius:8px; padding:10px 12px; font-size:12px; color:var(--green); font-weight:600; margin-top:10px; }
+  .result-check::before { content:'✅ '; }
+
+  /* Progress sticky footer */
+  .progress-bar-sticky { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--border); padding:10px 20px; z-index:50; display:flex; align-items:center; gap:14px; }
+  .progress-track { flex:1; background:#e0e0e0; border-radius:20px; height:8px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--green); border-radius:20px; transition:width .3s; }
+  .progress-text { font-size:12px; font-weight:700; color:var(--muted); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🌿 bighatlawn.com — Squarespace Deployment</h1>
+  <p>Step-by-step guide to deploy all 512AI tools on Rudy's Squarespace site</p>
+  <span class="time-est">⏱ ~45 min total to deploy everything</span>
+</div>
+
+<div class="progress-bar-sticky">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <span class="progress-text" id="progress-text">0 / 0 steps done</span>
+</div>
+
+<div class="container">
+
+  <!-- Phase 1: Chat Widget -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">1</div>
+      <div class="phase-title">Chat Widget (~5 min)</div>
+      <span class="phase-est">No Squarespace plan upgrade needed</span>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">1</div>
+        <div class="step-title-sm">Log into Squarespace as bighatlawn.com admin</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">account.squarespace.com <span>→</span> Log In <span>→</span> bighatlawn.com</div>
+        <div class="alert info"><strong>Note:</strong> You need Editor or Admin access. If Rudy gives you Editor invite, accept it first from your email.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">2</div>
+        <div class="step-title-sm">Navigate to Code Injection (Settings → Advanced)</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Squarespace Dashboard <span>→</span> Settings <span>→</span> Advanced <span>→</span> Code Injection</div>
+        <div class="alert warn"><strong>Squarespace plan note:</strong> Code Injection requires the Business plan or higher. If you don't see "Advanced" in Settings, Rudy needs to upgrade from Personal → Business (~$23/mo).</div>
+        <div class="screenshot-placeholder">
+          <strong>📸 What you should see:</strong>
+          Settings panel → left sidebar → "Advanced" → Code Injection page with "Header" and "Footer" text areas
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">3</div>
+        <div class="step-title-sm">Paste chat widget script into Footer injection</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Settings → Advanced → Code Injection → <strong>Footer</strong> text area</div>
+        <p class="step-sub">Paste this exactly as-is. The <code>defer</code> attribute means it won't slow down page load.</p>
+        <div class="code-block" id="chat-snippet">
+<button class="copy-btn" onclick="copyCode('chat-snippet')">Copy</button>&lt;!-- 512AI Big Hat Lawn Chat Widget --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js" defer&gt;&lt;/script&gt;</div>
+        <div class="alert success">Put this in <strong>Footer</strong> (not Header). Footer injection runs after the page loads — better for performance.</div>
+        <div class="result-check">Click Save. Preview the site — green bubble should appear bottom-right within 2 seconds.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">4</div>
+        <div class="step-title-sm">Verify chat widget is live</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <ol class="steps-list">
+          <li>Open <strong>bighatlawn.com</strong> in a new incognito tab</li>
+          <li>Wait 2 seconds — green bubble should appear bottom-right</li>
+          <li>Click it — chat panel should open with greeting</li>
+          <li>Type: <strong>"How much does mowing cost?"</strong></li>
+          <li>Verify AI responds with pricing info</li>
+        </ol>
+        <div class="result-check">AI responds correctly and the session ID shows in chat header</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2: Voice Widget -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">2</div>
+      <div class="phase-title">Voice AI Widget (~5 min — after Bland.ai key is added)</div>
+      <span class="phase-est">Deploy same way as chat</span>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">5</div>
+        <div class="step-title-sm">Add BLAND_API_KEY_BHL to Railway backend</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">railway.app <span>→</span> 512ai-backend project <span>→</span> Variables <span>→</span> Add variable</div>
+        <div class="code-block" id="bland-var">
+<button class="copy-btn" onclick="copyCode('bland-var')">BLAND_API_KEY_BHL = [Rudy's Bland.ai API key]
+BHL_TWILIO_FROM   = [Rudy's Twilio phone number e.g. +15125550100]</button></div>
+        <div class="alert info"><strong>Railway auto-redeploys</strong> when you add variables. Wait ~60 seconds for the new deployment before testing.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">6</div>
+        <div class="step-title-sm">Paste voice widget script into Footer injection</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Settings → Advanced → Code Injection → Footer</div>
+        <p class="step-sub">Add this <strong>below</strong> the existing chat widget script tag — don't replace it.</p>
+        <div class="code-block" id="voice-snippet">
+<button class="copy-btn" onclick="copyCode('voice-snippet')">Copy</button>&lt;!-- 512AI Big Hat Lawn Voice Widget --&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/voice-bighatlawn.js" defer&gt;&lt;/script&gt;</div>
+        <div class="alert info">The voice button appears at <code>bottom: 92px right: 24px</code> — directly above the chat bubble. Both will coexist.</div>
+        <div class="result-check">Save → Preview — phone icon should appear above the chat bubble</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: Schema + SEO -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">3</div>
+      <div class="phase-title">Schema Markup + SEO (~15 min)</div>
+      <span class="phase-est">Biggest impact for Google ranking</span>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">7</div>
+        <div class="step-title-sm">Add LocalBusiness schema to Header injection</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Settings → Advanced → Code Injection → <strong>Header</strong> text area</div>
+        <p class="step-sub">This goes in Header (not Footer). Open <strong>seo-bighatlawn.html</strong> and copy the full schema block — fill in Rudy's real phone, address, and social links first.</p>
+        <div class="alert warn"><strong>Fill in all 🔴 placeholders</strong> in the schema before pasting. Invalid placeholders will be read by Google and look bad.</div>
+        <div class="result-check">After saving, test at: search.google.com/test/rich-results → should show LandscapingBusiness</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">8</div>
+        <div class="step-title-sm">Set Homepage page title and meta description</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Pages <span>→</span> Home (⚙️ gear icon) <span>→</span> SEO tab</div>
+        <div class="code-block" id="meta-home">
+<button class="copy-btn" onclick="copyCode('meta-home')">Copy</button>Page Title:
+Big Hat Lawn | Austin Lawn Care & Mowing Service
+
+Meta Description:
+Big Hat Lawn offers professional lawn mowing, cleanup, and maintenance in Austin, TX. Get a free quote — AI scheduling available 24/7.</div>
+        <div class="result-check">Browser tab should show new title when visiting bighatlawn.com</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">9</div>
+        <div class="step-title-sm">Add business phone + address to footer</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Pages <span>→</span> scroll to Footer <span>→</span> Edit <span>→</span> add text block</div>
+        <p class="step-sub">Add Rudy's NAP (Name + Address + Phone) consistently here. Example:</p>
+        <div class="code-block" id="footer-nap">
+<button class="copy-btn" onclick="copyCode('footer-nap')">Copy</button>Big Hat Lawn
+Austin, TX | (512) 555-0100 | info@bighatlawn.com
+Licensed & Insured | Serving all of Austin and surrounding areas</div>
+        <div class="alert info">Google uses NAP consistency across the web for local ranking. This + GBP + Yelp all having the same info = better ranking.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">10</div>
+        <div class="step-title-sm">Connect Google Search Console</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">Squarespace Settings <span>→</span> Marketing <span>→</span> Google Search Console <span>→</span> Connect</div>
+        <ol class="steps-list">
+          <li>Click "Connect" → sign in with Rudy's Google account</li>
+          <li>Squarespace auto-verifies ownership</li>
+          <li>Go to <strong>search.google.com/search-console</strong></li>
+          <li>Sitemaps → Submit → enter <strong>bighatlawn.com/sitemap.xml</strong></li>
+        </ol>
+        <div class="result-check">GSC shows bighatlawn.com as a verified property</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4: LawnPro Webhook -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">4</div>
+      <div class="phase-title">LawnPro CRM Webhook (~10 min — after CRM access)</div>
+      <span class="phase-est">Activates scheduling sync + SMS automation</span>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">11</div>
+        <div class="step-title-sm">Deploy lawnpro webhook function to Netlify (512ai.co)</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <p class="step-sub">Copy the webhook file to the Netlify functions folder and push to GitHub (auto-deploys).</p>
+        <div class="code-block" id="webhook-deploy">
+<button class="copy-btn" onclick="copyCode('webhook-deploy')">Copy</button>cd ~/Claude_Projects/512ai
+cp files/lawnpro-webhook-bighatlawn.js netlify/functions/lawnpro-webhook-bighatlawn.js
+git add netlify/functions/lawnpro-webhook-bighatlawn.js
+git commit -m "feat: add LawnPro webhook handler for Big Hat Lawn"
+git push origin main</div>
+        <div class="alert info">After pushing, Netlify auto-deploys. Function available at:<br><strong>https://512ai.co/.netlify/functions/lawnpro-webhook-bighatlawn</strong></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">12</div>
+        <div class="step-title-sm">Register webhook in LawnPro</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <div class="nav-path">LawnPro Admin <span>→</span> Settings <span>→</span> Integrations <span>→</span> Webhooks <span>→</span> Add New</div>
+        <div class="code-block" id="webhook-config">
+<button class="copy-btn" onclick="copyCode('webhook-config')">Copy</button>Webhook URL:
+https://512ai.co/.netlify/functions/lawnpro-webhook-bighatlawn
+
+Events to subscribe:
+✅ job.created
+✅ job.updated
+✅ job.completed
+✅ job.cancelled</div>
+        <div class="alert warn"><strong>Copy the webhook secret</strong> that LawnPro shows after saving. Add it to Railway + Netlify as <code>LAWNPRO_WEBHOOK_SECRET</code>.</div>
+        <div class="result-check">LawnPro shows webhook as Active. Test with a sample job — check function logs in Netlify dashboard.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 5: Final checks -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">5</div>
+      <div class="phase-title">Final Verification (~5 min)</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">13</div>
+        <div class="step-title-sm">Run the pre-launch QA checklist</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <p class="step-sub">Open <strong>qa-launch-checklist.html</strong> and run every test. All critical items must pass before announcing to customers.</p>
+        <div class="alert success"><strong>Go-live criteria:</strong> All "Critical" tests pass. No "High" tests fail. At least 1 full end-to-end test (lead → booking → SMS) completed successfully.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="toggleStep(this)">
+        <div class="step-num-sm">14</div>
+        <div class="step-title-sm">Share the client portal link with Rudy</div>
+        <div class="step-check" onclick="event.stopPropagation();toggleDone(this)"></div>
+      </div>
+      <div class="step-body">
+        <p class="step-sub">Send Rudy a link to <strong>client-portal-bighatlawn.html</strong> (hosted on CDN) so he can start seeing his dashboard.</p>
+        <div class="code-block" id="client-portal-url">
+<button class="copy-btn" onclick="copyCode('client-portal-url')">Copy</button>https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/client-portal-bighatlawn.html</div>
+        <div class="alert info">The portal works immediately — it shows setup status even before all tools are wired up. Real data populates automatically as tools activate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick reference -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;">
+    <div style="padding:14px 18px;background:var(--green-pale);border-bottom:1px solid var(--border);font-weight:700;font-size:14px;">📋 Quick Reference — All Injection Points</div>
+    <div style="padding:16px 18px;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:#fafafa;"><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;color:var(--muted);">What</th><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;color:var(--muted);">Where in Squarespace</th><th style="text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;text-transform:uppercase;color:var(--muted);">Section</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Chat Widget</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Settings → Advanced → Code Injection</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--green);">Footer</td></tr>
+          <tr><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Voice Widget</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Settings → Advanced → Code Injection</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--green);">Footer (below chat)</td></tr>
+          <tr><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Schema Markup</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Settings → Advanced → Code Injection</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--blue);">Header</td></tr>
+          <tr><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Google Analytics (if needed)</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Settings → Advanced → Code Injection</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);font-weight:600;color:var(--blue);">Header</td></tr>
+          <tr><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Page Title</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Pages → [Page] → ⚙️ → SEO tab → Page Title</td><td style="padding:9px 10px;border-bottom:1px solid var(--border);">Per-page</td></tr>
+          <tr><td style="padding:9px 10px;">Meta Description</td><td style="padding:9px 10px;">Pages → [Page] → ⚙️ → SEO tab → Description</td><td style="padding:9px 10px;">Per-page</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleStep(el) {
+    const body = el.nextElementSibling;
+    body.classList.toggle('open');
+  }
+  function toggleDone(el) {
+    el.classList.toggle('done');
+    updateProgress();
+  }
+  function updateProgress() {
+    const all  = document.querySelectorAll('.step-check').length;
+    const done = document.querySelectorAll('.step-check.done').length;
+    const pct  = Math.round(done / all * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent = `${done} / ${all} steps done`;
+  }
+  function copyCode(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace(/^Copy\n/, '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.querySelector('.copy-btn');
+      if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+    });
+  }
+  updateProgress();
+</script>
+</body>
+</html>
