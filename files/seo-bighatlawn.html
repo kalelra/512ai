@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Action Plan — Big Hat Lawn | 512AI</title>
+<style>
+  :root {
+    --green: #2E7D32; --green-light: #e8f5e9; --green-dark: #1B5E20;
+    --amber: #F57F17; --amber-light: #fff8e1;
+    --blue: #1565C0; --blue-light: #e3f2fd;
+    --red: #c62828; --red-light: #ffebee;
+    --gray: #f5f5f5; --border: #e0e0e0;
+    --text: #1a1a1a; --muted: #666;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--text); background: #fafafa; line-height: 1.6; }
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Header */
+  .header { background: var(--green); color: #fff; padding: 36px 32px; border-radius: 14px; margin-bottom: 36px; }
+  .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .header p { opacity: .85; font-size: 14px; }
+  .header .badge { display: inline-block; background: rgba(255,255,255,.2); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 600; margin-top: 12px; }
+
+  /* Priority legend */
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .pill { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .pill.high { background: var(--red-light); color: var(--red); }
+  .pill.med  { background: var(--amber-light); color: var(--amber); }
+  .pill.low  { background: var(--blue-light); color: var(--blue); }
+  .pill.done { background: var(--green-light); color: var(--green); }
+
+  /* Section */
+  .section { background: #fff; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+  .section-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+  .section-icon { font-size: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; flex: 1; }
+  .section-body { padding: 20px; }
+
+  /* Task rows */
+  .task { border-bottom: 1px solid var(--border); padding: 14px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .task:last-child { border-bottom: none; }
+  .task-check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 5px; flex-shrink: 0; margin-top: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .task-check:hover { border-color: var(--green); }
+  .task-check.checked { background: var(--green); border-color: var(--green); }
+  .task-check.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 700; }
+  .task-body { flex: 1; }
+  .task-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .task-desc { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .task-priority { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .task-priority.high { background: var(--red-light); color: var(--red); }
+  .task-priority.med  { background: var(--amber-light); color: var(--amber); }
+  .task-priority.low  { background: var(--blue-light); color: var(--blue); }
+
+  /* Code blocks */
+  .code-block { background: #1e1e1e; color: #d4d4d4; border-radius: 8px; padding: 16px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 10px 0; position: relative; }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,.15); border: none; color: #fff; border-radius: 5px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+  .copy-btn:hover { background: rgba(255,255,255,.25); }
+  .code-comment { color: #6a9955; }
+  .code-key { color: #9cdcfe; }
+  .code-val { color: #ce9178; }
+  .code-tag { color: #4ec9b0; }
+
+  /* Progress bar */
+  .progress-wrap { background: var(--gray); border-radius: 20px; height: 8px; margin: 6px 0 2px; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--green); border-radius: 20px; transition: width .3s; }
+  .progress-label { font-size: 12px; color: var(--muted); }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; background: var(--gray); font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .impact-high { color: var(--green); font-weight: 700; }
+  .impact-med  { color: var(--amber); font-weight: 600; }
+
+  /* Alert box */
+  .alert { border-radius: 8px; padding: 14px 16px; font-size: 13px; margin-bottom: 16px; }
+  .alert.info { background: var(--blue-light); border-left: 4px solid var(--blue); color: #0d47a1; }
+  .alert.warn { background: var(--amber-light); border-left: 4px solid var(--amber); color: #e65100; }
+  .alert strong { display: block; margin-bottom: 3px; }
+
+  /* Two-col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .two-col { grid-template-columns: 1fr; } }
+
+  /* Blog topics */
+  .topic { padding: 10px 14px; background: var(--gray); border-radius: 8px; font-size: 13px; margin-bottom: 8px; }
+  .topic strong { display: block; font-size: 13px; margin-bottom: 2px; }
+  .topic span { font-size: 12px; color: var(--muted); }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>🌿 Big Hat Lawn — SEO Action Plan</h1>
+    <p>Squarespace-specific optimizations for <strong>bighatlawn.com</strong> • Austin, TX local market</p>
+    <span class="badge">Prepared by 512AI • April 2026</span>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span>Priority:</span>
+    <span class="pill high">🔴 High — Do First</span>
+    <span class="pill med">🟡 Medium — Do Soon</span>
+    <span class="pill low">🔵 Low — Nice to Have</span>
+  </div>
+
+  <!-- Squarespace Setup -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚙️</span>
+      <span class="section-title">1. Squarespace SEO Basics (30 min)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert info">
+        <strong>Where to find these settings:</strong>
+        Squarespace Dashboard → Pages → (click any page) → gear icon → SEO tab. Also: Settings → Marketing → SEO.
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Set Homepage Title Tag</div>
+          <div class="task-desc">Go to Pages → Home → gear → SEO tab → Page Title. This is the blue link text in Google search results.</div>
+          <div class="code-block">Big Hat Lawn | Austin Lawn Care &amp; Mowing Service</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Set Homepage Meta Description</div>
+          <div class="task-desc">Same SEO tab → Description. This is the gray text under the title in Google. Keep under 155 characters.</div>
+          <div class="code-block">Big Hat Lawn offers professional lawn mowing, cleanup, and maintenance in Austin, TX. Get a free quote — AI scheduling available 24/7.</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Enable SSL (HTTPS)</div>
+          <div class="task-desc">Settings → Security → SSL. Should be set to "Secure" (green lock). Google penalizes HTTP sites.</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Connect Google Search Console</div>
+          <div class="task-desc">Settings → Marketing → Google Search Console → Verify ownership. This tells you how Google sees your site and which keywords you rank for.</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Set Site Language and Region</div>
+          <div class="task-desc">Settings → General → Language & Region → Set to English (United States). Helps with local search targeting.</div>
+          <span class="task-priority med">Medium</span>
+        </div>
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Submit Sitemap to Google</div>
+          <div class="task-desc">Squarespace auto-generates a sitemap at <strong>bighatlawn.com/sitemap.xml</strong>. Submit this URL in Google Search Console → Sitemaps. Do this after verifying ownership.</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page-level SEO -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📄</span>
+      <span class="section-title">2. Page-Level SEO (fill in for each page)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert warn">
+        <strong>Note:</strong> Update these once Rudy provides exact services, service areas, and business details.
+      </div>
+      <table>
+        <thead>
+          <tr><th>Page</th><th>Title Tag (max 60 chars)</th><th>Meta Description (max 155 chars)</th><th>Priority</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Home</strong></td>
+            <td>Big Hat Lawn | Austin Lawn Care & Mowing</td>
+            <td>Professional lawn mowing and maintenance in Austin, TX. Fast quotes, AI scheduling. Serving [NEIGHBORHOODS].</td>
+            <td class="impact-high">High</td>
+          </tr>
+          <tr>
+            <td><strong>Services</strong></td>
+            <td>Lawn Care Services Austin TX | Big Hat Lawn</td>
+            <td>Mowing, edging, cleanup, and more. Big Hat Lawn serves Austin and surrounding areas. Get a free estimate today.</td>
+            <td class="impact-high">High</td>
+          </tr>
+          <tr>
+            <td><strong>About</strong></td>
+            <td>About Big Hat Lawn | Austin's Local Lawn Pros</td>
+            <td>Family-owned Austin lawn care company. [RUDY'S STORY]. Licensed, insured, and trusted by Austin homeowners.</td>
+            <td class="impact-med">Medium</td>
+          </tr>
+          <tr>
+            <td><strong>Contact / Quote</strong></td>
+            <td>Get a Free Lawn Care Quote | Big Hat Lawn</td>
+            <td>Request your free lawn care estimate in Austin TX. Quick response, AI-powered scheduling. Call or chat anytime.</td>
+            <td class="impact-high">High</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Local Schema Markup -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🗂️</span>
+      <span class="section-title">3. Local Business Schema Markup (10 min)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert info">
+        <strong>What this does:</strong> Schema markup tells Google exactly what your business is. It can unlock the "Knowledge Panel" box on the right side of search results (name, phone, hours, reviews). Squarespace: Settings → Advanced → Code Injection → paste in &lt;head&gt;.
+      </div>
+
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Add LocalBusiness JSON-LD to &lt;head&gt;</div>
+          <div class="task-desc">Copy this, fill in the 🔴 placeholders with Rudy's real info, then paste into Squarespace Code Injection → Header.</div>
+          <div class="code-block" id="schema-code" style="position:relative">
+<button class="copy-btn" onclick="copyCode('schema-code')">Copy</button>
+<span class="code-comment"><!-- Big Hat Lawn — LocalBusiness Schema --></span>
+&lt;<span class="code-tag">script</span> type=<span class="code-val">"application/ld+json"</span>&gt;
+{
+  <span class="code-key">"@context"</span>: <span class="code-val">"https://schema.org"</span>,
+  <span class="code-key">"@type"</span>: <span class="code-val">"LandscapingBusiness"</span>,
+  <span class="code-key">"name"</span>: <span class="code-val">"Big Hat Lawn"</span>,
+  <span class="code-key">"image"</span>: <span class="code-val">"🔴 URL to your logo on Squarespace"</span>,
+  <span class="code-key">"url"</span>: <span class="code-val">"https://bighatlawn.com"</span>,
+  <span class="code-key">"telephone"</span>: <span class="code-val">"🔴 +1-512-555-0100"</span>,
+  <span class="code-key">"email"</span>: <span class="code-val">"🔴 info@bighatlawn.com"</span>,
+  <span class="code-key">"address"</span>: {
+    <span class="code-key">"@type"</span>: <span class="code-val">"PostalAddress"</span>,
+    <span class="code-key">"streetAddress"</span>: <span class="code-val">"🔴 Your Street Address"</span>,
+    <span class="code-key">"addressLocality"</span>: <span class="code-val">"Austin"</span>,
+    <span class="code-key">"addressRegion"</span>: <span class="code-val">"TX"</span>,
+    <span class="code-key">"postalCode"</span>: <span class="code-val">"🔴 78701"</span>,
+    <span class="code-key">"addressCountry"</span>: <span class="code-val">"US"</span>
+  },
+  <span class="code-key">"geo"</span>: {
+    <span class="code-key">"@type"</span>: <span class="code-val">"GeoCoordinates"</span>,
+    <span class="code-key">"latitude"</span>: <span class="code-val">30.2672</span>,
+    <span class="code-key">"longitude"</span>: <span class="code-val">-97.7431</span>
+  },
+  <span class="code-key">"openingHoursSpecification"</span>: [
+    { <span class="code-key">"@type"</span>: <span class="code-val">"OpeningHoursSpecification"</span>, <span class="code-key">"dayOfWeek"</span>: [<span class="code-val">"Monday"</span>,<span class="code-val">"Tuesday"</span>,<span class="code-val">"Wednesday"</span>,<span class="code-val">"Thursday"</span>,<span class="code-val">"Friday"</span>], <span class="code-key">"opens"</span>: <span class="code-val">"07:00"</span>, <span class="code-key">"closes"</span>: <span class="code-val">"18:00"</span> },
+    { <span class="code-key">"@type"</span>: <span class="code-val">"OpeningHoursSpecification"</span>, <span class="code-key">"dayOfWeek"</span>: <span class="code-val">"Saturday"</span>, <span class="code-key">"opens"</span>: <span class="code-val">"08:00"</span>, <span class="code-key">"closes"</span>: <span class="code-val">"15:00"</span> }
+  ],
+  <span class="code-key">"priceRange"</span>: <span class="code-val">"$$"</span>,
+  <span class="code-key">"servesCuisine"</span>: <span class="code-val">null</span>,
+  <span class="code-key">"areaServed"</span>: {
+    <span class="code-key">"@type"</span>: <span class="code-val">"City"</span>,
+    <span class="code-key">"name"</span>: <span class="code-val">"Austin"</span>
+  },
+  <span class="code-key">"sameAs"</span>: [
+    <span class="code-val">"🔴 https://www.facebook.com/bighatlawn"</span>,
+    <span class="code-val">"🔴 https://www.instagram.com/bighatlawn"</span>,
+    <span class="code-val">"🔴 https://g.page/bighatlawn"</span>
+  ],
+  <span class="code-key">"hasMap"</span>: <span class="code-val">"🔴 https://maps.google.com/?cid=YOUR_CID"</span>
+}
+&lt;/<span class="code-tag">script</span>&gt;</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Business Profile -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📍</span>
+      <span class="section-title">4. Google Business Profile (biggest local SEO win)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert warn">
+        <strong>This is the #1 priority for local businesses.</strong> A complete GBP drives Google Maps rankings and the local 3-pack (the map results at the top of local searches). Takes ~2 hours to fully set up.
+      </div>
+
+      <div class="two-col">
+        <div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">Claim or Create GBP listing</div>
+              <div class="task-desc">Go to business.google.com → verify ownership. Use Rudy's real phone and address.</div>
+              <span class="task-priority high">High</span>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">Fill out every field 100%</div>
+              <div class="task-desc">Name, address, phone, website (bighatlawn.com), category: "Lawn Care Service", hours, description.</div>
+              <span class="task-priority high">High</span>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">Upload 10+ photos</div>
+              <div class="task-desc">Before/after lawn photos, crew photos, equipment. More photos = more trust = better ranking.</div>
+              <span class="task-priority high">High</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">Set service areas</div>
+              <div class="task-desc">Add every Austin area/neighborhood Rudy serves. More coverage = shows in more searches.</div>
+              <span class="task-priority high">High</span>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">List all services with descriptions</div>
+              <div class="task-desc">Mowing, edging, cleanup, fertilization, etc. Each service should have a short description with price range.</div>
+              <span class="task-priority med">Medium</span>
+            </div>
+          </div>
+          <div class="task">
+            <div class="task-check" onclick="toggleCheck(this)"></div>
+            <div class="task-body">
+              <div class="task-title">Ask every customer for a Google review</div>
+              <div class="task-desc">Copy your review link from GBP dashboard. Add it to the job_complete SMS (already in our notification template!).</div>
+              <span class="task-priority high">High</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyword Strategy -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔍</span>
+      <span class="section-title">5. Target Keywords (what to rank for)</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr><th>Keyword</th><th>Monthly Searches*</th><th>Competition</th><th>Where to Use</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>lawn mowing service Austin TX</strong></td>
+            <td>~480/mo</td>
+            <td class="impact-med">Medium</td>
+            <td>Homepage title, H1, meta desc</td>
+          </tr>
+          <tr>
+            <td><strong>lawn care Austin</strong></td>
+            <td>~390/mo</td>
+            <td class="impact-med">Medium</td>
+            <td>Homepage body, GBP description</td>
+          </tr>
+          <tr>
+            <td><strong>lawn mowing near me</strong></td>
+            <td>High (intent-based)</td>
+            <td class="impact-high">High</td>
+            <td>GBP (drives map results)</td>
+          </tr>
+          <tr>
+            <td><strong>grass cutting service Austin</strong></td>
+            <td>~200/mo</td>
+            <td>Low</td>
+            <td>Services page, blog</td>
+          </tr>
+          <tr>
+            <td><strong>affordable lawn care Austin TX</strong></td>
+            <td>~150/mo</td>
+            <td>Low</td>
+            <td>Services page, meta desc</td>
+          </tr>
+          <tr>
+            <td><strong>lawn service [neighborhood] Austin</strong></td>
+            <td>Varies</td>
+            <td>Very Low</td>
+            <td>Neighborhood landing pages (Phase 2)</td>
+          </tr>
+          <tr>
+            <td><strong>weekly lawn mowing Austin</strong></td>
+            <td>~90/mo</td>
+            <td>Low</td>
+            <td>Services page</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:11px;color:var(--muted);margin-top:8px;">*Estimates based on Google Keyword Planner ranges. Verify with actual Search Console data after connecting.</p>
+    </div>
+  </div>
+
+  <!-- Content Strategy -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">✍️</span>
+      <span class="section-title">6. Content Strategy — Blog Topics (passive SEO over time)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert info">
+        <strong>Why blog?</strong> Each blog post is a new page Google can rank. Lawn care content ranks well for "near me" and seasonal searches. Aim for 1 post/month. Use these titles as-is — they're SEO-optimized.
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="topic"><strong>How Often Should You Mow Your Lawn in Austin, TX?</strong><span>Targets: "lawn mowing frequency Austin" • Seasonal intent</span></div>
+          <div class="topic"><strong>Best Time of Year to Fertilize Your Austin Lawn</strong><span>Targets: "lawn fertilization Austin TX" • Spring/fall traffic</span></div>
+          <div class="topic"><strong>How to Keep Your Lawn Green During an Austin Summer</strong><span>Targets: "lawn care summer Austin" • High summer traffic</span></div>
+          <div class="topic"><strong>St. Augustine vs. Bermuda Grass: Which Is Best for Austin?</strong><span>Targets: "grass types Austin TX" • Informational, high trust</span></div>
+          <div class="topic"><strong>How Much Does Lawn Mowing Cost in Austin? (2026 Guide)</strong><span>Targets: "lawn mowing cost Austin" • Buyer intent</span></div>
+        </div>
+        <div>
+          <div class="topic"><strong>5 Signs Your Austin Lawn Needs a Professional Service</strong><span>Targets: "when to hire lawn service" • Problem-aware</span></div>
+          <div class="topic"><strong>Lawn Watering Schedule for Austin, TX Homeowners</strong><span>Targets: "Austin lawn watering" • Utility content, shares well</span></div>
+          <div class="topic"><strong>How to Get Rid of Weeds in Your Austin Lawn (Without Killing the Grass)</strong><span>Targets: "lawn weed control Austin" • High problem intent</span></div>
+          <div class="topic"><strong>Why Edging Makes Your Lawn Look 10x Better</strong><span>Targets: lawn edging Austin • Upsell content</span></div>
+          <div class="topic"><strong>Best Lawn Care Companies in Austin, TX (What to Look For)</strong><span>Targets: "best lawn care Austin" — can rank your own site for this!</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick wins -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <span class="section-title">7. Quick Wins — Image & Speed (Squarespace specific)</span>
+    </div>
+    <div class="section-body">
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Add ALT text to every photo on the site</div>
+          <div class="task-desc">In Squarespace image editor → click image → Edit → Alt text. Example: "Big Hat Lawn crew mowing lawn in South Austin TX"</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Compress photos before uploading</div>
+          <div class="task-desc">Use squoosh.app (free). Keep photos under 300KB. Page speed is a Google ranking factor — large images are the #1 cause of slow Squarespace sites.</div>
+          <span class="task-priority med">Medium</span>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Rename image files before uploading</div>
+          <div class="task-desc">Instead of "IMG_4892.jpg" → "big-hat-lawn-mowing-austin-tx.jpg". Google reads file names.</div>
+          <span class="task-priority med">Medium</span>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Add address + phone to footer</div>
+          <div class="task-desc">Google expects local businesses to show NAP (Name, Address, Phone) consistently across the site. Squarespace: Pages → Footer → Edit.</div>
+          <span class="task-priority high">High</span>
+        </div>
+      </div>
+      <div class="task">
+        <div class="task-check" onclick="toggleCheck(this)"></div>
+        <div class="task-body">
+          <div class="task-title">Link to bighatlawn.com from all social profiles</div>
+          <div class="task-desc">Instagram bio, Facebook About, Nextdoor profile, any directory listings. These backlinks help domain authority.</div>
+          <span class="task-priority med">Medium</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Citations -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📋</span>
+      <span class="section-title">8. Local Directory Listings (build citations)</span>
+    </div>
+    <div class="section-body">
+      <div class="alert info">
+        <strong>What are citations?</strong> Every time your business name + address + phone appears consistently online, it's a citation. More citations from trusted sources = better local rankings. Use the EXACT same name/address/phone everywhere.
+      </div>
+      <table>
+        <thead>
+          <tr><th>Directory</th><th>Priority</th><th>URL</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Google Business Profile</strong></td><td class="impact-high">Critical</td><td>business.google.com</td></tr>
+          <tr><td><strong>Yelp</strong></td><td class="impact-high">High</td><td>biz.yelp.com</td></tr>
+          <tr><td><strong>Facebook Business Page</strong></td><td class="impact-high">High</td><td>facebook.com/business</td></tr>
+          <tr><td><strong>Nextdoor</strong></td><td class="impact-high">High (Austin neighborhoods)</td><td>business.nextdoor.com</td></tr>
+          <tr><td><strong>Angi (Angie's List)</strong></td><td class="impact-med">Medium</td><td>angi.com/pro</td></tr>
+          <tr><td><strong>HomeAdvisor</strong></td><td class="impact-med">Medium</td><td>homeadvisor.com</td></tr>
+          <tr><td><strong>Thumbtack</strong></td><td class="impact-med">Medium (leads too)</td><td>thumbtack.com/pro</td></tr>
+          <tr><td>Apple Maps</td><td class="impact-med">Medium</td><td>mapsconnect.apple.com</td></tr>
+          <tr><td>Bing Places</td><td>Low</td><td>bingplaces.com</td></tr>
+          <tr><td>BBB</td><td>Low (trust signal)</td><td>bbb.org</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Progress tracker -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Overall SEO Progress</span>
+    </div>
+    <div class="section-body">
+      <div style="margin-bottom:16px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:600">Tasks Completed</span>
+          <span style="font-size:13px;color:var(--muted)" id="progress-label">0 / 20</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+      </div>
+      <p style="font-size:13px;color:var(--muted)">Check off tasks above as you complete them. High-priority items first for fastest ranking improvement.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Prepared by <strong>512AI</strong> for Big Hat Lawn • <strong>bighatlawn.com</strong> • Austin, TX<br>
+    Questions? Contact Ricardo at <strong>512ai.co</strong>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.task-check').length;
+    const done = document.querySelectorAll('.task-check.checked').length;
+    const pct = Math.round((done / all) * 100);
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = done + ' / ' + all;
+  }
+
+  function copyCode(id) {
+    const el = document.getElementById(id);
+    const text = el.innerText.replace('Copy\n', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.querySelector('.copy-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+
+  updateProgress();
+</script>
+</body>
+</html>

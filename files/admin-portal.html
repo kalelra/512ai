@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>512AI — Admin Portal</title>
+<style>
+  :root {
+    --brand: #2E7D32; --brand-hover: #1B5E20; --brand-light: #e8f5e9;
+    --sidebar-bg: #0f1117; --sidebar-text: #e0e0e0; --sidebar-muted: #888;
+    --bg: #f4f6f9; --card: #fff;
+    --border: #e0e0e0; --text: #1a1a1a; --muted: #666;
+    --amber: #F57F17; --red: #c62828; --blue: #1565C0;
+    --green-dot: #4caf50; --amber-dot: #ff9800; --red-dot: #f44336;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+  /* ─── Sidebar ─── */
+  .sidebar {
+    width: 240px; background: var(--sidebar-bg); color: var(--sidebar-text);
+    display: flex; flex-direction: column; flex-shrink: 0;
+    position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+    z-index: 100;
+  }
+  .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
+  .sidebar-logo .logo-text { font-size: 18px; font-weight: 800; color: #fff; }
+  .sidebar-logo .logo-sub { font-size: 11px; color: var(--sidebar-muted); margin-top: 2px; }
+  .sidebar-section { padding: 16px 12px 8px; font-size: 10px; font-weight: 700; color: var(--sidebar-muted); text-transform: uppercase; letter-spacing: .08em; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 16px; border-radius: 8px; margin: 1px 8px;
+    cursor: pointer; font-size: 13px; color: var(--sidebar-text);
+    transition: background .15s; text-decoration: none;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,.08); }
+  .sidebar-item.active { background: var(--brand); color: #fff; }
+  .sidebar-item .icon { width: 16px; text-align: center; opacity: .7; font-style: normal; }
+  .sidebar-item.active .icon { opacity: 1; }
+  .sidebar-bottom { margin-top: auto; padding: 16px; border-top: 1px solid rgba(255,255,255,.08); }
+  .sidebar-user { display: flex; align-items: center; gap: 10px; }
+  .sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .sidebar-user-name { font-size: 13px; font-weight: 600; }
+  .sidebar-user-role { font-size: 11px; color: var(--sidebar-muted); }
+
+  /* ─── Main ─── */
+  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-size: 16px; font-weight: 700; }
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+  .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-hover); }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-outline:hover { background: var(--bg); }
+
+  .content { padding: 28px; flex: 1; }
+
+  /* ─── Stats row ─── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 800; line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .stat-up { color: var(--brand); }
+  .stat-card.highlight { border-color: var(--brand); background: var(--brand-light); }
+
+  /* ─── Section header ─── */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .section-title { font-size: 15px; font-weight: 700; }
+
+  /* ─── Client table ─── */
+  .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 12px 16px; background: #fafafa; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
+  td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafafa; }
+
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+  .status-dot.active { background: var(--green-dot); box-shadow: 0 0 0 3px rgba(76,175,80,.2); }
+  .status-dot.pending { background: var(--amber-dot); }
+  .status-dot.inactive { background: var(--red-dot); }
+
+  .client-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .client-avatar { width: 28px; height: 28px; border-radius: 8px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+
+  .tools-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .chip { padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--brand-light); color: var(--brand); }
+  .chip.voice { background: #e3f2fd; color: var(--blue); }
+  .chip.sms { background: #fff8e1; color: var(--amber); }
+  .chip.seo { background: #f3e5f5; color: #7b1fa2; }
+  .chip.disabled { background: #f5f5f5; color: #bbb; }
+
+  .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--text); transition: all .15s; }
+  .action-btn:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+  /* ─── Config panel ─── */
+  .config-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
+  .config-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .config-header h3 { font-size: 14px; font-weight: 700; }
+  .config-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group { }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: .04em; }
+  .field-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); outline: none; transition: border .15s; }
+  .field-input:focus { border-color: var(--brand); }
+  .field-input[readonly] { background: #fafafa; color: var(--muted); cursor: not-allowed; }
+  .color-row { display: flex; align-items: center; gap: 10px; }
+  .color-swatch { width: 36px; height: 36px; border-radius: 8px; border: 2px solid var(--border); cursor: pointer; flex-shrink: 0; }
+
+  /* ─── Toggle ─── */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-label { font-size: 13px; font-weight: 600; }
+  .toggle-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #ddd; border-radius: 22px; cursor: pointer; transition: .2s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .toggle input:checked + .toggle-slider { background: var(--brand); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+  /* ─── Activity feed ─── */
+  .activity-feed { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .activity-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .activity-dot.chat { background: var(--brand); }
+  .activity-dot.voice { background: var(--blue); }
+  .activity-dot.sms { background: var(--amber); }
+  .activity-dot.booking { background: #9c27b0; }
+  .activity-text { font-size: 13px; flex: 1; }
+  .activity-client { font-weight: 600; }
+  .activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── Two col layout ─── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+
+  /* ─── Tabs ─── */
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
+  .tab { padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: var(--muted); transition: all .15s; }
+  .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+
+  /* ─── Empty state ─── */
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-icon { font-size: 32px; margin-bottom: 10px; }
+
+  /* ─── Modal overlay ─── */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 480px; max-width: calc(100vw - 40px); max-height: 80vh; overflow-y: auto; }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  @media(max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .config-body { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">512AI</div>
+    <div class="logo-sub">Admin Portal</div>
+  </div>
+
+  <div class="sidebar-section">Overview</div>
+  <a class="sidebar-item active" onclick="showPage('dashboard')">
+    <i class="icon">◉</i> Dashboard
+  </a>
+  <a class="sidebar-item" onclick="showPage('clients')">
+    <i class="icon">👥</i> Clients
+  </a>
+  <a class="sidebar-item" onclick="showPage('activity')">
+    <i class="icon">⚡</i> Activity Feed
+  </a>
+
+  <div class="sidebar-section">Tools</div>
+  <a class="sidebar-item" onclick="showPage('chat')">
+    <i class="icon">💬</i> Chat Widgets
+  </a>
+  <a class="sidebar-item" onclick="showPage('voice')">
+    <i class="icon">📞</i> Voice AI
+  </a>
+  <a class="sidebar-item" onclick="showPage('notifications')">
+    <i class="icon">📱</i> Notifications
+  </a>
+  <a class="sidebar-item" onclick="showPage('seo')">
+    <i class="icon">🔍</i> SEO
+  </a>
+
+  <div class="sidebar-section">System</div>
+  <a class="sidebar-item" onclick="showPage('config')">
+    <i class="icon">⚙️</i> Config Editor
+  </a>
+  <a class="sidebar-item" onclick="showPage('billing')">
+    <i class="icon">💳</i> Billing
+  </a>
+
+  <div class="sidebar-bottom">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">R</div>
+      <div>
+        <div class="sidebar-user-name">Ricardo</div>
+        <div class="sidebar-user-role">512AI Admin</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline" onclick="openModal('add-client')">+ Add Client</button>
+      <button class="btn btn-primary">Save Changes</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ─── DASHBOARD PAGE ─── -->
+    <div id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card highlight">
+          <div class="stat-label">Active Clients</div>
+          <div class="stat-value">1</div>
+          <div class="stat-sub">Big Hat Lawn 🌿</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Chat Conversations (30d)</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub">Live when widget deployed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bookings Captured</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub">Live after LawnPro connect</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">SMS Sent</div>
+          <div class="stat-value">—</div>
+          <div class="stat-sub">Live after Twilio connect</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Clients</div>
+      </div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Status</th>
+              <th>Active Tools</th>
+              <th>Site</th>
+              <th>Last Activity</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="client-name">
+                  <div class="client-avatar">BH</div>
+                  Big Hat Lawn
+                </div>
+              </td>
+              <td><span class="status-dot active"></span>Onboarding</td>
+              <td>
+                <div class="tools-chips">
+                  <span class="chip">💬 Chat</span>
+                  <span class="chip voice">📞 Voice</span>
+                  <span class="chip sms">📱 SMS</span>
+                  <span class="chip seo">🔍 SEO</span>
+                </div>
+              </td>
+              <td>bighatlawn.com</td>
+              <td>Today</td>
+              <td><button class="action-btn" onclick="showConfig('bighatlawn')">Configure</button></td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <div class="empty">
+                  <div class="empty-icon">➕</div>
+                  Next client slot — ready to replicate the BHL stack
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Activity feed preview -->
+      <div class="section-header">
+        <div class="section-title">Recent Activity</div>
+      </div>
+      <div class="activity-feed">
+        <div class="activity-item">
+          <div class="activity-dot chat"></div>
+          <div>
+            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — Chat widget deployed to CDN</div>
+            <div class="activity-time">Today • Widget v1.1</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot voice"></div>
+          <div>
+            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — Voice AI widget built (pending Bland.ai key)</div>
+            <div class="activity-time">Today • Bland.ai integration</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot sms"></div>
+          <div>
+            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — SMS notification engine built (pending Twilio)</div>
+            <div class="activity-time">Today • 6 notification types</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot booking"></div>
+          <div>
+            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — SEO action plan delivered</div>
+            <div class="activity-time">Today • 20 action items</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CONFIG PAGE ─── -->
+    <div id="page-config" style="display:none">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab(this,'tab-general')">General</div>
+        <div class="tab" onclick="switchTab(this,'tab-chat')">Chat Widget</div>
+        <div class="tab" onclick="switchTab(this,'tab-voice')">Voice AI</div>
+        <div class="tab" onclick="switchTab(this,'tab-sms')">Notifications</div>
+        <div class="tab" onclick="switchTab(this,'tab-tools')">Tools Enabled</div>
+      </div>
+
+      <!-- General -->
+      <div id="tab-general">
+        <div class="config-panel">
+          <div class="config-header">
+            <h3>Big Hat Lawn — Client Config</h3>
+            <span class="chip">Active</span>
+          </div>
+          <div class="config-body">
+            <div class="field-group">
+              <label class="field-label">Client / Business Name</label>
+              <input class="field-input" value="Big Hat Lawn" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Tenant ID (auto)</label>
+              <input class="field-input" value="1d7a261e-5e86-4037-b28a-8b7d7e583c8f" readonly />
+            </div>
+            <div class="field-group">
+              <label class="field-label">API Key</label>
+              <input class="field-input" value="512ai_713664dd917ee4ee35dfc569e109703f" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Website</label>
+              <input class="field-input" value="https://bighatlawn.com" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Owner Name</label>
+              <input class="field-input" placeholder="🔴 Enter Rudy's full name" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Owner Phone (for internal alerts)</label>
+              <input class="field-input" placeholder="🔴 +1 (512) 555-0100" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Business Phone (shown to customers)</label>
+              <input class="field-input" placeholder="🔴 (512) 555-0100" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Business Address</label>
+              <input class="field-input" placeholder="🔴 123 Oak St, Austin TX 78701" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">CRM</label>
+              <input class="field-input" value="LawnPro" readonly />
+            </div>
+            <div class="field-group">
+              <label class="field-label">CRM API Key</label>
+              <input class="field-input" placeholder="🔴 Pending — get from Rudy's LawnPro account" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Widget -->
+      <div id="tab-chat" style="display:none">
+        <div class="config-panel">
+          <div class="config-header"><h3>Chat Widget Config</h3></div>
+          <div class="config-body">
+            <div class="field-group">
+              <label class="field-label">Brand Color</label>
+              <div class="color-row">
+                <input type="color" class="color-swatch" value="#2E7D32" />
+                <input class="field-input" value="#2E7D32" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Brand Name (shown in chat header)</label>
+              <input class="field-input" value="Big Hat Lawn" />
+            </div>
+            <div class="field-group" style="grid-column: span 2">
+              <label class="field-label">Greeting Message</label>
+              <input class="field-input" value="Hi! I'm the Big Hat Lawn assistant. I can help you get an estimate or schedule a service. What can I help you with today?" />
+            </div>
+            <div class="field-group" style="grid-column: span 2">
+              <label class="field-label">Proactive Bubble Message (shown after 8s)</label>
+              <input class="field-input" value="Need a lawn quote? I can get you one in 2 minutes! 👋" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Proactive Message Delay (ms)</label>
+              <input class="field-input" value="8000" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">CDN Embed URL (auto-generated)</label>
+              <input class="field-input" value="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js" readonly />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voice AI -->
+      <div id="tab-voice" style="display:none">
+        <div class="config-panel">
+          <div class="config-header"><h3>Voice AI Config (Bland.ai)</h3></div>
+          <div class="config-body">
+            <div class="field-group">
+              <label class="field-label">Bland.ai API Key</label>
+              <input class="field-input" placeholder="🔴 Get from Bland.ai dashboard" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Outbound From Number</label>
+              <input class="field-input" placeholder="🔴 Rudy's Twilio number or +15126472949" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">AI Assistant Name</label>
+              <input class="field-input" value="Lily" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Max Call Duration (min)</label>
+              <input class="field-input" value="3" />
+            </div>
+            <div class="field-group" style="grid-column: span 2">
+              <label class="field-label">Quote Range — Small (≤5k sq ft)</label>
+              <input class="field-input" placeholder="🔴 e.g. $35-$50 per mow" />
+            </div>
+            <div class="field-group" style="grid-column: span 2">
+              <label class="field-label">Quote Range — Medium (5k-10k sq ft)</label>
+              <input class="field-input" placeholder="🔴 e.g. $50-$80 per mow" />
+            </div>
+            <div class="field-group" style="grid-column: span 2">
+              <label class="field-label">Quote Range — Large (10k+ sq ft)</label>
+              <input class="field-input" placeholder="🔴 e.g. $80-$150 per mow" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div id="tab-sms" style="display:none">
+        <div class="config-panel">
+          <div class="config-header"><h3>SMS Notifications Config (Twilio)</h3></div>
+          <div class="config-body">
+            <div class="field-group">
+              <label class="field-label">Twilio Account SID</label>
+              <input class="field-input" placeholder="🔴 From Twilio console" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Twilio Auth Token</label>
+              <input class="field-input" type="password" placeholder="🔴 From Twilio console" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">SMS From Number</label>
+              <input class="field-input" placeholder="🔴 +15125550100" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Google Review Link</label>
+              <input class="field-input" placeholder="🔴 https://g.page/bighatlawn (get from GBP)" />
+            </div>
+          </div>
+        </div>
+        <div class="config-panel">
+          <div class="config-header"><h3>Notification Types Enabled</h3></div>
+          <div style="padding: 16px 20px;">
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Booking Confirmed SMS</div>
+                <div class="toggle-desc">Sent to customer immediately when chat AI confirms a booking</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">24h Reminder SMS</div>
+                <div class="toggle-desc">Sent to customer 24 hours before appointment</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Day-Of Reminder SMS</div>
+                <div class="toggle-desc">Sent at 7am on appointment day</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Job Complete SMS</div>
+                <div class="toggle-desc">Sent when crew marks job done — includes Google review link</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Owner New Booking Alert</div>
+                <div class="toggle-desc">Rudy gets SMS alert when AI captures a new booking</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Owner Daily Schedule Digest</div>
+                <div class="toggle-desc">Rudy gets a morning SMS with that day's job list</div>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tools Enabled -->
+      <div id="tab-tools" style="display:none">
+        <div class="config-panel">
+          <div class="config-header"><h3>Enabled Tools for Big Hat Lawn</h3></div>
+          <div style="padding: 16px 20px;">
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">💬 Chat Widget</div>
+                <div class="toggle-desc">AI chat widget embedded on website — v1.1 on CDN</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">📞 Voice AI (Click-to-Call)</div>
+                <div class="toggle-desc">Bland.ai outbound call widget — pending Bland.ai key + Twilio number</div>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">📱 SMS Notifications</div>
+                <div class="toggle-desc">Booking, reminder, and completion texts — pending Twilio setup</div>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">📅 Scheduling Engine</div>
+                <div class="toggle-desc">Zone-based booking + calendar — pending LawnPro CRM access</div>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">🔍 SEO Tracking</div>
+                <div class="toggle-desc">Google Search Console integration — pending GSC setup</div>
+              </div>
+              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">📊 Client Dashboard</div>
+                <div class="toggle-desc">Rudy's ROI portal — enabled, data live when tools are wired up</div>
+              </div>
+              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── OTHER PAGES (stub) ─── -->
+    <div id="page-clients" style="display:none">
+      <div class="empty"><div class="empty-icon">👥</div><p>Client management — same as dashboard table, expanded view.</p></div>
+    </div>
+    <div id="page-activity" style="display:none">
+      <div class="empty"><div class="empty-icon">⚡</div><p>Full activity log — live when widgets are deployed and APIs are connected.</p></div>
+    </div>
+    <div id="page-chat" style="display:none">
+      <div class="empty"><div class="empty-icon">💬</div><p>Chat widget manager — see conversations, configure per client.</p></div>
+    </div>
+    <div id="page-voice" style="display:none">
+      <div class="empty"><div class="empty-icon">📞</div><p>Voice AI call logs and configuration per client.</p></div>
+    </div>
+    <div id="page-notifications" style="display:none">
+      <div class="empty"><div class="empty-icon">📱</div><p>SMS history, template editor, and delivery reports.</p></div>
+    </div>
+    <div id="page-seo" style="display:none">
+      <div class="empty"><div class="empty-icon">🔍</div><p>SEO rank tracking per client — integrates with Google Search Console.</p></div>
+    </div>
+    <div id="page-billing" style="display:none">
+      <div class="empty"><div class="empty-icon">💳</div><p>Billing per client — monthly retainer, usage overage, invoices.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="modal-add-client">
+  <div class="modal">
+    <h3>➕ Onboard New Client</h3>
+    <div style="display:grid;gap:14px">
+      <div class="field-group">
+        <label class="field-label">Business Name</label>
+        <input class="field-input" placeholder="e.g. Green Thumb Lawn Care" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Website</label>
+        <input class="field-input" placeholder="https://..." />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Owner Name</label>
+        <input class="field-input" placeholder="First & Last name" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Owner Phone</label>
+        <input class="field-input" placeholder="+1 (512) 555-0100" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Industry</label>
+        <select class="field-input">
+          <option>Lawn Care / Landscaping</option>
+          <option>HVAC / Plumbing</option>
+          <option>Cleaning Services</option>
+          <option>Auto Repair</option>
+          <option>Restaurant</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal()">Create Client →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showPage(name) {
+    document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+    document.getElementById('page-' + name).style.display = 'block';
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById('page-title').textContent = event.currentTarget.textContent.trim();
+  }
+  function showConfig(client) {
+    document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+    document.getElementById('page-config').style.display = 'block';
+    document.getElementById('page-title').textContent = 'Config — ' + client;
+  }
+  function switchTab(el, tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+    document.getElementById(tabId).style.display = 'block';
+  }
+  function openModal(name) {
+    document.getElementById('modal-' + name).classList.add('open');
+  }
+  function closeModal() {
+    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if(e.target === m) closeModal(); });
+  });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

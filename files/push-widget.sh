@@ -1,39 +1,49 @@
 #!/bin/bash
-# Push Big Hat Lawn widget v1.1 + embed instructions to GitHub
+# Push entire Big Hat Lawn 512AI stack to GitHub
 set -e
 
 cd ~/Claude_Projects/512ai
 
 echo "==> Staging files..."
-git add files/widget-bighatlawn.js files/widget-test.html files/embed-instructions.html files/push-widget.sh
+git add \
+  files/widget-bighatlawn.js \
+  files/widget-test.html \
+  files/embed-instructions.html \
+  files/voice-bighatlawn.js \
+  files/voice-bighatlawn-function.js \
+  files/notifications-bighatlawn.js \
+  files/seo-bighatlawn.html \
+  files/admin-portal.html \
+  files/client-portal-bighatlawn.html \
+  files/bighatlawn-master.html \
+  files/push-widget.sh
 
 echo "==> Committing..."
-git commit -m "feat: Big Hat Lawn widget v1.1 + embed delivery package
+git commit -m "feat: Big Hat Lawn full AI stack — chat, voice, SMS, SEO, portals
 
-widget-bighatlawn.js v1.1:
-- Proactive tooltip bubble (8s delay, auto-dismiss 12s, dismissible)
-- Unread message badge with count on launcher button
-- localStorage session persistence (survives page refresh)
-- Minimize button to collapse panel without closing
-- Launcher icon animates chat↔close with rotation
-- Timestamps on every message (HH:MM format)
-- Send button disabled when input is empty
-- Online pulse animation dot in header
-- Powered-by bar in footer
-- BHL_OPEN() / BHL_CLOSE() global JS API
-- Higher z-index (2147483646/2147483647) for max stacking
-- Mobile: 88dvh bottom sheet on screens < 480px
-- Close on outside click + Escape key support
+Chat Widget (v1.1) — already on CDN:
+  - widget-bighatlawn.js: proactive bubble, unread badge, localStorage, minimize, timestamps
+  - widget-test.html: debug test page
+  - embed-instructions.html: delivery guide for bighatlawn.com
 
-embed-instructions.html:
-- Professional delivery package for Rudy's web developer
-- Single CDN embed snippet (jsDelivr from kalelra/512ai)
-- Platform guides: WordPress, Squarespace, Wix, Webflow, Shopify, HTML
-- 16-feature checklist, CONFIG reference, JS API docs
-- Copy-to-clipboard button for embed code
-- Sample test messages for QA verification
+Voice AI:
+  - voice-bighatlawn.js: embeddable click-to-call IIFE widget (Bland.ai, BHL-branded)
+  - voice-bighatlawn-function.js: backend function w/ Lily lawn care AI script
 
-CDN URL: https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js
+SMS Notifications:
+  - notifications-bighatlawn.js: Twilio engine (6 types: booking, reminders, complete, owner alerts)
+
+SEO:
+  - seo-bighatlawn.html: 20-item interactive Squarespace SEO checklist, GBP guide, schema markup, keywords
+
+Portals:
+  - admin-portal.html: 512AI admin config UI (manage all clients, tool toggles, config editor)
+  - client-portal-bighatlawn.html: Rudy's ROI dashboard (leads, bookings, SMS, ROI, setup status)
+  - bighatlawn-master.html: master delivery checklist (all tools, next actions, replication guide)
+
+Stack ready to deploy — pending: Squarespace access, Twilio, Bland.ai key, LawnPro CRM, Rudy business details.
+
+CDN: https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 
@@ -41,12 +51,12 @@ echo "==> Pushing to origin main..."
 git push origin main
 
 echo ""
-echo "✅ Done! Files pushed:"
-echo "  files/widget-bighatlawn.js   (v1.1)"
-echo "  files/widget-test.html"
-echo "  files/embed-instructions.html"
-echo "  files/push-widget.sh"
+echo "✅ All files pushed to kalelra/512ai"
 echo ""
-echo "CDN (live in ~3 min):"
-echo "  https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js"
-echo "  https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/embed-instructions.html"
+echo "CDN URLs (live in ~3 min):"
+echo "  Chat:    https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js"
+echo "  Voice:   https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/voice-bighatlawn.js"
+echo "  Master:  https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/bighatlawn-master.html"
+echo "  Admin:   https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/admin-portal.html"
+echo "  Client:  https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/client-portal-bighatlawn.html"
+echo "  SEO:     https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/seo-bighatlawn.html"
