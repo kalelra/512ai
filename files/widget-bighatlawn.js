@@ -5,7 +5,7 @@
   var CONFIG = {
     tenantId:    '1d7a261e-5e86-4037-b28a-8b7d7e583c8f',
     apiBase:     'https://512ai-backend-production.up.railway.app/api/v1',
-    apiKey:      '512ai_b10b846bf62342d7a4a6389e9182a9bb',
+    apiKey:      '512ai_713664dd917ee4ee35dfc569e109703f',
     brandColor:  '#2E7D32',
     brandHover:  '#1B5E20',
     brandName:   'Big Hat Lawn',
