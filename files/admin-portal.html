@@ -1300,6 +1300,16 @@ function showPage(id) {
 
   document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
   window.scrollTo(0, 0);
+
+  // Site Editor: auto-load index.html when navigating to editor page
+  if (id === 'editor') {
+    const token = edGetToken();
+    if (token && !edState.originalHTML) {
+      edLoadFile();
+    } else if (!token) {
+      document.getElementById('pat-banner').style.display = 'block';
+    }
+  }
 }
 
 // ── Utilities ─────────────────────────────────────────────────────────
@@ -1870,20 +1880,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pat-banner').style.display = 'none';
   }
 });
-
-// Hook into showPage to auto-load editor when navigating to it
-const _origShowPage = showPage;
-function showPage(id) {
-  _origShowPage(id);
-  if (id === 'editor') {
-    const token = edGetToken();
-    if (token && !edState.originalHTML) {
-      edLoadFile();
-    } else if (!token) {
-      document.getElementById('pat-banner').style.display = 'block';
-    }
-  }
-}
 
 function showEnvInstructions() {
   const key = document.getElementById('ev-key').value.trim();
