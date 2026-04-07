@@ -247,6 +247,27 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 .deploy-indicator.loading{color:var(--blue)}.deploy-indicator.success{color:var(--brand)}.deploy-indicator.error{color:var(--red)}
 .spinner{width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
+    /* ── Structure Panel ── */
+    .struct-row{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;cursor:default}
+    .struct-row.dragging{opacity:.4;border-style:dashed}
+    .struct-row.drag-over{border-color:var(--accent);background:rgba(192,83,26,.08)}
+    .struct-drag{color:var(--muted);font-size:18px;cursor:grab;user-select:none;flex-shrink:0}
+    .struct-label{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+    .struct-actions{display:flex;gap:4px;align-items:center;flex-shrink:0}
+    .struct-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:13px;cursor:pointer;color:var(--text);transition:border-color .15s}
+    .struct-btn:hover{border-color:var(--accent)}
+    .struct-btn.vis-btn.hidden{opacity:.4}
+    .struct-btn.edit-btn{color:var(--accent)}
+    .struct-note{font-size:11px;color:var(--muted);font-style:italic}
+    .struct-tpl-btn{background:var(--card-bg);border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:13px;cursor:pointer;color:var(--text);text-align:left;transition:border-color .15s,background .15s}
+    .struct-tpl-btn:hover{border-color:var(--accent);background:rgba(192,83,26,.07)}
+    /* ── Section Settings details/summary ── */
+    .ed-section-settings{margin-top:16px;border-top:1px solid var(--border);padding-top:12px}
+    .ed-settings-trigger{font-size:13px;color:var(--muted);cursor:pointer;font-weight:600;list-style:none;padding:4px 0}
+    .ed-settings-trigger::-webkit-details-marker{display:none}
+    .ed-settings-trigger::before{content:'▶ ';font-size:10px;transition:transform .2s;display:inline-block}
+    details[open] .ed-settings-trigger::before{content:'▼ '}
+    .ed-settings-body{margin-top:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border)}
 </style>
 </head>
 <body>
@@ -895,18 +916,46 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 
       <!-- Section tabs -->
       <div class="editor-tabs" id="ed-tabs">
-        <div class="editor-tab active" onclick="edShowTab('nav')">🧭 Navigation</div>
+        <div class="editor-tab active" onclick="edShowTab('structure')">🗂 Structure</div>
+        <div class="editor-tab" onclick="edShowTab('nav')">🧭 Navigation</div>
         <div class="editor-tab" onclick="edShowTab('hero')">🦸 Hero</div>
         <div class="editor-tab" onclick="edShowTab('services')">💼 Services</div>
+        <div class="editor-tab" onclick="edShowTab('demo')">💬 Demo</div>
         <div class="editor-tab" onclick="edShowTab('how')">⚙️ How It Works</div>
         <div class="editor-tab" onclick="edShowTab('about')">👤 About</div>
+        <div class="editor-tab" onclick="edShowTab('intake')">📋 Intake Form</div>
         <div class="editor-tab" onclick="edShowTab('contact')">📬 Contact</div>
         <div class="editor-tab" onclick="edShowTab('images')">🖼 Images</div>
         <div class="editor-tab" onclick="edShowTab('raw')">⌨️ Raw HTML</div>
       </div>
 
+      <!-- ── STRUCTURE ── -->
+      <div class="editor-panel" id="ed-panel-structure">
+        <div class="ed-group">
+          <div class="ed-group-title" style="display:flex;align-items:center;justify-content:space-between">
+            Page Structure
+            <span style="font-size:12px;color:var(--muted);font-weight:400">Reorder · Show/Hide · Add sections</span>
+          </div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Use ↑↓ to reorder sections. Toggle the eye icon to show/hide. Changes deploy with Save &amp; Deploy.</p>
+          <div id="ed-structure-list" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+        <div class="ed-group" style="margin-top:16px">
+          <div class="ed-group-title" style="margin-bottom:12px">Add New Section</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Choose a pre-built section template to insert before the Contact section.</p>
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px" id="ed-tpl-grid">
+            <button class="struct-tpl-btn" onclick="edAddSection('cta-banner')">📢 CTA Banner</button>
+            <button class="struct-tpl-btn" onclick="edAddSection('testimonials')">⭐ Testimonials</button>
+            <button class="struct-tpl-btn" onclick="edAddSection('faq')">❓ FAQ</button>
+            <button class="struct-tpl-btn" onclick="edAddSection('text-block')">📝 Text Block</button>
+            <button class="struct-tpl-btn" onclick="edAddSection('image-text')">🖼 Image + Text</button>
+            <button class="struct-tpl-btn" onclick="edAddSection('custom-html')">⌨️ Custom HTML</button>
+          </div>
+          <div id="ed-tpl-confirm" style="display:none;margin-top:14px;background:var(--green-bg);border:1px solid #86efac;border-radius:8px;padding:12px;font-size:13px"></div>
+        </div>
+      </div>
+
       <!-- ── NAV ── -->
-      <div class="editor-panel active" id="ed-panel-nav">
+      <div class="editor-panel" id="ed-panel-nav">
         <div class="ed-group">
           <div class="ed-group-title">Navigation Bar</div>
           <div class="ed-field">
@@ -948,6 +997,19 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             <textarea class="ed-input" id="ef-hero-badges" rows="4" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
           </div>
         </div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-hero-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('hero','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-hero-pt" placeholder="e.g. 120px" oninput="edMarkSectionStyle('hero','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-hero-pb" placeholder="e.g. 120px" oninput="edMarkSectionStyle('hero','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- ── SERVICES ── -->
@@ -964,6 +1026,63 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
           </div>
         </div>
         <div id="ed-service-cards"><!-- service cards rendered by JS --></div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-services-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('services','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-services-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('services','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-services-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('services','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-services-visible" checked onchange="edToggleSectionVisibility('services',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── DEMO ── -->
+      <div class="editor-panel" id="ed-panel-demo">
+        <div class="ed-group">
+          <div class="ed-group-title">Chat Demo Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">[data-field="demo-headline"]</span></div>
+            <input class="ed-input" id="ef-demo-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Subheading</label><span class="ed-sel">[data-field="demo-sub"]</span></div>
+            <textarea class="ed-input" id="ef-demo-sub" rows="2" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Demo Result Tagline</label><span class="ed-sel">[data-field="demo-tagline"]</span></div>
+            <input class="ed-input" id="ef-demo-tagline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+        </div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-demo-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('demo','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-demo-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('demo','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-demo-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('demo','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-demo-visible" checked onchange="edToggleSectionVisibility('demo',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- ── HOW IT WORKS ── -->
@@ -976,6 +1095,25 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
           </div>
         </div>
         <div id="ed-how-steps"><!-- steps rendered by JS --></div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-how-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('how','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-how-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('how','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-how-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('how','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-how-visible" checked onchange="edToggleSectionVisibility('how',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- ── ABOUT ── -->
@@ -1001,6 +1139,73 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             </div>
           </div>
         </div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-about-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('about','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-about-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('about','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-about-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('about','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-about-visible" checked onchange="edToggleSectionVisibility('about',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── INTAKE FORM ── -->
+      <div class="editor-panel" id="ed-panel-intake">
+        <div class="ed-group">
+          <div class="ed-group-title">Intake Form Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">[data-field="intake-headline"]</span></div>
+            <input class="ed-input" id="ef-intake-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Subheading</label><span class="ed-sel">[data-field="intake-sub"]</span></div>
+            <textarea class="ed-input" id="ef-intake-sub" rows="2" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Form Intro Text</label><span class="ed-sel">[data-field="intake-form-title"]</span></div>
+            <textarea class="ed-input" id="ef-intake-form-title" rows="3" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="ed-field">
+              <div class="ed-label"><label>Submit Button Text</label><span class="ed-sel">[data-field="intake-submit-btn"]</span></div>
+              <input class="ed-input" id="ef-intake-submit" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+            <div class="ed-field">
+              <div class="ed-label"><label>Success Message Title</label><span class="ed-sel">[data-field="intake-success-title"]</span></div>
+              <input class="ed-input" id="ef-intake-success" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+          </div>
+        </div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-intake-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('intake','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-intake-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('intake','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-intake-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('intake','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-intake-visible" checked onchange="edToggleSectionVisibility('intake',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- ── CONTACT ── -->
@@ -1033,6 +1238,25 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             <input class="ed-input" id="ef-footer-copy" placeholder="Loading…" oninput="edMarkChanged(this)" />
           </div>
         </div>
+        <details class="ed-section-settings">
+          <summary class="ed-settings-trigger">⚙️ Section Settings (background, padding, visibility)</summary>
+          <div class="ed-settings-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="ed-field"><div class="ed-label"><label>Background Color</label></div>
+                <input class="ed-input" id="ef-contact-bg" placeholder="#0F0F0F or transparent" oninput="edMarkSectionStyle('contact','background',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Top</label></div>
+                <input class="ed-input" id="ef-contact-pt" placeholder="e.g. 100px" oninput="edMarkSectionStyle('contact','paddingTop',this.value);edMarkChanged(this)" /></div>
+              <div class="ed-field"><div class="ed-label"><label>Padding Bottom</label></div>
+                <input class="ed-input" id="ef-contact-pb" placeholder="e.g. 100px" oninput="edMarkSectionStyle('contact','paddingBottom',this.value);edMarkChanged(this)" /></div>
+            </div>
+            <div class="ed-field"><div class="ed-label"><label>Visibility</label></div>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+                <input type="checkbox" id="ef-contact-visible" checked onchange="edToggleSectionVisibility('contact',this.checked);edMarkChanged(this)" style="width:auto;accent-color:var(--accent)" />
+                Section is visible on live site
+              </label>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- ── IMAGES ── -->
@@ -1570,6 +1794,50 @@ function edParseAndPopulate() {
   edSetField('ef-about-bio', aboutBio);
   edSetField('ef-about-name', getText(['#about .about-name','#about p.about-name','#about h3','[data-field="about-name"]']));
   edSetField('ef-about-cta', getText(['#about .btn-primary','#about a[class*="btn"]','#about a']));
+  // About section settings
+  const aboutSec = doc.querySelector('#about');
+  if (aboutSec) {
+    const abg = document.getElementById('ef-about-bg'); if (abg && aboutSec.style.background) abg.value = aboutSec.style.background;
+    const apt = document.getElementById('ef-about-pt'); if (apt && aboutSec.style.paddingTop) apt.value = aboutSec.style.paddingTop;
+    const apb = document.getElementById('ef-about-pb'); if (apb && aboutSec.style.paddingBottom) apb.value = aboutSec.style.paddingBottom;
+  }
+
+  // ── DEMO ──
+  edSetField('ef-demo-headline', getText(['[data-field="demo-headline"]','#demo h2','.section-headline']));
+  edSetField('ef-demo-sub',      getText(['[data-field="demo-sub"]','#demo .section-subheadline','#demo p']));
+  edSetField('ef-demo-tagline',  getText(['[data-field="demo-tagline"]','#demo .demo-tagline','#demo p:last-of-type']));
+  // Demo section settings
+  const demoSec = doc.querySelector('#demo');
+  if (demoSec) {
+    const dv = demoSec.getAttribute('data-hidden') === 'true' || demoSec.style.display === 'none';
+    const visEl = document.getElementById('ef-demo-visible'); if (visEl) visEl.checked = !dv;
+    const bgEl = document.getElementById('ef-demo-bg'); if (bgEl && demoSec.style.background) bgEl.value = demoSec.style.background;
+  }
+
+  // ── INTAKE FORM ──
+  edSetField('ef-intake-headline',   getText(['[data-field="intake-headline"]','#intake h2']));
+  edSetField('ef-intake-sub',        getText(['[data-field="intake-sub"]','#intake .section-subheadline','#intake p']));
+  edSetField('ef-intake-form-title', getText(['[data-field="intake-form-title"]','#intake .form-sub']));
+  edSetField('ef-intake-submit',     getText(['[data-field="intake-submit-btn"]','#intake .submit-btn','#intake button[type=submit]','#intake .btn-primary']));
+  edSetField('ef-intake-success',    getText(['[data-field="intake-success-title"]','#intake .success-title']));
+  // Intake section settings
+  const intakeSec = doc.querySelector('#intake');
+  if (intakeSec) {
+    const iv = intakeSec.getAttribute('data-hidden') === 'true' || intakeSec.style.display === 'none';
+    const visEl = document.getElementById('ef-intake-visible'); if (visEl) visEl.checked = !iv;
+    const bgEl = document.getElementById('ef-intake-bg'); if (bgEl && intakeSec.style.background) bgEl.value = intakeSec.style.background;
+  }
+
+  // ── HERO SECTION SETTINGS ──
+  const heroSec = doc.querySelector('#hero');
+  if (heroSec) {
+    const hbg = document.getElementById('ef-hero-bg'); if (hbg && heroSec.style.background) hbg.value = heroSec.style.background;
+    const hpt = document.getElementById('ef-hero-pt'); if (hpt && heroSec.style.paddingTop) hpt.value = heroSec.style.paddingTop;
+    const hpb = document.getElementById('ef-hero-pb'); if (hpb && heroSec.style.paddingBottom) hpb.value = heroSec.style.paddingBottom;
+  }
+
+  // ── STRUCTURE ──
+  edPopulateStructure(doc);
 
   // ── CONTACT ──
   edSetField('ef-contact-headline', getText(['#contact h2','[data-field="contact-headline"]','.contact h2']));
@@ -1785,6 +2053,24 @@ function edBuildUpdatedHTML() {
     const chunks = val('ef-about-bio').split('\n\n').map(s=>s.trim()).filter(Boolean);
     bioParas.forEach((p, i) => { if (chunks[i] !== undefined) p.textContent = chunks[i]; });
   }
+
+  // ── DEMO ──
+  setIfChanged('ef-demo-headline', ['[data-field="demo-headline"]','#demo h2']);
+  setIfChanged('ef-demo-sub',      ['[data-field="demo-sub"]','#demo .section-subheadline']);
+  setIfChanged('ef-demo-tagline',  ['[data-field="demo-tagline"]','#demo .demo-tagline']);
+
+  // ── INTAKE FORM ──
+  setIfChanged('ef-intake-headline',   ['[data-field="intake-headline"]','#intake h2']);
+  setIfChanged('ef-intake-sub',        ['[data-field="intake-sub"]','#intake .section-subheadline']);
+  setIfChanged('ef-intake-form-title', ['[data-field="intake-form-title"]','#intake .form-sub']);
+  setIfChanged('ef-intake-submit',     ['[data-field="intake-submit-btn"]','#intake .submit-btn']);
+  setIfChanged('ef-intake-success',    ['[data-field="intake-success-title"]','#intake .success-title']);
+
+  // ── SECTION VISIBILITY & STYLES ──
+  edApplySectionStyles(doc);
+
+  // ── SECTION ORDERING ──
+  edApplySectionOrder(doc);
 
   // ── CONTACT ──
   setIfChanged('ef-contact-headline', ['#contact h2','[data-field="contact-headline"]']);
@@ -2091,6 +2377,234 @@ async function sreRunHealthChecks() {
       sreLog('health', `🐙 Latest commit: ${sha} — "${msg}" (${ago}m ago)`, 'info');
     }
   } catch(e) { /* non-critical */ }
+}
+
+// ══════════════════════════════════════════════════════════════
+// STRUCTURE PANEL — Page Manager (Squarespace-style)
+// ══════════════════════════════════════════════════════════════
+const STRUCT_META = {
+  'hero':       { label: '🦸 Hero',           tab: 'hero',     editable: true },
+  'services':   { label: '💼 Services',        tab: 'services', editable: true },
+  'demo':       { label: '💬 Chat Demo',       tab: 'demo',     editable: true },
+  'voice-demo': { label: '🎙 Voice Demo',      tab: 'raw',      editable: false, note: 'Edit in Raw HTML' },
+  'scheduling': { label: '📅 Scheduling',      tab: 'raw',      editable: false, note: 'Edit in Raw HTML' },
+  'how':        { label: '⚙️ How It Works',    tab: 'how',      editable: true },
+  'about':      { label: '👤 About',           tab: 'about',    editable: true },
+  'intake':     { label: '📋 Intake Form',     tab: 'intake',   editable: true },
+  'contact':    { label: '📬 Contact',         tab: 'contact',  editable: true },
+};
+
+let edSectionOrder = [];
+let edSectionStyles = {};
+let edSectionVisibility = {};
+
+function edPopulateStructure(doc) {
+  const list = document.getElementById('ed-structure-list');
+  if (!list) return;
+  const sections = Array.from(doc.querySelectorAll('section[id]'));
+  edSectionOrder = sections.map(s => s.id).filter(id => STRUCT_META[id]);
+  edRenderStructureList();
+}
+
+function edRenderStructureList() {
+  const list = document.getElementById('ed-structure-list');
+  if (!list) return;
+  const doc = edState.parsedDoc;
+  list.innerHTML = '';
+  edSectionOrder.forEach((id, i) => {
+    const meta = STRUCT_META[id] || { label: `📄 ${id}`, editable: false };
+    const sec = doc ? doc.querySelector('#' + id) : null;
+    const isHidden = edSectionVisibility[id] === false ||
+      (sec && (sec.getAttribute('data-hidden') === 'true' || sec.style.display === 'none'));
+    const row = document.createElement('div');
+    row.className = 'struct-row';
+    row.dataset.sectionId = id;
+    row.draggable = true;
+    row.innerHTML = `
+      <span class="struct-drag" title="Drag to reorder">⠿</span>
+      <span class="struct-label">${meta.label}</span>
+      ${meta.note ? `<span class="struct-note">(${meta.note})</span>` : ''}
+      <div class="struct-actions">
+        <button class="struct-btn" onclick="edMoveSectionInList('${id}',-1)" title="Move up" ${i===0?'disabled':''}>↑</button>
+        <button class="struct-btn" onclick="edMoveSectionInList('${id}',1)" title="Move down" ${i===edSectionOrder.length-1?'disabled':''}>↓</button>
+        <button class="struct-btn vis-btn${isHidden?' hidden':''}" onclick="edToggleVisibility('${id}',this)" title="${isHidden?'Show section':'Hide section'}">${isHidden?'🙈':'👁'}</button>
+        ${meta.editable ? `<button class="struct-btn edit-btn" onclick="edShowTabDirect('${meta.tab}')" title="Edit content">✏️ Edit</button>` : ''}
+      </div>`;
+    row.addEventListener('dragstart', e => edDragStart(e));
+    row.addEventListener('dragover', e => edDragOver(e));
+    row.addEventListener('drop', e => edDrop(e));
+    row.addEventListener('dragend', e => e.currentTarget.classList.remove('dragging'));
+    list.appendChild(row);
+  });
+}
+
+function edMoveSectionInList(id, dir) {
+  const idx = edSectionOrder.indexOf(id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= edSectionOrder.length) return;
+  edSectionOrder.splice(idx, 1);
+  edSectionOrder.splice(newIdx, 0, id);
+  edRenderStructureList();
+  edState.changeCount++;
+  edUpdateChangeCount();
+  sreLog('editor', `↕ Section "${id}" moved ${dir < 0 ? 'up' : 'down'}`, 'info');
+}
+
+function edToggleVisibility(id, btn) {
+  const isHidden = edSectionVisibility[id] === false;
+  edSectionVisibility[id] = isHidden;
+  if (!isHidden) {
+    edSectionVisibility[id] = false;
+    btn.textContent = '🙈';
+    btn.classList.add('hidden');
+    btn.title = 'Show section';
+  } else {
+    edSectionVisibility[id] = true;
+    btn.textContent = '👁';
+    btn.classList.remove('hidden');
+    btn.title = 'Hide section';
+  }
+  edState.changeCount++;
+  edUpdateChangeCount();
+  sreLog('editor', `${edSectionVisibility[id] ? '👁 Showed' : '🙈 Hid'} section "${id}"`, 'info');
+}
+
+function edToggleSectionVisibility(id, visible) {
+  edSectionVisibility[id] = visible;
+  edRenderStructureList();
+  sreLog('editor', `${visible ? '👁 Showed' : '🙈 Hid'} section "${id}" via settings`, 'info');
+}
+
+function edMarkSectionStyle(id, prop, value) {
+  if (!edSectionStyles[id]) edSectionStyles[id] = {};
+  edSectionStyles[id][prop] = value;
+}
+
+function edApplySectionStyles(doc) {
+  Object.entries(edSectionStyles).forEach(([id, styles]) => {
+    const sec = doc.querySelector('#' + id);
+    if (!sec) return;
+    Object.entries(styles).forEach(([prop, value]) => {
+      if (value) sec.style[prop] = value;
+    });
+  });
+  Object.entries(edSectionVisibility).forEach(([id, visible]) => {
+    const sec = doc.querySelector('#' + id);
+    if (!sec) return;
+    if (!visible) {
+      sec.style.display = 'none';
+      sec.setAttribute('data-hidden', 'true');
+    } else {
+      if (sec.style.display === 'none') sec.style.removeProperty('display');
+      sec.removeAttribute('data-hidden');
+    }
+  });
+}
+
+function edApplySectionOrder(doc) {
+  if (!edSectionOrder.length) return;
+  const body = doc.body;
+  const allSections = Array.from(doc.querySelectorAll('section[id]'));
+  const currentOrder = allSections.map(s => s.id);
+  const filteredCurrent = currentOrder.filter(id => edSectionOrder.includes(id));
+  if (JSON.stringify(filteredCurrent) === JSON.stringify(edSectionOrder)) return;
+  const firstSec = allSections[0];
+  const parent = firstSec?.parentNode;
+  if (!parent) return;
+  const managedMap = {};
+  allSections.forEach(s => { if (edSectionOrder.includes(s.id)) managedMap[s.id] = s; });
+  edSectionOrder.forEach(id => {
+    const sec = managedMap[id];
+    if (sec) parent.appendChild(sec);
+  });
+  sreLog('editor', `↕ Section order applied: ${edSectionOrder.join(' → ')}`, 'success');
+}
+
+let edDragSrcId = null;
+function edDragStart(e) {
+  edDragSrcId = e.currentTarget.dataset.sectionId;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function edDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.struct-row').forEach(r => r.classList.remove('drag-over'));
+  e.currentTarget.closest('.struct-row')?.classList.add('drag-over');
+}
+function edDrop(e) {
+  e.preventDefault();
+  document.querySelectorAll('.struct-row').forEach(r => r.classList.remove('drag-over','dragging'));
+  const targetId = e.currentTarget.closest('.struct-row')?.dataset.sectionId;
+  if (!targetId || targetId === edDragSrcId) return;
+  const srcIdx = edSectionOrder.indexOf(edDragSrcId);
+  const tgtIdx = edSectionOrder.indexOf(targetId);
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  edSectionOrder.splice(srcIdx, 1);
+  edSectionOrder.splice(tgtIdx, 0, edDragSrcId);
+  edRenderStructureList();
+  edState.changeCount++;
+  edUpdateChangeCount();
+  sreLog('editor', `↕ Drag-reordered "${edDragSrcId}" before "${targetId}"`, 'info');
+}
+
+function edShowTabDirect(id) {
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.editor-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ed-panel-' + id)?.classList.add('active');
+  const tabs = document.querySelectorAll('.editor-tab');
+  tabs.forEach(t => { if (t.getAttribute('onclick')?.includes(`'${id}'`)) t.classList.add('active'); });
+}
+
+const SECTION_TEMPLATES = {
+  'cta-banner': {
+    name: 'CTA Banner',
+    html: `\n  <section id="cta-banner" style="background:var(--accent,#C0531A);padding:80px 40px;text-align:center">\n    <div class="container">\n      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#fff;margin-bottom:16px">Ready to Automate Your Business?</h2>\n      <p style="font-size:18px;color:rgba(255,255,255,.85);margin-bottom:32px">Join Austin small businesses already using 512AI.</p>\n      <a href="#intake" style="background:#fff;color:var(--accent,#C0531A);font-weight:700;padding:16px 32px;border-radius:8px;text-decoration:none;font-size:16px">Get Started Today →</a>\n    </div>\n  </section>\n`
+  },
+  'testimonials': {
+    name: 'Testimonials',
+    html: `\n  <section id="testimonials" style="background:#161410;padding:100px 40px">\n    <div class="container">\n      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#F5F0EA;text-align:center;margin-bottom:48px">What Austin Businesses Are Saying</h2>\n      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">\n        <div style="background:#1C1A17;border:1px solid #2A2520;border-radius:12px;padding:28px">\n          <p style="font-size:16px;color:#F5F0EA;line-height:1.7;margin-bottom:20px">"512AI answered every customer question while I was at a job site. I didn't miss a single lead."</p>\n          <div style="font-weight:700;color:#C0531A">— Happy Customer</div>\n          <div style="font-size:13px;color:#A89880">Austin, TX</div>\n        </div>\n        <div style="background:#1C1A17;border:1px solid #2A2520;border-radius:12px;padding:28px">\n          <p style="font-size:16px;color:#F5F0EA;line-height:1.7;margin-bottom:20px">"Setup was painless. Ricardo walked me through everything in 30 minutes and it just works."</p>\n          <div style="font-weight:700;color:#C0531A">— Business Owner</div>\n          <div style="font-size:13px;color:#A89880">Austin, TX</div>\n        </div>\n      </div>\n    </div>\n  </section>\n`
+  },
+  'faq': {
+    name: 'FAQ',
+    html: `\n  <section id="faq" style="background:#0F0F0F;padding:100px 40px">\n    <div class="container" style="max-width:760px">\n      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,48px);color:#F5F0EA;margin-bottom:48px;text-align:center">Frequently Asked Questions</h2>\n      <div style="display:flex;flex-direction:column;gap:16px">\n        <details style="background:#1C1A17;border:1px solid #2A2520;border-radius:12px;padding:20px 24px">\n          <summary style="font-weight:700;color:#F5F0EA;cursor:pointer;font-size:16px">How long does setup take?</summary>\n          <p style="color:#A89880;margin-top:12px;line-height:1.7">Most clients are live within 7 business days. We handle everything — training the AI on your business, connecting it to your site, and testing it thoroughly.</p>\n        </details>\n        <details style="background:#1C1A17;border:1px solid #2A2520;border-radius:12px;padding:20px 24px">\n          <summary style="font-weight:700;color:#F5F0EA;cursor:pointer;font-size:16px">Do I need technical knowledge?</summary>\n          <p style="color:#A89880;margin-top:12px;line-height:1.7">None at all. If you can send a text message, you can work with 512AI. We built this specifically for business owners, not tech people.</p>\n        </details>\n        <details style="background:#1C1A17;border:1px solid #2A2520;border-radius:12px;padding:20px 24px">\n          <summary style="font-weight:700;color:#F5F0EA;cursor:pointer;font-size:16px">Is there a long-term contract?</summary>\n          <p style="color:#A89880;margin-top:12px;line-height:1.7">No contracts. We earn your business every month. Most clients stay because the results speak for themselves.</p>\n        </details>\n      </div>\n    </div>\n  </section>\n`
+  },
+  'text-block': {
+    name: 'Text Block',
+    html: `\n  <section id="text-block" style="background:#0F0F0F;padding:80px 40px">\n    <div class="container" style="max-width:760px;text-align:center">\n      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,42px);color:#F5F0EA;margin-bottom:20px">Your Headline Here</h2>\n      <p style="font-size:17px;color:#A89880;line-height:1.8">Your body text goes here. Edit this section in the Raw HTML tab to customize the content, colors, and layout.</p>\n    </div>\n  </section>\n`
+  },
+  'image-text': {
+    name: 'Image + Text',
+    html: `\n  <section id="image-text" style="background:#0F0F0F;padding:100px 40px">\n    <div class="container" style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center">\n      <div><img src="https://placehold.co/560x420/1C1A17/C0531A?text=Your+Image" alt="Section image" style="width:100%;border-radius:16px"></div>\n      <div>\n        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,38px);color:#F5F0EA;margin-bottom:20px">Your Headline Here</h2>\n        <p style="font-size:16px;color:#A89880;line-height:1.8;margin-bottom:28px">Describe your service, story, or key message here. Replace the image URL in the Raw HTML tab with your actual image.</p>\n        <a href="#intake" style="background:var(--accent,#C0531A);color:#fff;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none">Learn More →</a>\n      </div>\n    </div>\n  </section>\n`
+  },
+  'custom-html': {
+    name: 'Custom HTML',
+    html: `\n  <section id="custom-section" style="background:#0F0F0F;padding:80px 40px">\n    <div class="container">\n      <!-- Add your custom HTML here. Use the Raw HTML tab to edit this section. -->\n      <p style="text-align:center;color:#A89880;font-style:italic">Custom section — edit in Raw HTML tab</p>\n    </div>\n  </section>\n`
+  }
+};
+
+function edAddSection(tplKey) {
+  const tpl = SECTION_TEMPLATES[tplKey];
+  if (!tpl) return;
+  const insertPoint = edState.workingHTML.indexOf('<section id="contact"');
+  if (insertPoint < 0) {
+    edState.workingHTML = edState.workingHTML.replace('</body>', tpl.html + '</body>');
+  } else {
+    edState.workingHTML = edState.workingHTML.slice(0, insertPoint) + tpl.html + edState.workingHTML.slice(insertPoint);
+  }
+  const confirm = document.getElementById('ed-tpl-confirm');
+  if (confirm) {
+    confirm.style.display = 'block';
+    confirm.innerHTML = `✅ <strong>${tpl.name}</strong> section added to the page! Click <strong>Save & Deploy</strong> to publish it. Use the <strong>Raw HTML tab</strong> to customize its content.`;
+    setTimeout(() => { confirm.style.display = 'none'; }, 6000);
+  }
+  edState.changeCount++;
+  edUpdateChangeCount();
+  const parser = new DOMParser();
+  edState.parsedDoc = parser.parseFromString(edState.workingHTML, 'text/html');
+  edPopulateStructure(edState.parsedDoc);
+  sreLog('editor', `➕ Added "${tpl.name}" section template`, 'success');
 }
 
 // ── Hook editor file-load into activity log ───────────────────
