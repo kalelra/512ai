@@ -206,6 +206,47 @@ textarea.field-input{min-height:90px;resize:vertical;font-family:monospace}
 
 /* ── Page visibility ── */
 .page{display:none}.page.active{display:block}
+
+/* ── Site Editor ── */
+.editor-tabs{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:20px;flex-wrap:wrap}
+.editor-tab{padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;color:var(--muted);transition:all .15s;user-select:none;white-space:nowrap}
+.editor-tab:hover{color:var(--text)}
+.editor-tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+.editor-panel{display:none}.editor-panel.active{display:block}
+.ed-field{margin-bottom:16px}
+.ed-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ed-label label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.ed-label .ed-sel{font-size:10px;color:#94a3b8;font-family:monospace}
+.ed-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);outline:none;transition:border .15s;background:#fff}
+.ed-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(46,125,50,.1)}
+textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-height:1.5}
+.ed-input.raw{font-family:monospace;font-size:12px;min-height:500px}
+.ed-input.changed{border-color:var(--amber);background:#fffbeb}
+.ed-char{font-size:11px;color:#94a3b8;text-align:right;margin-top:2px}
+.ed-group{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:16px}
+.ed-group-title{font-size:13px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.pat-banner{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px}
+.pat-row{display:flex;gap:8px;margin-top:10px}
+.pat-row input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:monospace;outline:none}
+.pat-row input:focus{border-color:var(--brand)}
+.save-bar{position:sticky;bottom:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 20px rgba(0,0,0,.1);z-index:40;margin-top:20px}
+.save-bar-left{font-size:13px}
+.save-status{font-size:12px;color:var(--muted)}
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.img-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--card)}
+.img-prev{width:100%;height:110px;object-fit:cover;background:#f1f5f9;display:block}
+.img-prev-placeholder{width:100%;height:110px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:28px}
+.img-card-body{padding:12px}
+.img-card-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.img-card-src{font-size:11px;font-family:monospace;color:#94a3b8;margin-bottom:8px;word-break:break-all}
+.upload-zone{border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;font-size:12px;color:var(--muted);transition:all .15s;margin-top:8px}
+.upload-zone:hover{border-color:var(--brand);color:var(--brand)}
+.upload-zone input{display:none}
+.deploy-indicator{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.deploy-indicator.idle{color:var(--muted)}
+.deploy-indicator.loading{color:var(--blue)}.deploy-indicator.success{color:var(--brand)}.deploy-indicator.error{color:var(--red)}
+.spinner{width:12px;height:12px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -259,6 +300,9 @@ textarea.field-input{min-height:90px;resize:vertical;font-family:monospace}
   <div class="sb-section">Big Hat Lawn</div>
   <a class="sb-item" onclick="showPage('bhl-tools')"><i class="ic">🛠</i> Tools Status</a>
   <a class="sb-item" onclick="showPage('bhl-config')"><i class="ic">⚙️</i> Configuration</a>
+
+  <div class="sb-section">Content</div>
+  <a class="sb-item" onclick="showPage('editor')"><i class="ic">✏️</i> Site Editor</a>
 
   <div class="sb-section">Admin</div>
   <a class="sb-item" onclick="showPage('users')"><i class="ic">🔑</i> Admin Users</a>
@@ -821,6 +865,235 @@ textarea.field-input{min-height:90px;resize:vertical;font-family:monospace}
       </div>
     </div>
 
+    <!-- ═══════════════ SITE EDITOR ═══════════════ -->
+    <div id="page-editor" class="page">
+      <div class="section-hdr">
+        <span class="section-title">512ai.co Site Editor</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="https://512ai.co" target="_blank" class="btn btn-outline btn-sm">👁 Preview Live Site ↗</a>
+          <button class="btn btn-primary btn-sm" onclick="edSaveAndDeploy()">💾 Save &amp; Deploy</button>
+        </div>
+      </div>
+
+      <!-- GitHub PAT banner — hidden once token is set -->
+      <div class="pat-banner" id="pat-banner">
+        <strong>🔑 GitHub token required</strong> — The editor reads and saves changes directly to your GitHub repo, which triggers a Netlify auto-deploy.<br>
+        <span style="color:var(--muted)">Create a token at <a href="https://github.com/settings/tokens/new?scopes=repo&description=512AI+Admin+Editor" target="_blank" style="color:var(--blue)">github.com/settings/tokens</a> with <code>repo</code> scope. Stored in session only — never saved to files.</span>
+        <div class="pat-row">
+          <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+          <button class="btn btn-primary btn-sm" onclick="edSetToken()">Connect</button>
+        </div>
+        <div id="pat-err" style="color:var(--red);font-size:12px;margin-top:6px"></div>
+      </div>
+
+      <!-- Status bar shown after token set -->
+      <div id="ed-status-bar" style="display:none;background:var(--green-bg);border:1px solid #86efac;border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:13px;display:none;align-items:center;justify-content:space-between">
+        <span>✅ Connected to <strong>kalelra/512ai</strong> · index.html loaded</span>
+        <div id="ed-deploy-status" class="deploy-indicator idle">Ready to save</div>
+      </div>
+
+      <!-- Section tabs -->
+      <div class="editor-tabs" id="ed-tabs">
+        <div class="editor-tab active" onclick="edShowTab('nav')">🧭 Navigation</div>
+        <div class="editor-tab" onclick="edShowTab('hero')">🦸 Hero</div>
+        <div class="editor-tab" onclick="edShowTab('services')">💼 Services</div>
+        <div class="editor-tab" onclick="edShowTab('how')">⚙️ How It Works</div>
+        <div class="editor-tab" onclick="edShowTab('about')">👤 About</div>
+        <div class="editor-tab" onclick="edShowTab('contact')">📬 Contact</div>
+        <div class="editor-tab" onclick="edShowTab('images')">🖼 Images</div>
+        <div class="editor-tab" onclick="edShowTab('raw')">⌨️ Raw HTML</div>
+      </div>
+
+      <!-- ── NAV ── -->
+      <div class="editor-panel active" id="ed-panel-nav">
+        <div class="ed-group">
+          <div class="ed-group-title">Navigation Bar</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Logo / Brand Name</label><span class="ed-sel">#navbar .logo, [data-field=nav-brand]</span></div>
+            <input class="ed-input" id="ef-nav-logo" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div id="ed-nav-links-container"><!-- nav links rendered by JS --></div>
+        </div>
+      </div>
+
+      <!-- ── HERO ── -->
+      <div class="editor-panel" id="ed-panel-hero">
+        <div class="ed-group">
+          <div class="ed-group-title">Hero Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Headline — Line 1</label><span class="ed-sel">#hero h1</span></div>
+            <input class="ed-input" id="ef-hero-h1a" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Headline — Line 2 (accent / colored text)</label><span class="ed-sel">#hero h1 span, em, strong</span></div>
+            <input class="ed-input" id="ef-hero-h1b" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Subheadline / Description</label><span class="ed-sel">#hero p</span></div>
+            <textarea class="ed-input" id="ef-hero-sub" rows="3" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="ed-field">
+              <div class="ed-label"><label>Primary CTA Button</label><span class="ed-sel">#hero .btn-primary, a.cta-primary</span></div>
+              <input class="ed-input" id="ef-hero-cta1" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+            <div class="ed-field">
+              <div class="ed-label"><label>Secondary CTA Button</label><span class="ed-sel">#hero .btn-secondary, a.cta-secondary</span></div>
+              <input class="ed-input" id="ef-hero-cta2" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Trust Badges (one per line)</label><span class="ed-sel">#hero .badge, .trust-badge</span></div>
+            <textarea class="ed-input" id="ef-hero-badges" rows="4" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SERVICES ── -->
+      <div class="editor-panel" id="ed-panel-services">
+        <div class="ed-group">
+          <div class="ed-group-title">Services Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">#services h2</span></div>
+            <input class="ed-input" id="ef-svc-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Subheadline / Description</label><span class="ed-sel">#services p.subtitle, #services > p</span></div>
+            <textarea class="ed-input" id="ef-svc-sub" rows="2" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+        </div>
+        <div id="ed-service-cards"><!-- service cards rendered by JS --></div>
+      </div>
+
+      <!-- ── HOW IT WORKS ── -->
+      <div class="editor-panel" id="ed-panel-how">
+        <div class="ed-group">
+          <div class="ed-group-title">How It Works</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">#how h2</span></div>
+            <input class="ed-input" id="ef-how-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+        </div>
+        <div id="ed-how-steps"><!-- steps rendered by JS --></div>
+      </div>
+
+      <!-- ── ABOUT ── -->
+      <div class="editor-panel" id="ed-panel-about">
+        <div class="ed-group">
+          <div class="ed-group-title">About Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">#about h2</span></div>
+            <input class="ed-input" id="ef-about-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Bio / Body Text</label><span class="ed-sel">#about p</span></div>
+            <textarea class="ed-input" id="ef-about-bio" rows="6" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="ed-field">
+              <div class="ed-label"><label>Founder Name</label><span class="ed-sel">#about .founder-name, h3</span></div>
+              <input class="ed-input" id="ef-about-name" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+            <div class="ed-field">
+              <div class="ed-label"><label>CTA / Link Text</label><span class="ed-sel">#about a.btn, #about .cta</span></div>
+              <input class="ed-input" id="ef-about-cta" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CONTACT ── -->
+      <div class="editor-panel" id="ed-panel-contact">
+        <div class="ed-group">
+          <div class="ed-group-title">Contact Section</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Section Headline</label><span class="ed-sel">#contact h2</span></div>
+            <input class="ed-input" id="ef-contact-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Contact Subheading / Description</label><span class="ed-sel">#contact p, #contact .subtitle</span></div>
+            <textarea class="ed-input" id="ef-contact-sub" rows="2" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="ed-field">
+              <div class="ed-label"><label>CTA Button 1</label><span class="ed-sel">#contact .btn:first-of-type</span></div>
+              <input class="ed-input" id="ef-contact-cta1" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+            <div class="ed-field">
+              <div class="ed-label"><label>CTA Button 2</label><span class="ed-sel">#contact .btn:nth-of-type(2)</span></div>
+              <input class="ed-input" id="ef-contact-cta2" placeholder="Loading…" oninput="edMarkChanged(this)" />
+            </div>
+          </div>
+        </div>
+        <div class="ed-group">
+          <div class="ed-group-title">Footer</div>
+          <div class="ed-field">
+            <div class="ed-label"><label>Footer Copyright Text</label><span class="ed-sel">footer .copyright, footer p</span></div>
+            <input class="ed-input" id="ef-footer-copy" placeholder="Loading…" oninput="edMarkChanged(this)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── IMAGES ── -->
+      <div class="editor-panel" id="ed-panel-images">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-hdr"><h3>Image Manager</h3><span style="font-size:12px;color:var(--muted)">Update image URLs or upload new images to the repo</span></div>
+          <div class="card-body">
+            <div class="img-grid" id="ed-img-grid">
+              <div style="text-align:center;color:var(--muted);padding:30px;grid-column:1/-1">Connect your GitHub token to load images</div>
+            </div>
+          </div>
+        </div>
+        <div class="ed-group">
+          <div class="ed-group-title">Upload New Image to GitHub Repo</div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Images are uploaded to <code>files/images/</code> in the repo and served via the CDN URL shown below.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div class="ed-field">
+              <div class="ed-label"><label>File Name (in repo)</label></div>
+              <input class="ed-input" id="ed-upload-name" placeholder="e.g. hero-background.jpg" />
+            </div>
+            <div class="ed-field">
+              <div class="ed-label"><label>Select File</label></div>
+              <input type="file" id="ed-upload-file" accept="image/*" style="padding:7px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;width:100%" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="edUploadImage()">⬆ Upload to GitHub</button>
+          <div id="ed-upload-status" style="font-size:12px;margin-top:8px;color:var(--muted)"></div>
+          <div id="ed-upload-cdn" style="display:none;margin-top:10px;background:var(--green-bg);border:1px solid #86efac;border-radius:8px;padding:10px 14px;font-size:12px">
+            <strong>CDN URL (copy to use in Site Editor):</strong><br>
+            <code id="ed-cdn-url" style="word-break:break-all"></code>
+            <button class="copy-terminal" style="margin-top:6px" onclick="copyToClipboard(document.getElementById('ed-cdn-url').textContent)">📋 Copy URL</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── RAW HTML ── -->
+      <div class="editor-panel" id="ed-panel-raw">
+        <div class="card">
+          <div class="card-hdr">
+            <h3>Raw HTML Editor</h3>
+            <span style="font-size:12px;color:var(--muted)">Full access to index.html — changes here override section editors</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--amber);font-weight:600;margin-bottom:12px">⚠️ Advanced: editing raw HTML can break the site. Make small changes and preview before deploying.</p>
+            <textarea class="ed-input raw" id="ef-raw-html" placeholder="Connect your GitHub token to load the raw HTML…" oninput="edRawChanged()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky save bar -->
+      <div class="save-bar">
+        <div class="save-bar-left">
+          <span id="ed-change-count" style="font-weight:700;color:var(--amber)">0 changes</span>
+          <span style="color:var(--muted);font-size:12px;margin-left:8px" id="ed-save-hint">Connect GitHub token to enable saving</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-outline btn-sm" onclick="edDiscardChanges()">Discard</button>
+          <button class="btn btn-primary" id="ed-save-btn" onclick="edSaveAndDeploy()" disabled>💾 Save &amp; Deploy</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══════════════ ADMIN USERS ═══════════════ -->
     <div id="page-users" class="page">
       <div class="section-hdr">
@@ -867,6 +1140,11 @@ textarea.field-input{min-height:90px;resize:vertical;font-family:monospace}
     <div id="page-changelog" class="page">
       <div class="section-hdr"><span class="section-title">Build Changelog</span></div>
 
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.5 — Today (April 6, 2026)</div>
+        <div class="cl-msg">Site Editor — live visual editor for 512ai.co built into admin portal</div>
+        <div class="cl-meta">GitHub API backed · section editors (Nav, Hero, Services, How, About, Contact) · image manager + upload · raw HTML editor · save &amp; deploy commits directly to repo → Netlify auto-deploys in ~60s</div>
+      </div>
       <div class="changelog-entry">
         <div class="cl-hash">v0.4 — Today (April 6, 2026)</div>
         <div class="cl-msg">Admin portal with login + full technical visibility</div>
@@ -1000,6 +1278,7 @@ const PAGE_TITLES = {
   envvars: 'Environment Variables',
   files: 'File Inventory',
   github: 'GitHub',
+  editor: '✏️ Site Editor — 512ai.co',
   'bhl-tools': 'Big Hat Lawn — Tools',
   'bhl-config': 'Big Hat Lawn — Config',
   users: 'Admin Users',
@@ -1036,6 +1315,574 @@ function copyToClipboard(text) {
 
 function refreshAll() {
   document.getElementById('last-refresh').textContent = 'Refreshed at ' + new Date().toLocaleTimeString();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// SITE EDITOR — GitHub-backed visual editor for 512ai.co/index.html
+// ══════════════════════════════════════════════════════════════════
+
+const ED_REPO = 'kalelra/512ai';
+const ED_FILE = 'index.html';
+
+let edState = {
+  token: null,         // GitHub PAT (sessionStorage only)
+  sha: null,           // current file SHA from GitHub API
+  originalHTML: null,  // raw HTML fetched from GitHub
+  workingHTML: null,   // HTML being edited (modified copy)
+  parsedDoc: null,     // DOMParser result of workingHTML
+  changeCount: 0,
+  rawEdited: false,    // if true, raw editor overrides section editors
+};
+
+// ── Token management ──────────────────────────────────────────────
+function edSetToken() {
+  const pat = document.getElementById('pat-input').value.trim();
+  const errEl = document.getElementById('pat-err');
+  if (!pat.startsWith('ghp_') && !pat.startsWith('github_pat_') && pat.length < 20) {
+    errEl.textContent = 'Token should start with ghp_ or github_pat_'; return;
+  }
+  errEl.textContent = '';
+  try { sessionStorage.setItem('ed_pat', pat); } catch(e) {}
+  edState.token = pat;
+  edLoadFile();
+}
+
+function edGetToken() {
+  if (edState.token) return edState.token;
+  try { return sessionStorage.getItem('ed_pat'); } catch(e) { return null; }
+}
+
+// ── Load index.html from GitHub ───────────────────────────────────
+async function edLoadFile() {
+  const token = edGetToken();
+  if (!token) return;
+
+  document.getElementById('pat-banner').style.display = 'none';
+  const statusBar = document.getElementById('ed-status-bar');
+  statusBar.style.display = 'flex';
+  statusBar.querySelector('span').textContent = '⏳ Loading index.html from GitHub…';
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${ED_REPO}/contents/${ED_FILE}`, {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}: ${await res.text()}`);
+
+    const data = await res.json();
+    edState.sha = data.sha;
+    // Decode base64 content (GitHub returns base64)
+    edState.originalHTML = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+    edState.workingHTML = edState.originalHTML;
+
+    statusBar.querySelector('span').innerHTML = '✅ Connected to <strong>kalelra/512ai</strong> · index.html loaded (' + Math.round(edState.originalHTML.length/1024) + 'KB)';
+    document.getElementById('ed-save-btn').disabled = false;
+    document.getElementById('ed-save-hint').textContent = 'No unsaved changes';
+
+    edParseAndPopulate();
+  } catch(err) {
+    statusBar.querySelector('span').textContent = '❌ Error: ' + err.message;
+    document.getElementById('pat-banner').style.display = 'block';
+    document.getElementById('pat-err').textContent = err.message;
+  }
+}
+
+// ── Parse HTML and populate all form fields ───────────────────────
+function edParseAndPopulate() {
+  const parser = new DOMParser();
+  edState.parsedDoc = parser.parseFromString(edState.workingHTML, 'text/html');
+  const doc = edState.parsedDoc;
+
+  const get = (selectors) => {
+    for (const sel of selectors) {
+      const el = doc.querySelector(sel);
+      if (el) return el;
+    }
+    return null;
+  };
+
+  const getText = (selectors, fallback='') => {
+    const el = get(selectors);
+    return el ? el.textContent.trim() : fallback;
+  };
+
+  // ── NAV ──
+  edSetField('ef-nav-logo', getText(['[data-field="nav-brand"]','#navbar .logo-text','#navbar .brand','header .logo','#navbar h1','nav .logo']));
+
+  // Nav links
+  const navLinks = doc.querySelectorAll('#navbar a:not(.btn), nav .nav-links a, header nav a');
+  const navContainer = document.getElementById('ed-nav-links-container');
+  navContainer.innerHTML = '';
+  navLinks.forEach((link, i) => {
+    const text = link.textContent.trim();
+    if (!text || text.length > 40) return;
+    navContainer.innerHTML += `
+      <div class="ed-field" style="display:grid;grid-template-columns:1fr 2fr;gap:8px;align-items:end">
+        <div><div class="ed-label"><label>Nav Link ${i+1} Text</label></div>
+          <input class="ed-input" id="ef-nav-link-${i}-text" value="${edEsc(text)}" data-nav-idx="${i}" oninput="edMarkChanged(this)" /></div>
+        <div><div class="ed-label"><label>Nav Link ${i+1} URL</label></div>
+          <input class="ed-input" id="ef-nav-link-${i}-href" value="${edEsc(link.getAttribute('href')||'')}" data-nav-idx="${i}" oninput="edMarkChanged(this)" /></div>
+      </div>`;
+  });
+
+  // ── HERO ──
+  const h1 = doc.querySelector('#hero h1, .hero h1, [data-field="hero-h1"]');
+  if (h1) {
+    // If h1 has an inner span/em for the accent line
+    const accent = h1.querySelector('span, em, strong');
+    if (accent) {
+      const fullText = h1.textContent.trim();
+      const accentText = accent.textContent.trim();
+      const line1 = fullText.replace(accentText, '').trim();
+      edSetField('ef-hero-h1a', line1 || fullText);
+      edSetField('ef-hero-h1b', accentText);
+    } else {
+      const lines = h1.textContent.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+      edSetField('ef-hero-h1a', lines[0] || '');
+      edSetField('ef-hero-h1b', lines[1] || '');
+    }
+  }
+  edSetField('ef-hero-sub', getText(['#hero p','[data-field="hero-sub"]','.hero p','.hero .subtitle']));
+  edSetField('ef-hero-cta1', getText(['#hero .btn-primary','[data-field="hero-cta1"]','#hero a.btn:first-of-type','.hero .cta-primary']));
+  edSetField('ef-hero-cta2', getText(['#hero .btn-secondary','[data-field="hero-cta2"]','#hero a.btn:nth-of-type(2)','.hero .cta-secondary']));
+
+  const badges = doc.querySelectorAll('#hero .badge, #hero .trust-badge, #hero .trust, .hero .badge, [data-field="hero-badge"]');
+  if (badges.length) {
+    edSetField('ef-hero-badges', Array.from(badges).map(b=>b.textContent.trim()).filter(Boolean).join('\n'));
+  }
+
+  // ── SERVICES ──
+  edSetField('ef-svc-headline', getText(['#services h2','[data-field="svc-headline"]','.services h2']));
+  edSetField('ef-svc-sub', getText(['#services p.subtitle','#services > p','.services .subtitle']));
+
+  const svcCards = doc.querySelectorAll('#services .card, .services .pricing-card, #services .service-card, [data-field^="svc-card"]');
+  const svcContainer = document.getElementById('ed-service-cards');
+  svcContainer.innerHTML = '';
+  svcCards.forEach((card, i) => {
+    const title = card.querySelector('h3, h4, .card-title, .plan-name')?.textContent.trim() || '';
+    const price = card.querySelector('.price, .pricing, [class*="price"]')?.textContent.trim() || '';
+    const desc = card.querySelector('p, .description')?.textContent.trim() || '';
+    svcContainer.innerHTML += `
+      <div class="ed-group">
+        <div class="ed-group-title">Service Card ${i+1}</div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+          <div class="ed-field"><div class="ed-label"><label>Card Title</label></div>
+            <input class="ed-input" id="ef-svc-${i}-title" value="${edEsc(title)}" oninput="edMarkChanged(this)" /></div>
+          <div class="ed-field"><div class="ed-label"><label>Price</label></div>
+            <input class="ed-input" id="ef-svc-${i}-price" value="${edEsc(price)}" oninput="edMarkChanged(this)" /></div>
+        </div>
+        <div class="ed-field"><div class="ed-label"><label>Description</label></div>
+          <textarea class="ed-input" id="ef-svc-${i}-desc" rows="2" oninput="edMarkChanged(this)">${edEsc(desc)}</textarea></div>
+      </div>`;
+  });
+  if (!svcCards.length) {
+    svcContainer.innerHTML = '<p style="color:var(--muted);font-size:13px">No service cards detected. Edit them in Raw HTML tab.</p>';
+  }
+
+  // ── HOW IT WORKS ──
+  edSetField('ef-how-headline', getText(['#how h2','[data-field="how-headline"]','.how-it-works h2']));
+
+  const howSteps = doc.querySelectorAll('#how .step, .how-it-works .step, #how li, [data-field^="how-step"]');
+  const stepsContainer = document.getElementById('ed-how-steps');
+  stepsContainer.innerHTML = '';
+  howSteps.forEach((step, i) => {
+    const title = step.querySelector('h3, h4, strong, .step-title')?.textContent.trim() || step.textContent.trim().substring(0,60);
+    const desc = step.querySelector('p, .step-desc')?.textContent.trim() || '';
+    stepsContainer.innerHTML += `
+      <div class="ed-group">
+        <div class="ed-group-title">Step ${i+1}</div>
+        <div class="ed-field"><div class="ed-label"><label>Title</label></div>
+          <input class="ed-input" id="ef-how-${i}-title" value="${edEsc(title)}" oninput="edMarkChanged(this)" /></div>
+        <div class="ed-field"><div class="ed-label"><label>Description</label></div>
+          <textarea class="ed-input" id="ef-how-${i}-desc" rows="2" oninput="edMarkChanged(this)">${edEsc(desc)}</textarea></div>
+      </div>`;
+  });
+  if (!howSteps.length) {
+    stepsContainer.innerHTML = '<p style="color:var(--muted);font-size:13px">Steps not detected by selector. Edit in Raw HTML tab.</p>';
+  }
+
+  // ── ABOUT ──
+  edSetField('ef-about-headline', getText(['#about h2','[data-field="about-headline"]','.about h2']));
+  const aboutBio = Array.from(doc.querySelectorAll('#about p, .about p')).map(p=>p.textContent.trim()).filter(Boolean).join('\n\n');
+  edSetField('ef-about-bio', aboutBio);
+  edSetField('ef-about-name', getText(['#about h3','[data-field="about-name"]','#about .founder-name','#about .name']));
+  edSetField('ef-about-cta', getText(['#about a.btn','[data-field="about-cta"]','#about .cta','#about a[href*="call"], #about a[href*="contact"]']));
+
+  // ── CONTACT ──
+  edSetField('ef-contact-headline', getText(['#contact h2','[data-field="contact-headline"]','.contact h2']));
+  edSetField('ef-contact-sub', getText(['#contact p','.contact p','#contact .subtitle']));
+  const contactBtns = doc.querySelectorAll('#contact .btn, #contact a.btn, .contact .btn');
+  if (contactBtns[0]) edSetField('ef-contact-cta1', contactBtns[0].textContent.trim());
+  if (contactBtns[1]) edSetField('ef-contact-cta2', contactBtns[1].textContent.trim());
+  edSetField('ef-footer-copy', getText(['footer .copyright','footer p','#footer p','.footer-copy']));
+
+  // ── IMAGES ──
+  edPopulateImages(doc);
+
+  // ── RAW HTML ──
+  document.getElementById('ef-raw-html').value = edState.workingHTML;
+
+  // Reset change count
+  edState.changeCount = 0;
+  edState.rawEdited = false;
+  edUpdateChangeCount();
+}
+
+function edSetField(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value || '';
+}
+
+function edEsc(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Image manager ─────────────────────────────────────────────────
+function edPopulateImages(doc) {
+  const imgs = Array.from(doc.querySelectorAll('img')).filter(img => {
+    const src = img.getAttribute('src') || '';
+    return src && !src.startsWith('data:'); // exclude inline base64
+  });
+
+  const grid = document.getElementById('ed-img-grid');
+  if (!imgs.length) { grid.innerHTML = '<p style="color:var(--muted)">No external images found.</p>'; return; }
+
+  grid.innerHTML = imgs.map((img, i) => {
+    const src = img.getAttribute('src') || '';
+    const alt = img.getAttribute('alt') || `image-${i}`;
+    const isExternal = src.startsWith('http');
+    return `
+      <div class="img-card">
+        ${isExternal ? `<img class="img-prev" src="${src}" alt="${alt}" onerror="this.style.display='none'" />`
+                     : `<div class="img-prev-placeholder">🖼</div>`}
+        <div class="img-card-body">
+          <div class="img-card-label">${alt || 'Unnamed image'}</div>
+          <div class="img-card-src">${src.length > 60 ? src.substring(0,57)+'…' : src}</div>
+          <div class="ed-label"><label>New URL</label></div>
+          <input class="ed-input" id="ef-img-${i}" value="${edEsc(src)}" placeholder="https://…" oninput="edMarkChanged(this)" data-img-idx="${i}" />
+        </div>
+      </div>`;
+  }).join('');
+
+  // Store original srcs for save
+  edState.imgOriginals = imgs.map(img => ({
+    originalSrc: img.getAttribute('src'),
+    alt: img.getAttribute('alt') || ''
+  }));
+}
+
+// ── Track changes ─────────────────────────────────────────────────
+function edMarkChanged(el) {
+  el.classList.add('changed');
+  edState.changeCount++;
+  edUpdateChangeCount();
+}
+
+function edRawChanged() {
+  edState.rawEdited = true;
+  edMarkChanged(document.getElementById('ef-raw-html'));
+}
+
+function edUpdateChangeCount() {
+  const count = document.querySelectorAll('.ed-input.changed').length;
+  const countEl = document.getElementById('ed-change-count');
+  const hintEl = document.getElementById('ed-save-hint');
+  countEl.textContent = count + ' unsaved ' + (count === 1 ? 'change' : 'changes');
+  countEl.style.color = count > 0 ? 'var(--amber)' : 'var(--muted)';
+  hintEl.textContent = count > 0 ? 'Click "Save & Deploy" to push to GitHub → Netlify deploys in ~60s' : 'No unsaved changes';
+}
+
+function edDiscardChanges() {
+  if (!edState.originalHTML) return;
+  document.querySelectorAll('.ed-input.changed').forEach(el => el.classList.remove('changed'));
+  edParseAndPopulate();
+  edUpdateChangeCount();
+}
+
+// ── Tab navigation ────────────────────────────────────────────────
+function edShowTab(id) {
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.editor-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ed-panel-' + id)?.classList.add('active');
+  event.target.classList.add('active');
+
+  // Load file if we have a token but haven't loaded yet
+  if (!edState.originalHTML && edGetToken()) edLoadFile();
+  else if (!edState.originalHTML && !edGetToken()) { /* show token prompt */ }
+}
+
+// ── Build updated HTML from form fields ───────────────────────────
+function edBuildUpdatedHTML() {
+  if (edState.rawEdited) {
+    // Raw editor takes priority
+    return document.getElementById('ef-raw-html').value;
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(edState.workingHTML, 'text/html');
+
+  const set = (selectors, value, attr='textContent') => {
+    for (const sel of selectors) {
+      const el = doc.querySelector(sel);
+      if (el) { el[attr] = value; return true; }
+    }
+    return false;
+  };
+
+  const val = id => (document.getElementById(id)?.value || '').trim();
+
+  // NAV
+  set(['[data-field="nav-brand"]','#navbar .logo-text','#navbar .brand','header .logo','#navbar h1'], val('ef-nav-logo'));
+
+  // Nav links
+  const navLinks = doc.querySelectorAll('#navbar a:not(.btn), nav .nav-links a, header nav a');
+  navLinks.forEach((link, i) => {
+    const textEl = document.getElementById(`ef-nav-link-${i}-text`);
+    const hrefEl = document.getElementById(`ef-nav-link-${i}-href`);
+    if (textEl) link.textContent = textEl.value.trim();
+    if (hrefEl) link.setAttribute('href', hrefEl.value.trim());
+  });
+
+  // HERO
+  const h1 = doc.querySelector('#hero h1, .hero h1');
+  if (h1) {
+    const accent = h1.querySelector('span, em, strong');
+    const line1 = val('ef-hero-h1a');
+    const line2 = val('ef-hero-h1b');
+    if (accent && line2) {
+      // Replace text node before accent with line1, keep accent tag with line2
+      const textNodes = Array.from(h1.childNodes).filter(n => n.nodeType === 3);
+      if (textNodes[0]) textNodes[0].textContent = line1 + ' ';
+      accent.textContent = line2;
+    } else {
+      h1.textContent = line1 + (line2 ? '\n' + line2 : '');
+    }
+  }
+  set(['#hero p','[data-field="hero-sub"]','.hero p'], val('ef-hero-sub'));
+  set(['#hero .btn-primary','[data-field="hero-cta1"]','#hero a.btn:first-of-type'], val('ef-hero-cta1'));
+  set(['#hero .btn-secondary','[data-field="hero-cta2"]','#hero a.btn:nth-of-type(2)'], val('ef-hero-cta2'));
+
+  // Trust badges
+  const badgeLines = (val('ef-hero-badges') || '').split('\n').filter(Boolean);
+  const badges = doc.querySelectorAll('#hero .badge, #hero .trust-badge, .hero .badge');
+  badges.forEach((b, i) => { if (badgeLines[i]) b.textContent = badgeLines[i]; });
+
+  // SERVICES
+  set(['#services h2','[data-field="svc-headline"]'], val('ef-svc-headline'));
+  set(['#services p.subtitle','#services > p'], val('ef-svc-sub'));
+
+  const svcCards = doc.querySelectorAll('#services .card, .services .pricing-card, #services .service-card');
+  svcCards.forEach((card, i) => {
+    const titleEl = document.getElementById(`ef-svc-${i}-title`);
+    const priceEl = document.getElementById(`ef-svc-${i}-price`);
+    const descEl = document.getElementById(`ef-svc-${i}-desc`);
+    if (titleEl) { const t = card.querySelector('h3, h4, .card-title'); if(t) t.textContent = titleEl.value; }
+    if (priceEl) { const p = card.querySelector('.price, .pricing'); if(p) p.textContent = priceEl.value; }
+    if (descEl) { const d = card.querySelector('p, .description'); if(d) d.textContent = descEl.value; }
+  });
+
+  // HOW IT WORKS
+  set(['#how h2','[data-field="how-headline"]'], val('ef-how-headline'));
+
+  const howSteps = doc.querySelectorAll('#how .step, .how-it-works .step, #how li');
+  howSteps.forEach((step, i) => {
+    const titleEl = document.getElementById(`ef-how-${i}-title`);
+    const descEl = document.getElementById(`ef-how-${i}-desc`);
+    if (titleEl) { const t = step.querySelector('h3, h4, strong, .step-title'); if(t) t.textContent = titleEl.value; }
+    if (descEl) { const d = step.querySelector('p, .step-desc'); if(d) d.textContent = descEl.value; }
+  });
+
+  // ABOUT
+  set(['#about h2','[data-field="about-headline"]'], val('ef-about-headline'));
+  set(['#about h3','#about .founder-name'], val('ef-about-name'));
+  set(['#about a.btn','#about .cta'], val('ef-about-cta'));
+  // Bio — replace first paragraph
+  const firstAboutP = doc.querySelector('#about p, .about p');
+  if (firstAboutP) firstAboutP.textContent = val('ef-about-bio').split('\n\n')[0];
+
+  // CONTACT
+  set(['#contact h2','[data-field="contact-headline"]'], val('ef-contact-headline'));
+  set(['#contact p', '#contact .subtitle'], val('ef-contact-sub'));
+  const contactBtns = doc.querySelectorAll('#contact .btn, .contact .btn');
+  if (contactBtns[0] && val('ef-contact-cta1')) contactBtns[0].textContent = val('ef-contact-cta1');
+  if (contactBtns[1] && val('ef-contact-cta2')) contactBtns[1].textContent = val('ef-contact-cta2');
+  set(['footer .copyright','footer p','#footer p'], val('ef-footer-copy'));
+
+  // IMAGES — update src attributes
+  if (edState.imgOriginals) {
+    edState.imgOriginals.forEach((orig, i) => {
+      const newSrc = document.getElementById(`ef-img-${i}`)?.value.trim();
+      if (newSrc && newSrc !== orig.originalSrc) {
+        const imgs = doc.querySelectorAll('img');
+        const imgEl = Array.from(imgs).find(img => img.getAttribute('src') === orig.originalSrc);
+        if (imgEl) imgEl.setAttribute('src', newSrc);
+      }
+    });
+  }
+
+  return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML;
+}
+
+// ── Save & Deploy (GitHub API commit) ─────────────────────────────
+async function edSaveAndDeploy() {
+  const token = edGetToken();
+  if (!token) { alert('Connect your GitHub token first.'); return; }
+  if (!edState.sha) { alert('File not loaded yet. Please wait.'); return; }
+
+  const statusEl = document.getElementById('ed-deploy-status');
+  const saveBtn = document.getElementById('ed-save-btn');
+
+  statusEl.className = 'deploy-indicator loading';
+  statusEl.innerHTML = '<span class="spinner"></span> Building commit…';
+  saveBtn.disabled = true;
+
+  try {
+    const updatedHTML = edBuildUpdatedHTML();
+    const encoded = btoa(unescape(encodeURIComponent(updatedHTML)));
+
+    statusEl.innerHTML = '<span class="spinner"></span> Committing to GitHub…';
+
+    const res = await fetch(`https://api.github.com/repos/${ED_REPO}/contents/${ED_FILE}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Update site content via 512AI admin editor — ${new Date().toLocaleString()}`,
+        content: encoded,
+        sha: edState.sha
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.message || `GitHub API error ${res.status}`);
+    }
+
+    const data = await res.json();
+    edState.sha = data.content.sha;           // update SHA for next save
+    edState.workingHTML = updatedHTML;
+    edState.originalHTML = updatedHTML;
+
+    // Clear change markers
+    document.querySelectorAll('.ed-input.changed').forEach(el => el.classList.remove('changed'));
+    edUpdateChangeCount();
+
+    statusEl.className = 'deploy-indicator success';
+    statusEl.textContent = '✅ Committed! Netlify deploying (~60s)…';
+
+    // After 70s, show "live" status
+    setTimeout(() => {
+      statusEl.textContent = '🚀 Live at 512ai.co';
+      saveBtn.disabled = false;
+    }, 70000);
+
+    // Show toast
+    edToast('✅ Saved to GitHub! Site deploying now…', 'success');
+
+  } catch(err) {
+    statusEl.className = 'deploy-indicator error';
+    statusEl.textContent = '❌ Error: ' + err.message;
+    saveBtn.disabled = false;
+    edToast('❌ Save failed: ' + err.message, 'error');
+  }
+}
+
+// ── Image upload to GitHub ─────────────────────────────────────────
+async function edUploadImage() {
+  const token = edGetToken();
+  if (!token) { alert('Connect GitHub token first'); return; }
+
+  const fileInput = document.getElementById('ed-upload-file');
+  const nameInput = document.getElementById('ed-upload-name');
+  const statusEl = document.getElementById('ed-upload-status');
+  const cdnDiv = document.getElementById('ed-upload-cdn');
+
+  if (!fileInput.files[0]) { alert('Select a file first'); return; }
+  const file = fileInput.files[0];
+  const name = nameInput.value.trim() || file.name;
+
+  statusEl.textContent = '⏳ Reading file…';
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const base64 = e.target.result.split(',')[1]; // remove data:image/...;base64,
+      const path = `files/images/${name}`;
+
+      statusEl.textContent = '⏳ Uploading to GitHub…';
+
+      // Check if file exists (to get its SHA for update)
+      let existingSha = null;
+      try {
+        const check = await fetch(`https://api.github.com/repos/${ED_REPO}/contents/${path}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (check.ok) { const d = await check.json(); existingSha = d.sha; }
+      } catch(e) {}
+
+      const body = {
+        message: `Upload image: ${name} via 512AI admin editor`,
+        content: base64
+      };
+      if (existingSha) body.sha = existingSha;
+
+      const res = await fetch(`https://api.github.com/repos/${ED_REPO}/contents/${path}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) throw new Error('Upload failed: ' + res.status);
+
+      const cdnUrl = `https://cdn.jsdelivr.net/gh/${ED_REPO}@main/${path}`;
+      document.getElementById('ed-cdn-url').textContent = cdnUrl;
+      cdnDiv.style.display = 'block';
+      statusEl.textContent = '✅ Uploaded! Use the CDN URL below to reference this image.';
+
+    } catch(err) {
+      statusEl.textContent = '❌ ' + err.message;
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Toast notification ─────────────────────────────────────────────
+function edToast(msg, type='success') {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:30px;right:30px;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.15);transition:opacity .3s;
+    background:${type==='success'?'#dcfce7':type==='error'?'#fee2e2':'#dbeafe'};
+    color:${type==='success'?'#166534':type==='error'?'#991b1b':'#1e40af'};
+    border:1px solid ${type==='success'?'#86efac':type==='error'?'#fca5a5':'#93c5fd'}`;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3500);
+}
+
+// Auto-load if token was saved in a previous editor visit this session
+document.addEventListener('DOMContentLoaded', () => {
+  const savedPat = edGetToken();
+  if (savedPat) {
+    document.getElementById('pat-banner').style.display = 'none';
+  }
+});
+
+// Hook into showPage to auto-load editor when navigating to it
+const _origShowPage = showPage;
+function showPage(id) {
+  _origShowPage(id);
+  if (id === 'editor') {
+    const token = edGetToken();
+    if (token && !edState.originalHTML) {
+      edLoadFile();
+    } else if (!token) {
+      document.getElementById('pat-banner').style.display = 'block';
+    }
+  }
 }
 
 function showEnvInstructions() {
