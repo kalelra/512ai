@@ -61,7 +61,7 @@ Please have gates unlocked. We'll send a quick "We're here!" text when we arrive
   job_complete: (data) =>
 `✅ All done, ${data.customerName}! Your lawn is looking great.
 
-${data.notes ? '📝 Notes: ' + data.notes + '\n\n' : ''}We appreciate your business! Leave us a Google review? 👉 ${data.reviewLink || 'https://g.page/bighatlawn'}
+${data.notes ? '📝 Notes: ' + data.notes + '\n\n' : ''}We appreciate your business! Leave us a Google review? 👉 ${data.reviewLink || 'https://maps.google.com/?cid=8398378033135539234'}
 
 – Big Hat Lawn 🤠`,
 
