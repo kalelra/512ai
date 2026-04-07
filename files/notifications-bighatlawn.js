@@ -26,7 +26,7 @@ const TEMPLATES = {
 🏡 ${data.address || 'Your address on file'}
 🔧 ${data.serviceType || 'Lawn Service'}
 
-Questions? Reply to this message or call ${data.businessPhone || '(512) 555-0100'}.
+Questions? Reply to this message or call ${data.businessPhone || '(512) 748-2626'}.
 
 – Big Hat Lawn 🤠`,
 
@@ -40,7 +40,7 @@ Questions? Reply to this message or call ${data.businessPhone || '(512) 555-0100
 
 Please make sure gates are unlocked and pets are secured. We'll take great care of your lawn!
 
-Need to reschedule? Reply RESCHEDULE or call ${data.businessPhone || '(512) 555-0100'}.`,
+Need to reschedule? Reply RESCHEDULE or call ${data.businessPhone || '(512) 748-2626'}.`,
 
   // Sent morning of appointment (~7 AM)
   reminder_day_of: (data) =>

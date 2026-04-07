@@ -15,9 +15,9 @@
     brandHover:       '#1B5E20',
     brandName:        'Big Hat Lawn',
     brandTagline:     '\uD83C\uDF3F Lawn Care Assistant \u2022 Online now',
-    greeting:         "Hi! I\u2019m the Big Hat Lawn assistant. I can help you get an estimate or schedule a service. What can I help you with today?",
+    greeting:         "Hi! I\u2019m the Big Hat Lawn assistant \uD83C\uDF3F We serve Austin\u2019s southeast side (78742, 78617, 78719, 78747, 78744, 78748, 78652, 78745 \u0026 more). I can give you a quick price estimate or help you schedule a visit. What can I help you with today?",
     proactiveMsgDelay: 8000,   // ms before proactive tooltip appears (0 = disabled)
-    proactiveMsg:     "Need a lawn quote? I can get you one in 2 minutes! \uD83D\uDC4B",
+    proactiveMsg:     "Serving SE Austin Mon\u2013Fri 8\u20135. Get a lawn quote in 2 minutes! \uD83D\uDC4B",
     sessionKey:       'bhl_sid',
     storageType:      'local'  // 'local' = persists across tabs | 'session' = tab-only
   };

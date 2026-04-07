@@ -24,40 +24,40 @@ git add \
   files/push-widget.sh
 
 echo "==> Committing..."
-git commit -m "feat: Big Hat Lawn complete launch-ready stack v2
+git commit -m "feat: Big Hat Lawn v3 — Rudy's real business info wired in
 
-Chat Widget (v1.1) — on CDN, ready to deploy:
-  widget-bighatlawn.js, widget-test.html, embed-instructions.html
+Updated with confirmed data from Rudy (Big Hat Lawn owner):
 
-Voice AI — built, pending Bland.ai key:
-  voice-bighatlawn.js        (embeddable click-to-call widget)
-  voice-bighatlawn-function.js (Bland.ai Netlify function)
-  backend-voice-route.patch  (Railway /api/v1/voice/call route)
+Voice AI (voice-bighatlawn-function.js):
+  - Lily script: real pricing table ($40–$120+ by sq ft)
+  - Service hours: Mon–Fri 8AM–5PM
+  - Service zip codes: 78742, 78617, 78719, 78747, 78744, 78748,
+    78652, 78745, 78725, 78653, 78763, 78724
+  - Phone: (512) 748-2626
+  - AI now qualifies yard size and gives accurate quote ranges
+  - Always clarifies prices are averages, site visit confirms final
 
-SMS Notifications — built, pending Twilio:
-  notifications-bighatlawn.js (6 SMS types, Twilio engine)
+Chat Widget (widget-bighatlawn.js):
+  - Greeting updated to mention SE Austin service zip codes
+  - Proactive tooltip updated: Mon–Fri 8–5 schedule mention
 
-CRM Integration — built, pending LawnPro access:
-  lawnpro-webhook-bighatlawn.js (webhook handler: job created/completed)
+SMS Notifications (notifications-bighatlawn.js):
+  - All businessPhone fallbacks updated to (512) 748-2626
 
-SEO Package:
-  seo-bighatlawn.html  (20-item interactive Squarespace SEO checklist)
+SEO (seo-bighatlawn.html):
+  - Schema markup: phone +1-512-748-2626
+  - Hours: Mon–Fri 08:00–17:00 (removed Saturday — Rudy is M–F only)
+  - areaServed: all 12 zip codes as schema PostalCode entries
+  - Meta description: real zip codes replacing [NEIGHBORHOODS]
 
-Portals:
-  admin-portal.html              (512AI multi-client admin dashboard)
-  client-portal-bighatlawn.html  (Rudy's ROI + setup status portal)
-  bighatlawn-master.html         (master delivery + next actions)
+Netlify env vars set (via MCP):
+  BHL_BUSINESS_PHONE = +15127482626
 
-Launch Prep:
-  rudy-info-form.html            (business info collection form for Rudy)
-  qa-launch-checklist.html       (24-test pre-launch QA checklist)
-  squarespace-deploy-guide.html  (14-step Squarespace injection guide)
-
-Stack complete. Blocked only on: Squarespace access, Bland.ai key,
-Twilio credentials, LawnPro API key, Rudy's business details.
-
-When credentials arrive → Ricardo sets env vars via Netlify/Railway MCP
-and deploys everything live in one session.
+Still pending from Rudy:
+  - Cell/personal phone (BHL_OWNER_PHONE)
+  - Business address (for schema streetAddress + postalCode)
+  - Google Business Profile review link
+  - LawnPro CRM access
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
 
