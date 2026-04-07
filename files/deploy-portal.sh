@@ -1,15 +1,33 @@
 #!/bin/bash
-# ─── 512AI — Deploy to Netlify (512ai.co) ────────────────────────────────────
-# Run this from your Mac terminal in this folder.
-# Requires: netlify-cli (npm install -g netlify-cli) + netlify login
+# ─── 512AI — DEPRECATED: DO NOT RUN THIS SCRIPT ───────────────────────────────
 #
-# First time setup:
-#   netlify login
-#   (browser opens, click Authorize)
+# ⚠️  WARNING: This script previously destroyed 512ai.co by deploying
+#     the files/ subdirectory as the Netlify site root, overwriting index.html.
 #
-# Then run:
-#   bash deploy-portal.sh
+# ✅  CORRECT WAY TO DEPLOY:
+#     1. Make your changes in ~/Claude_Projects/512ai/files/
+#     2. Run: bash fix-root-config.sh   (first time only, or after new files)
+#        OR:  bash push-widget.sh       (for subsequent pushes)
+#     3. Netlify auto-deploys from GitHub — no manual netlify deploy needed.
+#
+# This script is intentionally disabled.
 # ─────────────────────────────────────────────────────────────────────────────
+
+echo ""
+echo "❌  STOPPED: deploy-portal.sh is disabled."
+echo ""
+echo "    This script previously overwrote 512ai.co by deploying"
+echo "    files/ as the site root instead of the repo root."
+echo ""
+echo "    ✅  To deploy changes, run instead:"
+echo "        bash push-widget.sh"
+echo ""
+echo "    Netlify auto-deploys from GitHub. No manual netlify CLI needed."
+echo ""
+exit 1
+
+# ─── DISABLED CODE BELOW ──────────────────────────────────────────────────────
+: << 'DISABLED'
 
 set -e
 
