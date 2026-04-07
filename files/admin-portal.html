@@ -987,7 +987,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             <input class="ed-input" id="ef-about-headline" placeholder="Loading…" oninput="edMarkChanged(this)" />
           </div>
           <div class="ed-field">
-            <div class="ed-label"><label>Bio / Body Text</label><span class="ed-sel">#about p</span></div>
+            <div class="ed-label"><label>Bio / Body Text</label><span class="ed-sel">#about .about-bio p</span></div>
             <textarea class="ed-input" id="ef-about-bio" rows="6" placeholder="Loading…" oninput="edMarkChanged(this)"></textarea>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -1516,13 +1516,13 @@ function edParseAndPopulate() {
 
   // ── SERVICES ──
   edSetField('ef-svc-headline', getText(['#services h2','[data-field="svc-headline"]','.services h2']));
-  edSetField('ef-svc-sub', getText(['#services p.subtitle','#services > p','.services .subtitle']));
+  edSetField('ef-svc-sub', getText(['#services .section-subheadline','#services p.subtitle','#services > p','.services .subtitle']));
 
   const svcCards = doc.querySelectorAll('#services .card, .services .pricing-card, #services .service-card, [data-field^="svc-card"]');
   const svcContainer = document.getElementById('ed-service-cards');
   svcContainer.innerHTML = '';
   svcCards.forEach((card, i) => {
-    const title = card.querySelector('h3, h4, .card-title, .plan-name')?.textContent.trim() || '';
+    const title = card.querySelector('.card-name, h3, h4, .card-title, .plan-name')?.textContent.trim() || '';
     const price = card.querySelector('.price, .pricing, [class*="price"]')?.textContent.trim() || '';
     const desc = card.querySelector('p, .description')?.textContent.trim() || '';
     svcContainer.innerHTML += `
@@ -1566,18 +1566,18 @@ function edParseAndPopulate() {
 
   // ── ABOUT ──
   edSetField('ef-about-headline', getText(['#about h2','[data-field="about-headline"]','.about h2']));
-  const aboutBio = Array.from(doc.querySelectorAll('#about p, .about p')).map(p=>p.textContent.trim()).filter(Boolean).join('\n\n');
+  const aboutBio = Array.from(doc.querySelectorAll('#about .about-bio p, #about [data-field^="bio-"]')).map(p=>p.textContent.trim()).filter(Boolean).join('\n\n');
   edSetField('ef-about-bio', aboutBio);
-  edSetField('ef-about-name', getText(['#about h3','[data-field="about-name"]','#about .founder-name','#about .name']));
-  edSetField('ef-about-cta', getText(['#about a.btn','[data-field="about-cta"]','#about .cta','#about a[href*="call"], #about a[href*="contact"]']));
+  edSetField('ef-about-name', getText(['#about .about-name','#about p.about-name','#about h3','[data-field="about-name"]']));
+  edSetField('ef-about-cta', getText(['#about .btn-primary','#about a[class*="btn"]','#about a']));
 
   // ── CONTACT ──
   edSetField('ef-contact-headline', getText(['#contact h2','[data-field="contact-headline"]','.contact h2']));
-  edSetField('ef-contact-sub', getText(['#contact p','.contact p','#contact .subtitle']));
-  const contactBtns = doc.querySelectorAll('#contact .btn, #contact a.btn, .contact .btn');
+  edSetField('ef-contact-sub', getText(['[data-field="contact-sub"]','#contact .section-subheadline','#contact p','.contact p']));
+  const contactBtns = doc.querySelectorAll('#contact .btn-primary, #contact a[class*="btn"], #contact .btn');
   if (contactBtns[0]) edSetField('ef-contact-cta1', contactBtns[0].textContent.trim());
   if (contactBtns[1]) edSetField('ef-contact-cta2', contactBtns[1].textContent.trim());
-  edSetField('ef-footer-copy', getText(['footer .copyright','footer p','#footer p','.footer-copy']));
+  edSetField('ef-footer-copy', getText(['[data-field="footer-copy"]','.footer-copy','footer .copyright','footer p']));
 
   // ── IMAGES ──
   edPopulateImages(doc);
@@ -1753,7 +1753,7 @@ function edBuildUpdatedHTML() {
 
   // ── SERVICES ──
   setIfChanged('ef-svc-headline', ['#services h2','[data-field="svc-headline"]']);
-  setIfChanged('ef-svc-sub',      ['#services p.subtitle','#services > p']);
+  setIfChanged('ef-svc-sub',      ['#services .section-subheadline','#services p.subtitle']);
 
   const svcCards = doc.querySelectorAll('#services .card, .services .pricing-card, #services .service-card');
   svcCards.forEach((card, i) => {
@@ -1779,20 +1779,21 @@ function edBuildUpdatedHTML() {
   // ── ABOUT ──
   setIfChanged('ef-about-headline', ['#about h2','[data-field="about-headline"]']);
   setIfChanged('ef-about-name',     ['#about h3','#about .founder-name','#about .about-name']);
-  setIfChanged('ef-about-cta',      ['#about a.btn','#about .cta']);
+  setIfChanged('ef-about-cta',      ['#about .btn-primary','#about a[class*="btn"]']);
   if (changed('ef-about-bio')) {
-    const firstAboutP = doc.querySelector('#about p, .about p');
-    if (firstAboutP) firstAboutP.textContent = val('ef-about-bio').split('\n\n')[0];
+    const bioParas = doc.querySelectorAll('#about .about-bio p, #about [data-field^="bio-"]');
+    const chunks = val('ef-about-bio').split('\n\n').map(s=>s.trim()).filter(Boolean);
+    bioParas.forEach((p, i) => { if (chunks[i] !== undefined) p.textContent = chunks[i]; });
   }
 
   // ── CONTACT ──
   setIfChanged('ef-contact-headline', ['#contact h2','[data-field="contact-headline"]']);
-  setIfChanged('ef-contact-sub',      ['#contact p','#contact .subtitle']);
-  if (changed('ef-contact-cta1')) { const b = doc.querySelector('#contact .btn, .contact .btn'); if(b) b.textContent = val('ef-contact-cta1'); }
-  if (changed('ef-contact-cta2')) { const bs = doc.querySelectorAll('#contact .btn, .contact .btn'); if(bs[1]) bs[1].textContent = val('ef-contact-cta2'); }
+  setIfChanged('ef-contact-sub',      ['[data-field="contact-sub"]','#contact .section-subheadline','#contact p']);
+  if (changed('ef-contact-cta1')) { const b = doc.querySelector('[data-field="cal-btn"],#contact .btn-primary,#contact a[class*="btn"]'); if(b) b.textContent = val('ef-contact-cta1'); }
+  if (changed('ef-contact-cta2')) { const bs = doc.querySelectorAll('#contact .btn-primary,#contact a[class*="btn"]'); if(bs[1]) bs[1].textContent = val('ef-contact-cta2'); }
 
   // ── FOOTER ──
-  setIfChanged('ef-footer-copy', ['footer .copyright','footer p','.footer-copy']);
+  setIfChanged('ef-footer-copy', ['[data-field="footer-copy"]','.footer-copy','footer .copyright']);
 
   // IMAGES — update src attributes
   if (edState.imgOriginals) {
