@@ -1,0 +1,4 @@
+# 512AI — Netlify URL rewrites
+# Clean URLs (no .html extension)
+/portal    /portal.html    200
+/widget    /widget-test.html    200

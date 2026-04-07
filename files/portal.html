@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>512AI — Client Portal</title>
+<style>
+:root {
+  --green:#2E7D32;--green-h:#1B5E20;--green-l:#e8f5e9;--green-p:#f1f8f1;
+  --amber:#e65100;--amber-l:#fff3e0;
+  --blue:#1565C0;--blue-l:#e3f2fd;
+  --purple:#6a1b9a;--purple-l:#f3e5f5;
+  --gray:#f4f6f9;--card:#fff;--border:#e0e0e0;
+  --text:#1a1a1a;--muted:#666;--dark:#1a2332;
+  --red:#c62828;--red-l:#ffebee;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--text);background:var(--gray);min-height:100vh}
+
+/* ── LOGIN ───────────────────────────────────────────────── */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a2332 0%,#2E7D32 100%);padding:24px}
+.login-card{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .logo-icon{width:56px;height:56px;background:var(--green);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px}
+.login-logo h1{font-size:22px;font-weight:800;color:var(--dark)}
+.login-logo p{font-size:13px;color:var(--muted);margin-top:4px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-group input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;outline:none;transition:border-color .15s;background:#fafafa}
+.form-group input:focus{border-color:var(--green);background:#fff}
+.login-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .2s,transform .1s}
+.login-btn:hover{background:var(--green-h);transform:translateY(-1px)}
+.login-btn:active{transform:translateY(0)}
+.login-error{background:var(--red-l);color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none}
+.login-footer{text-align:center;font-size:12px;color:var(--muted);margin-top:24px}
+
+/* ── APP SHELL ───────────────────────────────────────────── */
+#app{display:none}
+.topnav{background:var(--green);color:#fff;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.nav-brand{display:flex;align-items:center;gap:12px}
+.nav-logo{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:16px}
+.nav-name{font-size:15px;font-weight:700}
+.nav-sub{font-size:11px;opacity:.7;margin-top:1px}
+.nav-right{display:flex;gap:10px;align-items:center}
+.nav-chip{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#69f542;display:inline-block;margin-right:5px;animation:pulse 2s infinite;box-shadow:0 0 0 3px rgba(105,245,66,.25)}
+.logout-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s}
+.logout-btn:hover{background:rgba(255,255,255,.25)}
+
+/* ── TABS ────────────────────────────────────────────────── */
+.tab-nav{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;display:flex;overflow-x:auto;gap:0}
+.tab-btn{padding:14px 18px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;color:var(--muted);transition:all .15s;background:none;border-top:none;border-left:none;border-right:none}
+.tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-btn:hover:not(.active){color:var(--text)}
+
+/* ── CONTENT ─────────────────────────────────────────────── */
+.content{max-width:1000px;margin:0 auto;padding:24px}
+.page{display:none}
+.page.active{display:block}
+
+/* ── KPI GRID ────────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.kpi.highlight{border-color:var(--green);background:var(--green-p)}
+.kpi-icon{font-size:22px;margin-bottom:10px}
+.kpi-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.kpi-value{font-size:28px;font-weight:800;line-height:1.1}
+.kpi-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.status-pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:6px}
+.status-pill.ready{background:#e8f5e9;color:#2E7D32}
+.status-pill.progress{background:#fff3e0;color:#e65100}
+.status-pill.input{background:#e3f2fd;color:#1565C0}
+.status-pill.live{background:#e8f5e9;color:#2E7D32}
+.status-pill.done{background:#e8f5e9;color:#2E7D32}
+.status-pill.soon{background:#f3e5f5;color:#6a1b9a}
+.status-pill.auto{background:var(--gray);color:var(--muted)}
+
+/* ── SECTION CARD ────────────────────────────────────────── */
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+.section-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.section-title{font-size:14px;font-weight:700}
+.section-sub{font-size:12px;color:var(--muted)}
+.section-body{padding:20px}
+
+/* ── TOOL LIST ───────────────────────────────────────────── */
+.tool-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.tool-row:last-child{border-bottom:none}
+.tool-icon-wrap{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tool-icon-wrap.green{background:var(--green-l)}
+.tool-icon-wrap.amber{background:var(--amber-l)}
+.tool-icon-wrap.blue{background:var(--blue-l)}
+.tool-icon-wrap.gray{background:var(--gray)}
+.tool-icon-wrap.purple{background:var(--purple-l)}
+.tool-info{flex:1}
+.tool-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.tool-desc{font-size:12px;color:var(--muted)}
+.tool-status{flex-shrink:0;text-align:right}
+
+/* ── SETUP PROGRESS ──────────────────────────────────────── */
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.progress-pct{font-size:22px;font-weight:800;color:var(--green)}
+.progress-bar-wrap{background:var(--gray);border-radius:20px;height:10px;margin-bottom:20px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#66BB6A);border-radius:20px;transition:width .6s ease}
+.step-row{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.step-row:last-child{border-bottom:none}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.step-dot.done{background:var(--green-l);color:var(--green)}
+.step-dot.progress{background:var(--amber-l);color:var(--amber)}
+.step-dot.input{background:var(--blue-l);color:var(--blue)}
+.step-dot.soon{background:var(--purple-l);color:var(--purple)}
+.step-label{font-size:14px;font-weight:600;margin-bottom:2px}
+.step-detail{font-size:12px;color:var(--muted)}
+.step-cta{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-l);padding:3px 10px;border-radius:20px}
+
+/* ── ROI ─────────────────────────────────────────────────── */
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.roi-card{border-radius:12px;padding:20px}
+.roi-card.green{background:var(--green-l);border:1.5px solid #a5d6a7}
+.roi-card.blue{background:var(--blue-l);border:1.5px solid #90caf9}
+.roi-card.amber{background:var(--amber-l);border:1.5px solid #ffcc80}
+.roi-card.purple{background:var(--purple-l);border:1.5px solid #ce93d8}
+.roi-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;opacity:.7}
+.roi-value{font-size:28px;font-weight:800;line-height:1.1}
+.roi-range{font-size:12px;margin-top:4px;opacity:.75}
+.roi-note{font-size:12px;color:var(--muted);margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* ── ACTIVITY FEED ───────────────────────────────────────── */
+.feed-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--green-l)}
+.feed-body{flex:1}
+.feed-title{font-size:13px;font-weight:600}
+.feed-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.feed-time{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* ── ADMIN ───────────────────────────────────────────────── */
+.admin-header{background:var(--dark);color:#fff;padding:20px 24px;border-radius:12px;margin-bottom:20px}
+.admin-header h2{font-size:20px;font-weight:800;margin-bottom:4px}
+.admin-header p{font-size:13px;opacity:.7}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.client-info{flex:1}
+.client-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.client-meta{font-size:12px;color:var(--muted)}
+.client-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tool-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--green-l);color:var(--green)}
+.tool-chip.amber{background:var(--amber-l);color:var(--amber)}
+.tool-chip.blue{background:var(--blue-l);color:var(--blue)}
+.client-actions{display:flex;gap:8px;flex-shrink:0}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--green-h)}
+.btn-outline{background:none;border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-state .emoji{font-size:40px;margin-bottom:12px}
+.empty-state p{font-size:14px}
+
+/* ── WELCOME BANNER ──────────────────────────────────────── */
+.welcome-banner{background:linear-gradient(135deg,var(--green) 0%,#388E3C 100%);color:#fff;border-radius:14px;padding:24px 28px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.welcome-text h2{font-size:20px;font-weight:800;margin-bottom:4px}
+.welcome-text p{font-size:13px;opacity:.85}
+.welcome-emoji{font-size:44px}
+
+/* ── ANIMATIONS ──────────────────────────────────────────── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:fadeIn .25s ease}
+
+/* ── MOBILE ──────────────────────────────────────────────── */
+@media(max-width:640px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .roi-grid{grid-template-columns:1fr}
+  .content{padding:16px}
+  .client-card{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ LOGIN PAGE ══════════════════════════════ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-icon">🌿</div>
+      <h1>512AI Client Portal</h1>
+      <p>Sign in to view your AI tools dashboard</p>
+    </div>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter your username" autocomplete="username" autocapitalize="none">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="handleLogin()">Sign In →</button>
+    <div class="login-error" id="login-error">Incorrect username or password. Please try again.</div>
+    <div class="login-footer">Powered by <strong>512AI.co</strong> · Austin, TX</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ APP SHELL ═══════════════════════════════ -->
+<div id="app">
+  <!-- Top nav -->
+  <nav class="topnav">
+    <div class="nav-brand">
+      <div class="nav-logo" id="nav-logo">🌿</div>
+      <div>
+        <div class="nav-name" id="nav-business-name">Dashboard</div>
+        <div class="nav-sub" id="nav-location">Austin, TX</div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <span class="nav-chip"><span class="live-dot"></span><span id="nav-status-text">AI Active</span></span>
+      <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Tab nav (client) -->
+  <div class="tab-nav" id="client-tabs">
+    <button class="tab-btn active" onclick="showPage('overview',this)">📊 Overview</button>
+    <button class="tab-btn" onclick="showPage('setup',this)">⚙️ Setup Status</button>
+    <button class="tab-btn" onclick="showPage('roi',this)">💰 ROI & Value</button>
+    <button class="tab-btn" onclick="showPage('activity',this)">⚡ Recent Activity</button>
+    <button class="tab-btn" onclick="showPage('help',this)">🙋 Get Help</button>
+  </div>
+
+  <!-- Tab nav (admin) -->
+  <div class="tab-nav" id="admin-tabs" style="display:none">
+    <button class="tab-btn active" onclick="showPage('admin-clients',this)">👥 Clients</button>
+    <button class="tab-btn" onclick="showPage('admin-env',this)">🔧 Config Status</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ─── OVERVIEW ─── -->
+    <div class="page active" id="page-overview">
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2 id="welcome-title">Welcome back!</h2>
+          <p id="welcome-sub">Your AI tools are being set up. Here's where things stand today.</p>
+        </div>
+        <div class="welcome-emoji" id="welcome-emoji">🤠</div>
+      </div>
+
+      <div class="kpi-grid" id="kpi-grid"><!-- injected --></div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">🛠️ Your AI Tool Suite</div>
+          <div class="section-sub" id="tools-sub">6 tools • 2 live</div>
+        </div>
+        <div class="section-body" id="tools-list"><!-- injected --></div>
+      </div>
+    </div>
+
+    <!-- ─── SETUP STATUS ─── -->
+    <div class="page" id="page-setup">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">⚙️ Setup Progress</div>
+          <div class="section-sub" id="setup-pct-label">In progress</div>
+        </div>
+        <div class="section-body">
+          <div class="progress-header">
+            <div>
+              <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Overall completion</div>
+              <div class="progress-pct" id="setup-pct">0%</div>
+            </div>
+            <div style="text-align:right;font-size:12px;color:var(--muted)" id="setup-eta"></div>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="setup-bar" style="width:0%"></div></div>
+          <div id="setup-steps"><!-- injected --></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ROI ─── -->
+    <div class="page" id="page-roi">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">💰 ROI & Business Value</div>
+          <div class="section-sub">Projected impact once all tools are live</div>
+        </div>
+        <div class="section-body">
+          <div class="roi-grid" id="roi-grid"><!-- injected --></div>
+          <div class="roi-note" id="roi-note"></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><div class="section-title">📈 How the Numbers Work</div></div>
+        <div class="section-body" id="roi-breakdown"><!-- injected --></div>
+      </div>
+    </div>
+
+    <!-- ─── ACTIVITY ─── -->
+    <div class="page" id="page-activity">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">⚡ Recent Activity</div>
+          <div class="section-sub">Live once tools are connected</div>
+        </div>
+        <div class="section-body" id="activity-feed"><!-- injected --></div>
+      </div>
+    </div>
+
+    <!-- ─── HELP ─── -->
+    <div class="page" id="page-help">
+      <div class="section">
+        <div class="section-head"><div class="section-title">🙋 Get Help & Contact 512AI</div></div>
+        <div class="section-body" id="help-body">
+          <div class="tool-row">
+            <div class="tool-icon-wrap green">💬</div>
+            <div class="tool-info">
+              <div class="tool-name">Text or Call Ricardo (your 512AI contact)</div>
+              <div class="tool-desc">For questions about your tools, setup status, or anything else</div>
+            </div>
+            <a href="sms:+15127482626" class="status-pill ready" style="text-decoration:none">Text Now</a>
+          </div>
+          <div class="tool-row">
+            <div class="tool-icon-wrap blue">📧</div>
+            <div class="tool-info">
+              <div class="tool-name">Email Support</div>
+              <div class="tool-desc">avilaricardoe@gmail.com — response within 24 hours</div>
+            </div>
+          </div>
+          <div class="tool-row">
+            <div class="tool-icon-wrap amber">🌐</div>
+            <div class="tool-info">
+              <div class="tool-name">512AI Website</div>
+              <div class="tool-desc">Learn more about all available tools and services</div>
+            </div>
+            <a href="https://512ai.co" target="_blank" class="status-pill progress" style="text-decoration:none">Visit Site</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ADMIN: CLIENTS ─── -->
+    <div class="page" id="page-admin-clients">
+      <div class="admin-header">
+        <h2>🛠️ 512AI Admin Portal</h2>
+        <p>Manage all client configurations and tool status</p>
+      </div>
+      <div id="admin-client-list"><!-- injected --></div>
+    </div>
+
+    <!-- ─── ADMIN: ENV/CONFIG ─── -->
+    <div class="page" id="page-admin-env">
+      <div class="admin-header">
+        <h2>🔧 Configuration Status</h2>
+        <p>Env vars and integration status across all clients</p>
+      </div>
+      <div id="admin-env-list"><!-- injected --></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CLIENT REGISTRY
+// To add a new client: add entry to CLIENTS, add data to CLIENT_DATA
+// ═══════════════════════════════════════════════════════════
+const CLIENTS = {
+  'rudy': {
+    passwordHash: '0c66c91714d863bc9882ecd0d2fdb39573ffa08c4f10541c74b589ddc2f8f48a',
+    clientId: 'bighatlawn',
+    isAdmin: false
+  },
+  'admin': {
+    passwordHash: '1756e48afff6b6189530326347a0d0141a6e2d89f12ea0b3e650f9f0cfa97a2d',
+    clientId: 'admin',
+    isAdmin: true
+  }
+};
+
+const CLIENT_DATA = {
+  bighatlawn: {
+    businessName: 'Big Hat Lawn',
+    ownerName: 'Rudy',
+    location: 'Austin, TX',
+    since: 'April 2026',
+    phone: '(512) 748-2626',
+    website: 'bighatlawn.com',
+    emoji: '🤠',
+    setupProgress: 55,
+    setupEta: 'Estimated launch: 2–3 weeks',
+
+    kpis: [
+      { label: 'AI Chat Widget', icon: '💬', status: 'ready',    pill: 'Launching Soon' },
+      { label: 'Voice Assistant', icon: '📞', status: 'progress', pill: 'Setting Up'     },
+      { label: 'Smart Booking',   icon: '📅', status: 'input',    pill: 'Awaiting Input' },
+      { label: 'SMS Alerts',      icon: '📱', status: 'progress', pill: 'Setting Up'     }
+    ],
+
+    tools: [
+      { icon:'💬', color:'green',  name:'AI Chat Widget',         desc:'Answers questions, gives quotes, and captures leads on your website 24/7',          status:'ready',    pill:'Ready to Launch'   },
+      { icon:'📞', color:'amber',  name:'AI Voice Assistant',     desc:'A visitor clicks a button and our AI calls them back in 30 seconds with a quote',    status:'progress', pill:'In Progress'       },
+      { icon:'📱', color:'amber',  name:'SMS Notifications',      desc:'Auto-texts customers with booking confirmations, reminders, and job updates',        status:'progress', pill:'In Progress'       },
+      { icon:'🔍', color:'green',  name:'SEO Action Plan',        desc:'20-step Google optimization plan specific to bighatlawn.com — delivered',            status:'done',     pill:'Delivered ✓'       },
+      { icon:'📅', color:'blue',   name:'Smart Scheduling',       desc:'Zone-based booking that connects to your job management system automatically',       status:'input',    pill:'Awaiting Your Input'},
+      { icon:'📊', color:'purple', name:'Live Dashboard',         desc:'This dashboard shows real leads, calls, and bookings once your tools are connected', status:'auto',     pill:'Activates Automatically'}
+    ],
+
+    setupSteps: [
+      { icon:'✅', status:'done',     label:'AI Chat Widget Built',          detail:'Your chat widget is coded, tested, and ready to go live on bighatlawn.com'            },
+      { icon:'✅', status:'done',     label:'AI Voice Script Configured',    detail:'Your AI assistant "Lily" is trained with your pricing, hours, and service area'       },
+      { icon:'✅', status:'done',     label:'SMS Templates Ready',           detail:'All customer text message templates are written and personalized for Big Hat Lawn'    },
+      { icon:'✅', status:'done',     label:'SEO Action Plan Delivered',     detail:'20-item Google optimization checklist for bighatlawn.com has been prepared'          },
+      { icon:'🔄', status:'progress', label:'Phone Number Setup',            detail:'A dedicated business line for AI calls and texts is being configured by the 512AI team'},
+      { icon:'🔄', status:'progress', label:'Website Deployment',            detail:'Waiting for access to bighatlawn.com to install the chat and voice widgets',          cta:'Provide Squarespace Access'},
+      { icon:'🔵', status:'input',    label:'Job Management Connection',     detail:'We need access to your LawnPro account to connect bookings and automate scheduling', cta:'Provide LawnPro Access'   },
+      { icon:'⏳', status:'soon',     label:'Go Live & Final Testing',       detail:'Full end-to-end test across all tools before flipping everything on'                 }
+    ],
+
+    roi: [
+      { color:'green',  title:'New Leads / Month',        value:'20–40',      range:'At 40% close rate = 8–16 new customers'   },
+      { color:'blue',   title:'New Monthly Revenue',      value:'$520–$1,040', range:'Avg job $65 × 8–16 new customers/mo'     },
+      { color:'amber',  title:'Time Saved / Month',       value:'~20 hrs',    range:'No more manual follow-ups, reminders, quotes' },
+      { color:'purple', title:'Time Savings Value',       value:'~$1,000/mo', range:'Based on $50/hr for admin & phone time'   }
+    ],
+
+    roiNote: '📌 These are projections based on typical results for Austin-area lawn care businesses using AI chat + voice tools. Actual results depend on website traffic, seasonal demand, and follow-up speed.',
+
+    roiBreakdown: `
+      <div class="tool-row"><div class="tool-icon-wrap green">💬</div><div class="tool-info"><div class="tool-name">Chat Widget captures leads you'd otherwise miss</div><div class="tool-desc">Visitors who don't call still get a quote — 24/7, even at 11pm on a Sunday</div></div></div>
+      <div class="tool-row"><div class="tool-icon-wrap amber">📞</div><div class="tool-info"><div class="tool-name">Voice AI closes faster than a callback</div><div class="tool-desc">AI calls the lead in 30 seconds while they're still thinking about hiring you</div></div></div>
+      <div class="tool-row"><div class="tool-icon-wrap blue">📱</div><div class="tool-info"><div class="tool-name">SMS reminders reduce no-shows by ~30%</div><div class="tool-desc">Automated texts the day before and morning of each job keep customers ready</div></div></div>
+      <div class="tool-row"><div class="tool-icon-wrap purple">⭐</div><div class="tool-info"><div class="tool-name">Review requests after every job</div><div class="tool-desc">Auto-texted Google review link after job completion — you already have 4.7 stars</div></div></div>`,
+
+    activity: [
+      { icon:'💬', title:'Chat widget ready for deployment', sub:'Widget is live on CDN — waiting for Squarespace install', time:'Today' },
+      { icon:'🔧', title:'AI pricing updated', sub:'Lily now knows your exact pricing table from $40 to $120+', time:'Today' },
+      { icon:'🔍', title:'SEO action plan delivered', sub:'Schema markup, zip codes, and GBP checklist ready', time:'Today' },
+      { icon:'📋', title:'Business info confirmed', sub:'Hours (M–F 8–5), service area (12 zip codes), phone wired in', time:'Today' },
+      { icon:'⭐', title:'Google profile found: 4.7 stars', sub:'13 reviews on Google Maps — review link connected to SMS system', time:'Today' },
+      { icon:'🚀', title:'512AI stack initialized for Big Hat Lawn', sub:'Chat, voice, SMS, SEO tools all built and ready', time:'This week' }
+    ]
+  }
+};
+
+// Admin config data for the env panel
+const ADMIN_ENV = {
+  bighatlawn: {
+    businessName: 'Big Hat Lawn',
+    ownerName: 'Rudy',
+    phone: '(512) 748-2626',
+    website: 'bighatlawn.com',
+    since: 'April 2026',
+    envVars: [
+      { key:'TWILIO_ACCOUNT_SID',   status:'set',    label:'✅ Set' },
+      { key:'TWILIO_AUTH_TOKEN',    status:'set',    label:'✅ Set' },
+      { key:'BLAND_API_KEY_BHL',    status:'set',    label:'✅ Set' },
+      { key:'NOTIFICATION_SECRET', status:'set',    label:'✅ Set' },
+      { key:'BHL_BUSINESS_PHONE',  status:'set',    label:'✅ Set' },
+      { key:'BHL_OWNER_PHONE',     status:'set',    label:'✅ Set' },
+      { key:'BHL_GOOGLE_REVIEW_LINK', status:'set', label:'✅ Set' },
+      { key:'BHL_TWILIO_FROM',     status:'pending',label:'⏳ Pending phone # purchase' },
+      { key:'LAWNPRO_WEBHOOK_SECRET', status:'pending', label:'⏳ Pending LawnPro access' },
+      { key:'NOTIFICATION_ENDPOINT', status:'pending', label:'⏳ Pending Railway URL confirm' }
+    ],
+    tools: [
+      { name:'Chat Widget',      status:'ready',    note:'On CDN, waiting for Squarespace deploy' },
+      { name:'Voice AI',         status:'progress', note:'Waiting for dedicated phone number (Twilio upgrade pending EIN)' },
+      { name:'SMS Engine',       status:'progress', note:'Waiting for same phone number' },
+      { name:'SEO Plan',         status:'done',     note:'Delivered — seo-bighatlawn.html' },
+      { name:'LawnPro Webhook',  status:'input',    note:'Waiting for LawnPro API access from client' },
+      { name:'Squarespace Deploy',status:'input',   note:'Waiting for Squarespace editor access from client' }
+    ]
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+const SESSION_KEY = '512ai_portal_session';
+const SESSION_TTL = 24 * 60 * 60 * 1000; // 24h
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function handleLogin() {
+  const user = document.getElementById('username').value.trim().toLowerCase();
+  const pass = document.getElementById('password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!user || !pass) { errEl.style.display='block'; errEl.textContent='Please enter your username and password.'; return; }
+  const client = CLIENTS[user];
+  if (!client) { showError(); return; }
+  const hash = await sha256(pass);
+  if (hash !== client.passwordHash) { showError(); return; }
+  // Save session
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ username: user, clientId: client.clientId, isAdmin: client.isAdmin, expires: Date.now() + SESSION_TTL }));
+  launchApp(user, client);
+}
+
+function showError() {
+  const e = document.getElementById('login-error');
+  e.style.display = 'block';
+  e.textContent = 'Incorrect username or password. Please try again.';
+}
+
+function handleLogout() {
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+
+document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('username').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('password').focus(); });
+
+// Check existing session on load
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (raw) {
+      const sess = JSON.parse(raw);
+      if (sess.expires > Date.now()) {
+        const client = CLIENTS[sess.username];
+        if (client) { launchApp(sess.username, client); return; }
+      }
+    }
+  } catch(e) {}
+});
+
+// ═══════════════════════════════════════════════════════════
+// APP LAUNCH
+// ═══════════════════════════════════════════════════════════
+function launchApp(username, client) {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  if (client.isAdmin) {
+    renderAdmin();
+  } else {
+    renderClient(client.clientId);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLIENT RENDER
+// ═══════════════════════════════════════════════════════════
+function renderClient(clientId) {
+  const d = CLIENT_DATA[clientId];
+  if (!d) return;
+  document.getElementById('client-tabs').style.display = 'flex';
+  document.getElementById('admin-tabs').style.display = 'none';
+  document.getElementById('nav-business-name').textContent = d.businessName;
+  document.getElementById('nav-location').textContent = d.location;
+  document.getElementById('nav-logo').textContent = d.emoji;
+  document.getElementById('welcome-title').textContent = `Welcome, ${d.ownerName}! ${d.emoji}`;
+  document.getElementById('welcome-sub').textContent = `Here's a live view of your 512AI tools and setup progress.`;
+
+  // KPIs
+  document.getElementById('kpi-grid').innerHTML = d.kpis.map(k => `
+    <div class="kpi ${k.status==='live'?'highlight':''}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">—</div>
+      <div><span class="status-pill ${k.status}">${k.pill}</span></div>
+    </div>`).join('');
+
+  // Tools
+  const readyCount = d.tools.filter(t => t.status==='done'||t.status==='ready'||t.status==='live').length;
+  document.getElementById('tools-sub').textContent = `${d.tools.length} tools · ${readyCount} ready`;
+  document.getElementById('tools-list').innerHTML = d.tools.map(t => `
+    <div class="tool-row">
+      <div class="tool-icon-wrap ${t.color}">${t.icon}</div>
+      <div class="tool-info">
+        <div class="tool-name">${t.name}</div>
+        <div class="tool-desc">${t.desc}</div>
+      </div>
+      <div class="tool-status"><span class="status-pill ${t.status}">${t.pill}</span></div>
+    </div>`).join('');
+
+  // Setup steps
+  document.getElementById('setup-pct').textContent = d.setupProgress + '%';
+  document.getElementById('setup-pct-label').textContent = d.setupEta;
+  document.getElementById('setup-eta').textContent = d.setupEta;
+  setTimeout(() => { document.getElementById('setup-bar').style.width = d.setupProgress + '%'; }, 100);
+  document.getElementById('setup-steps').innerHTML = d.setupSteps.map(s => `
+    <div class="step-row">
+      <div class="step-dot ${s.status}">${s.icon}</div>
+      <div>
+        <div class="step-label">${s.label}</div>
+        <div class="step-detail">${s.detail}</div>
+        ${s.cta ? `<span class="step-cta">→ ${s.cta}</span>` : ''}
+      </div>
+    </div>`).join('');
+
+  // ROI
+  document.getElementById('roi-grid').innerHTML = d.roi.map(r => `
+    <div class="roi-card ${r.color}">
+      <div class="roi-title">${r.title}</div>
+      <div class="roi-value">${r.value}</div>
+      <div class="roi-range">${r.range}</div>
+    </div>`).join('');
+  document.getElementById('roi-note').textContent = d.roiNote;
+  document.getElementById('roi-breakdown').innerHTML = d.roiBreakdown;
+
+  // Activity
+  document.getElementById('activity-feed').innerHTML = d.activity.map(a => `
+    <div class="feed-item">
+      <div class="feed-dot">${a.icon}</div>
+      <div class="feed-body">
+        <div class="feed-title">${a.title}</div>
+        <div class="feed-sub">${a.sub}</div>
+      </div>
+      <div class="feed-time">${a.time}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADMIN RENDER
+// ═══════════════════════════════════════════════════════════
+function renderAdmin() {
+  document.getElementById('client-tabs').style.display = 'none';
+  document.getElementById('admin-tabs').style.display = 'flex';
+  document.getElementById('nav-business-name').textContent = '512AI Admin';
+  document.getElementById('nav-location').textContent = 'All Clients';
+  document.getElementById('nav-logo').textContent = '🛠️';
+  document.getElementById('nav-status-text').textContent = 'Admin Mode';
+
+  // Client list
+  document.getElementById('admin-client-list').innerHTML = Object.entries(ADMIN_ENV).map(([id, c]) => {
+    const toolChips = c.tools.map(t => `<span class="tool-chip ${t.status==='progress'?'amber':t.status==='input'?'blue':''}">${t.name}</span>`).join('');
+    return `
+    <div class="client-card">
+      <div class="client-info">
+        <div class="client-name">${c.businessName} — ${c.ownerName}</div>
+        <div class="client-meta">📞 ${c.phone} · 🌐 ${c.website} · Since ${c.since}</div>
+        <div class="client-tools">${toolChips}</div>
+      </div>
+      <div class="client-actions">
+        <button class="btn btn-green" onclick="viewClientAsAdmin('${id}')">View Portal</button>
+      </div>
+    </div>`; }).join('');
+
+  // Env var status
+  document.getElementById('admin-env-list').innerHTML = Object.entries(ADMIN_ENV).map(([id, c]) => `
+    <div class="section">
+      <div class="section-head"><div class="section-title">${c.businessName} — Environment Variables</div></div>
+      <div class="section-body">
+        ${c.envVars.map(v => `
+          <div class="tool-row">
+            <div class="tool-info">
+              <div class="tool-name" style="font-family:monospace;font-size:13px">${v.key}</div>
+            </div>
+            <span class="status-pill ${v.status==='set'?'done':'progress'}">${v.label}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  showPage('admin-clients', document.querySelector('#admin-tabs .tab-btn'));
+}
+
+function viewClientAsAdmin(clientId) {
+  document.getElementById('client-tabs').style.display = 'flex';
+  document.getElementById('admin-tabs').style.display = 'none';
+  renderClient(clientId);
+  showPage('overview', document.querySelector('#client-tabs .tab-btn'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB ROUTING
+// ═══════════════════════════════════════════════════════════
+function showPage(pageId, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + pageId);
+  if (page) page.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+</script>
+</body>
+</html>

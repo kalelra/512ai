@@ -21,6 +21,10 @@ git add \
   files/qa-launch-checklist.html \
   files/squarespace-deploy-guide.html \
   files/backend-voice-route.patch \
+  files/portal.html \
+  files/_redirects \
+  files/netlify.toml \
+  files/deploy-portal.sh \
   files/push-widget.sh
 
 echo "==> Committing..."
