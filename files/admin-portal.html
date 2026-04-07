@@ -306,6 +306,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 
   <div class="sb-section">Admin</div>
   <a class="sb-item" onclick="showPage('users')"><i class="ic">🔑</i> Admin Users</a>
+  <a class="sb-item" onclick="showPage('sre-log'); sreSyncLog()"><i class="ic">📡</i> Activity Log</a>
   <a class="sb-item" onclick="showPage('changelog')"><i class="ic">📋</i> Changelog</a>
 
   <div class="sb-bottom">
@@ -1136,6 +1137,46 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
       </div>
     </div>
 
+    <!-- ═══════════════ ACTIVITY LOG ═══════════════ -->
+    <div id="page-sre-log" class="page">
+      <div class="section-hdr">
+        <span class="section-title">📡 Activity Log</span>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+          <button class="btn-sm" onclick="sreRunHealthChecks()">▶ Run Health Checks Now</button>
+          <button class="btn-sm" onclick="sreSyncLog()">↺ Refresh</button>
+          <button class="btn-sm btn-danger" onclick="sreClearLog()">🗑 Clear Log</button>
+          <span style="font-size:12px;color:var(--muted)">Stored in browser localStorage · up to 200 entries · persists across sessions</span>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:16px">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg-primary);border-bottom:1px solid var(--border)">
+              <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);width:160px">Timestamp</th>
+              <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);width:110px">Category</th>
+              <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:var(--muted)">Event</th>
+              <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:var(--muted);width:70px">Level</th>
+            </tr>
+          </thead>
+          <tbody id="sre-log-tbody">
+            <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:32px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:20px;background:var(--bg-alt);border:1px solid var(--border);border-radius:10px;padding:20px">
+        <div class="section-title" style="font-size:14px;margin-bottom:12px">What Gets Logged</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;font-size:13px;color:var(--muted)">
+          <div>🔐 <strong>auth</strong> — Logins &amp; logouts</div>
+          <div>🚀 <strong>deploy</strong> — GitHub commits &amp; Netlify deploys</div>
+          <div>🌐 <strong>health</strong> — 512ai.co uptime checks</div>
+          <div>✏️ <strong>editor</strong> — Site Editor file loads</div>
+          <div>❌ <strong>error</strong> — Any failures &amp; exceptions</div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══════════════ CHANGELOG ═══════════════ -->
     <div id="page-changelog" class="page">
       <div class="section-hdr"><span class="section-title">Build Changelog</span></div>
@@ -1229,6 +1270,7 @@ async function doLogin() {
   const session = { user, role: admUser.role, exp: Date.now() + 8 * 60 * 60 * 1000 };
   try { sessionStorage.setItem('admin_session', JSON.stringify(session)); } catch(e) {}
 
+  sreLog('auth', `🔐 Login: ${admUser.displayName} (${admUser.role})`, 'success');
   bootApp(admUser);
 }
 
@@ -1241,9 +1283,15 @@ function bootApp(admUser) {
 
   // Set last refresh time
   document.getElementById('last-refresh').textContent = 'Loaded ' + new Date().toLocaleTimeString();
+
+  // Run health checks on boot
+  setTimeout(sreRunHealthChecks, 1200);
+  sreSyncLog();
 }
 
 function doLogout() {
+  const s = JSON.parse(sessionStorage.getItem('admin_session') || 'null');
+  if (s) sreLog('auth', `🚪 Logout: ${s.user}`, 'info');
   try { sessionStorage.removeItem('admin_session'); } catch(e) {}
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
@@ -1282,6 +1330,7 @@ const PAGE_TITLES = {
   'bhl-tools': 'Big Hat Lawn — Tools',
   'bhl-config': 'Big Hat Lawn — Config',
   users: 'Admin Users',
+  'sre-log': 'Activity Log',
   changelog: 'Changelog'
 };
 
@@ -1435,16 +1484,21 @@ function edParseAndPopulate() {
   });
 
   // ── HERO ──
-  const h1 = doc.querySelector('#hero h1, .hero h1, [data-field="hero-h1"]');
+  // Use strict h1 selector — never match data-field spans inside h1
+  const h1 = doc.querySelector('#hero h1, .hero h1');
   if (h1) {
-    // If h1 has an inner span/em for the accent line
-    const accent = h1.querySelector('span, em, strong');
+    // Find the accent span (first span/strong with data-field, or first span)
+    const accent = h1.querySelector('span[data-field], span:first-of-type, strong[data-field]');
     if (accent) {
-      const fullText = h1.textContent.trim();
-      const accentText = accent.textContent.trim();
-      const line1 = fullText.replace(accentText, '').trim();
-      edSetField('ef-hero-h1a', line1 || fullText);
-      edSetField('ef-hero-h1b', accentText);
+      // Extract ONLY the direct text nodes (not em/span child content)
+      // This prevents the em "While You Sleep!" from bleeding into line1
+      const directTextContent = Array.from(h1.childNodes)
+        .filter(n => n.nodeType === 3)   // text nodes only, skip element children
+        .map(n => n.textContent)
+        .join('')
+        .trim();
+      edSetField('ef-hero-h1a', directTextContent || '');
+      edSetField('ef-hero-h1b', accent.textContent.trim());
     } else {
       const lines = h1.textContent.trim().split('\n').map(l=>l.trim()).filter(Boolean);
       edSetField('ef-hero-h1a', lines[0] || '');
@@ -1630,6 +1684,19 @@ function edBuildUpdatedHTML() {
   const parser = new DOMParser();
   const doc = parser.parseFromString(edState.workingHTML, 'text/html');
 
+  // Only update DOM element if the form field was explicitly changed by the user
+  const setIfChanged = (fieldId, selectors, attr='textContent') => {
+    const formEl = document.getElementById(fieldId);
+    if (!formEl || !formEl.classList.contains('changed')) return false;
+    const value = formEl.value.trim();
+    for (const sel of selectors) {
+      const el = doc.querySelector(sel);
+      if (el) { el[attr] = value; return true; }
+    }
+    return false;
+  };
+
+  // Legacy set — only used where value is computed (not direct field read)
   const set = (selectors, value, attr='textContent') => {
     for (const sel of selectors) {
       const el = doc.querySelector(sel);
@@ -1639,86 +1706,93 @@ function edBuildUpdatedHTML() {
   };
 
   const val = id => (document.getElementById(id)?.value || '').trim();
+  const changed = id => document.getElementById(id)?.classList.contains('changed');
 
-  // NAV
-  set(['[data-field="nav-brand"]','#navbar .logo-text','#navbar .brand','header .logo','#navbar h1'], val('ef-nav-logo'));
+  // ── NAV LOGO ──
+  setIfChanged('ef-nav-logo', ['[data-field="nav-brand"]','#navbar .logo-text','#navbar .brand','header .logo','#navbar h1']);
 
-  // Nav links — only overwrite href if user explicitly changed it
+  // ── NAV LINKS — only text and href if explicitly changed ──
   const navLinks = doc.querySelectorAll('#navbar a:not(.btn), nav .nav-links a, header nav a');
   navLinks.forEach((link, i) => {
     const textEl = document.getElementById(`ef-nav-link-${i}-text`);
     const hrefEl = document.getElementById(`ef-nav-link-${i}-href`);
-    if (textEl) link.textContent = textEl.value.trim();
-    // Only update href if the user explicitly edited it (has 'changed' class)
-    if (hrefEl && hrefEl.classList.contains('changed')) {
-      link.setAttribute('href', hrefEl.value.trim());
-    }
+    if (textEl && textEl.classList.contains('changed')) link.textContent = textEl.value.trim();
+    if (hrefEl && hrefEl.classList.contains('changed')) link.setAttribute('href', hrefEl.value.trim());
   });
 
-  // HERO
+  // ── HERO H1 — update only changed fields, never touch em/br children ──
   const h1 = doc.querySelector('#hero h1, .hero h1');
   if (h1) {
-    const accent = h1.querySelector('span, em, strong');
-    const line1 = val('ef-hero-h1a');
-    const line2 = val('ef-hero-h1b');
-    if (accent && line2) {
-      // Replace text node before accent with line1, keep accent tag with line2
-      const textNodes = Array.from(h1.childNodes).filter(n => n.nodeType === 3);
-      if (textNodes[0]) textNodes[0].textContent = line1 + ' ';
-      accent.textContent = line2;
-    } else {
+    const accent = h1.querySelector('span[data-field], span:first-of-type, strong[data-field]');
+    const line1El = document.getElementById('ef-hero-h1a');
+    const line2El = document.getElementById('ef-hero-h1b');
+    if (accent) {
+      if (line1El && line1El.classList.contains('changed')) {
+        const textNodes = Array.from(h1.childNodes).filter(n => n.nodeType === 3);
+        if (textNodes[0]) textNodes[0].textContent = line1El.value.trim() + ' ';
+      }
+      if (line2El && line2El.classList.contains('changed')) {
+        accent.textContent = line2El.value.trim();
+      }
+    } else if ((line1El?.classList.contains('changed')) || (line2El?.classList.contains('changed'))) {
+      const line1 = line1El?.value?.trim() || '';
+      const line2 = line2El?.value?.trim() || '';
       h1.textContent = line1 + (line2 ? '\n' + line2 : '');
     }
   }
-  set(['#hero p','[data-field="hero-sub"]','.hero p'], val('ef-hero-sub'));
-  set(['#hero .btn-primary','[data-field="hero-cta1"]','#hero a.btn:first-of-type'], val('ef-hero-cta1'));
-  set(['#hero .btn-secondary','[data-field="hero-cta2"]','#hero a.btn:nth-of-type(2)'], val('ef-hero-cta2'));
+  setIfChanged('ef-hero-sub',  ['#hero p','[data-field="hero-sub"]','.hero-subheadline']);
+  setIfChanged('ef-hero-cta1', ['[data-field="hero-cta1"]','#hero .btn-primary','#hero a.btn:first-of-type']);
+  setIfChanged('ef-hero-cta2', ['[data-field="hero-cta2"]','#hero .btn-secondary','#hero .btn-outline']);
 
-  // Trust badges
-  const badgeLines = (val('ef-hero-badges') || '').split('\n').filter(Boolean);
-  const badges = doc.querySelectorAll('#hero .badge, #hero .trust-badge, .hero .badge');
-  badges.forEach((b, i) => { if (badgeLines[i]) b.textContent = badgeLines[i]; });
+  // Trust badges — only if changed
+  if (changed('ef-hero-badges')) {
+    const badgeLines = val('ef-hero-badges').split('\n').filter(Boolean);
+    const badges = doc.querySelectorAll('#hero .badge, #hero .trust-badge, .hero .badge');
+    badges.forEach((b, i) => { if (badgeLines[i]) b.textContent = badgeLines[i]; });
+  }
 
-  // SERVICES
-  set(['#services h2','[data-field="svc-headline"]'], val('ef-svc-headline'));
-  set(['#services p.subtitle','#services > p'], val('ef-svc-sub'));
+  // ── SERVICES ──
+  setIfChanged('ef-svc-headline', ['#services h2','[data-field="svc-headline"]']);
+  setIfChanged('ef-svc-sub',      ['#services p.subtitle','#services > p']);
 
   const svcCards = doc.querySelectorAll('#services .card, .services .pricing-card, #services .service-card');
   svcCards.forEach((card, i) => {
     const titleEl = document.getElementById(`ef-svc-${i}-title`);
     const priceEl = document.getElementById(`ef-svc-${i}-price`);
-    const descEl = document.getElementById(`ef-svc-${i}-desc`);
-    if (titleEl) { const t = card.querySelector('h3, h4, .card-title'); if(t) t.textContent = titleEl.value; }
-    if (priceEl) { const p = card.querySelector('.price, .pricing'); if(p) p.textContent = priceEl.value; }
-    if (descEl) { const d = card.querySelector('p, .description'); if(d) d.textContent = descEl.value; }
+    const descEl  = document.getElementById(`ef-svc-${i}-desc`);
+    if (titleEl?.classList.contains('changed')) { const t = card.querySelector('h3,h4,.card-title,.card-name'); if(t) t.textContent = titleEl.value.trim(); }
+    if (priceEl?.classList.contains('changed')) { const p = card.querySelector('.price,.pricing,.card-price'); if(p) p.textContent = priceEl.value.trim(); }
+    if (descEl?.classList.contains('changed'))  { const d = card.querySelector('p,.description,.card-description'); if(d) d.textContent = descEl.value.trim(); }
   });
 
-  // HOW IT WORKS
-  set(['#how h2','[data-field="how-headline"]'], val('ef-how-headline'));
+  // ── HOW IT WORKS ──
+  setIfChanged('ef-how-headline', ['#how h2','[data-field="how-headline"]']);
 
   const howSteps = doc.querySelectorAll('#how .step, .how-it-works .step, #how li');
   howSteps.forEach((step, i) => {
     const titleEl = document.getElementById(`ef-how-${i}-title`);
-    const descEl = document.getElementById(`ef-how-${i}-desc`);
-    if (titleEl) { const t = step.querySelector('h3, h4, strong, .step-title'); if(t) t.textContent = titleEl.value; }
-    if (descEl) { const d = step.querySelector('p, .step-desc'); if(d) d.textContent = descEl.value; }
+    const descEl  = document.getElementById(`ef-how-${i}-desc`);
+    if (titleEl?.classList.contains('changed')) { const t = step.querySelector('h3,h4,strong,.step-title'); if(t) t.textContent = titleEl.value.trim(); }
+    if (descEl?.classList.contains('changed'))  { const d = step.querySelector('p,.step-desc'); if(d) d.textContent = descEl.value.trim(); }
   });
 
-  // ABOUT
-  set(['#about h2','[data-field="about-headline"]'], val('ef-about-headline'));
-  set(['#about h3','#about .founder-name'], val('ef-about-name'));
-  set(['#about a.btn','#about .cta'], val('ef-about-cta'));
-  // Bio — replace first paragraph
-  const firstAboutP = doc.querySelector('#about p, .about p');
-  if (firstAboutP) firstAboutP.textContent = val('ef-about-bio').split('\n\n')[0];
+  // ── ABOUT ──
+  setIfChanged('ef-about-headline', ['#about h2','[data-field="about-headline"]']);
+  setIfChanged('ef-about-name',     ['#about h3','#about .founder-name','#about .about-name']);
+  setIfChanged('ef-about-cta',      ['#about a.btn','#about .cta']);
+  if (changed('ef-about-bio')) {
+    const firstAboutP = doc.querySelector('#about p, .about p');
+    if (firstAboutP) firstAboutP.textContent = val('ef-about-bio').split('\n\n')[0];
+  }
 
-  // CONTACT
-  set(['#contact h2','[data-field="contact-headline"]'], val('ef-contact-headline'));
-  set(['#contact p', '#contact .subtitle'], val('ef-contact-sub'));
-  const contactBtns = doc.querySelectorAll('#contact .btn, .contact .btn');
-  if (contactBtns[0] && val('ef-contact-cta1')) contactBtns[0].textContent = val('ef-contact-cta1');
-  if (contactBtns[1] && val('ef-contact-cta2')) contactBtns[1].textContent = val('ef-contact-cta2');
-  set(['footer .copyright','footer p','#footer p'], val('ef-footer-copy'));
+  // ── CONTACT ──
+  setIfChanged('ef-contact-headline', ['#contact h2','[data-field="contact-headline"]']);
+  setIfChanged('ef-contact-sub',      ['#contact p','#contact .subtitle']);
+  if (changed('ef-contact-cta1')) { const b = doc.querySelector('#contact .btn, .contact .btn'); if(b) b.textContent = val('ef-contact-cta1'); }
+  if (changed('ef-contact-cta2')) { const bs = doc.querySelectorAll('#contact .btn, .contact .btn'); if(bs[1]) bs[1].textContent = val('ef-contact-cta2'); }
+
+  // ── FOOTER ──
+  setIfChanged('ef-footer-copy', ['footer .copyright','footer p','.footer-copy']);
 
   // IMAGES — update src attributes
   if (edState.imgOriginals) {
@@ -1791,13 +1865,34 @@ async function edSaveAndDeploy() {
       saveBtn.disabled = false;
     }, 70000);
 
+    // Log successful deploy
+    sreLog('deploy', `✅ Site committed to GitHub — SHA: ${edState.sha?.slice(0,8)} · Netlify deploying`, 'success');
+
     // Show toast
     edToast('✅ Saved to GitHub! Site deploying now…', 'success');
+
+    // After ~65s, auto-verify the live site loaded correctly
+    setTimeout(async () => {
+      try {
+        const check = await fetch('https://512ai.co', { cache: 'no-store' });
+        const txt = await check.text();
+        if (txt.includes('512AI') && check.ok) {
+          sreLog('health', '🚀 512ai.co verified live after deploy', 'success');
+          statusEl.textContent = '🚀 Live at 512ai.co — verified ✅';
+        } else {
+          sreLog('health', '⚠️ 512ai.co responded but content looks unexpected', 'warn');
+        }
+      } catch(e) {
+        sreLog('health', '⚠️ Could not verify 512ai.co after deploy: ' + e.message, 'warn');
+      }
+      saveBtn.disabled = false;
+    }, 65000);
 
   } catch(err) {
     statusEl.className = 'deploy-indicator error';
     statusEl.textContent = '❌ Error: ' + err.message;
     saveBtn.disabled = false;
+    sreLog('deploy', '❌ Deploy failed: ' + err.message, 'error');
     edToast('❌ Save failed: ' + err.message, 'error');
   }
 }
@@ -1897,6 +1992,115 @@ function showEnvInstructions() {
 <span class="cmd">netlify env:set ${key} "${val || 'YOUR_VALUE_HERE'}" --context production</span>`;
   wrap.style.display = 'block';
 }
+
+// ══════════════════════════════════════════════════════════════
+//  SRE — Activity Log, Health Checks, Deploy Monitor
+// ══════════════════════════════════════════════════════════════
+
+const SRE_LOG_KEY = '512ai_sre_log';
+const SRE_MAX_ENTRIES = 200;
+
+// ── Write an event to the persistent activity log ─────────────
+function sreLog(category, message, level = 'info') {
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem(SRE_LOG_KEY) || '[]'); } catch(e) {}
+  const entry = {
+    ts: new Date().toISOString(),
+    category,   // 'auth' | 'deploy' | 'health' | 'editor' | 'error'
+    level,      // 'info' | 'success' | 'warn' | 'error'
+    message
+  };
+  log.unshift(entry);
+  if (log.length > SRE_MAX_ENTRIES) log = log.slice(0, SRE_MAX_ENTRIES);
+  try { localStorage.setItem(SRE_LOG_KEY, JSON.stringify(log)); } catch(e) {}
+  srySyncLogEntry(entry);   // push to DOM if log page is visible
+}
+
+// ── Sync a single new entry to the DOM log table ──────────────
+function srySyncLogEntry(entry) {
+  const tbody = document.getElementById('sre-log-tbody');
+  if (!tbody) return;
+  const row = _sreRow(entry);
+  tbody.insertBefore(row, tbody.firstChild);
+}
+
+// ── Re-render the full log from localStorage ──────────────────
+function sreSyncLog() {
+  const tbody = document.getElementById('sre-log-tbody');
+  if (!tbody) return;
+  let log = [];
+  try { log = JSON.parse(localStorage.getItem(SRE_LOG_KEY) || '[]'); } catch(e) {}
+  tbody.innerHTML = '';
+  if (!log.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px">No activity logged yet.</td></tr>';
+    return;
+  }
+  log.forEach(entry => tbody.appendChild(_sreRow(entry)));
+}
+
+// ── Build a log table row ─────────────────────────────────────
+function _sreRow(entry) {
+  const levelColor = { success:'#22c55e', info:'#94a3b8', warn:'#f59e0b', error:'#ef4444' };
+  const catIcon    = { auth:'🔐', deploy:'🚀', health:'🌐', editor:'✏️', error:'❌' };
+  const tr = document.createElement('tr');
+  tr.style.borderBottom = '1px solid var(--border)';
+  const d = new Date(entry.ts);
+  const timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  tr.innerHTML = `
+    <td style="padding:8px 12px;font-size:12px;color:var(--muted);white-space:nowrap;font-family:var(--font-mono)">${timeStr}</td>
+    <td style="padding:8px 12px;font-size:12px;color:var(--muted)">${catIcon[entry.category]||'📋'} ${entry.category}</td>
+    <td style="padding:8px 12px;font-size:13px;color:var(--text-primary)">${entry.message}</td>
+    <td style="padding:8px 12px"><span style="font-size:11px;font-weight:600;color:${levelColor[entry.level]||'#94a3b8'};text-transform:uppercase">${entry.level}</span></td>`;
+  return tr;
+}
+
+// ── Clear the activity log ─────────────────────────────────────
+function sreClearLog() {
+  if (!confirm('Clear all activity log entries?')) return;
+  localStorage.removeItem(SRE_LOG_KEY);
+  sreSyncLog();
+}
+
+// ── Run health checks (called on every login) ─────────────────
+async function sreRunHealthChecks() {
+  // 1. Main site up?
+  try {
+    const r = await fetch('https://512ai.co', { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+    if (r.ok) {
+      const txt = await r.text();
+      const ok = txt.includes('512AI') && txt.includes('hero');
+      sreLog('health', ok ? '🌐 512ai.co is UP — hero section detected' : '⚠️ 512ai.co responded but content unexpected', ok ? 'success' : 'warn');
+    } else {
+      sreLog('health', `❌ 512ai.co returned HTTP ${r.status}`, 'error');
+    }
+  } catch(e) {
+    sreLog('health', '❌ 512ai.co health check failed: ' + e.message, 'error');
+  }
+
+  // 2. GitHub latest commit
+  try {
+    const r = await fetch('https://api.github.com/repos/kalelra/512ai/commits?per_page=1', {
+      headers: { 'User-Agent': '512ai-admin' }, signal: AbortSignal.timeout(8000)
+    });
+    if (r.ok) {
+      const [c] = await r.json();
+      const msg = c.commit.message.split('\n')[0].slice(0, 60);
+      const sha = c.sha.slice(0, 8);
+      const ago = Math.round((Date.now() - new Date(c.commit.author.date)) / 60000);
+      sreLog('health', `🐙 Latest commit: ${sha} — "${msg}" (${ago}m ago)`, 'info');
+    }
+  } catch(e) { /* non-critical */ }
+}
+
+// ── Hook editor file-load into activity log ───────────────────
+const _origEdLoadFile = edLoadFile;
+edLoadFile = async function() {
+  sreLog('editor', '📂 Site Editor: loading index.html from GitHub…', 'info');
+  await _origEdLoadFile.apply(this, arguments);
+  if (edState.originalHTML) {
+    sreLog('editor', `📂 index.html loaded (${Math.round(edState.originalHTML.length/1024)}KB, SHA: ${edState.sha?.slice(0,8)})`, 'success');
+  }
+};
 </script>
 </body>
 </html>
