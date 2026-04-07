@@ -3,231 +3,294 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>512AI — Admin Portal</title>
+<title>512AI — Admin</title>
 <style>
-  :root {
-    --brand: #2E7D32; --brand-hover: #1B5E20; --brand-light: #e8f5e9;
-    --sidebar-bg: #0f1117; --sidebar-text: #e0e0e0; --sidebar-muted: #888;
-    --bg: #f4f6f9; --card: #fff;
-    --border: #e0e0e0; --text: #1a1a1a; --muted: #666;
-    --amber: #F57F17; --red: #c62828; --blue: #1565C0;
-    --green-dot: #4caf50; --amber-dot: #ff9800; --red-dot: #f44336;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+:root {
+  --brand:#2E7D32;--brand-h:#1B5E20;--brand-light:#e8f5e9;
+  --sb:#0f1117;--sb-text:#e0e0e0;--sb-muted:#666;
+  --bg:#f4f6f9;--card:#fff;--border:#e2e8f0;--text:#1a1a1a;--muted:#64748b;
+  --amber:#F57F17;--red:#c62828;--blue:#1565C0;--purple:#6d28d9;
+  --green:#4caf50;--green-bg:#dcfce7;--red-bg:#fee2e2;--amber-bg:#fef9c3;--blue-bg:#dbeafe;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
 
-  /* ─── Sidebar ─── */
-  .sidebar {
-    width: 240px; background: var(--sidebar-bg); color: var(--sidebar-text);
-    display: flex; flex-direction: column; flex-shrink: 0;
-    position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
-    z-index: 100;
-  }
-  .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
-  .sidebar-logo .logo-text { font-size: 18px; font-weight: 800; color: #fff; }
-  .sidebar-logo .logo-sub { font-size: 11px; color: var(--sidebar-muted); margin-top: 2px; }
-  .sidebar-section { padding: 16px 12px 8px; font-size: 10px; font-weight: 700; color: var(--sidebar-muted); text-transform: uppercase; letter-spacing: .08em; }
-  .sidebar-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 16px; border-radius: 8px; margin: 1px 8px;
-    cursor: pointer; font-size: 13px; color: var(--sidebar-text);
-    transition: background .15s; text-decoration: none;
-  }
-  .sidebar-item:hover { background: rgba(255,255,255,.08); }
-  .sidebar-item.active { background: var(--brand); color: #fff; }
-  .sidebar-item .icon { width: 16px; text-align: center; opacity: .7; font-style: normal; }
-  .sidebar-item.active .icon { opacity: 1; }
-  .sidebar-bottom { margin-top: auto; padding: 16px; border-top: 1px solid rgba(255,255,255,.08); }
-  .sidebar-user { display: flex; align-items: center; gap: 10px; }
-  .sidebar-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
-  .sidebar-user-name { font-size: 13px; font-weight: 600; }
-  .sidebar-user-role { font-size: 11px; color: var(--sidebar-muted); }
+/* ── Login screen ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;width:100%;background:linear-gradient(135deg,#0f1117 0%,#1a2332 100%)}
+.login-box{background:#fff;border-radius:20px;padding:40px;width:380px;max-width:calc(100vw - 32px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-logo .l1{font-size:28px;font-weight:900;color:var(--brand)}
+.login-logo .l2{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+.login-field{margin-bottom:16px}
+.login-field label{display:block;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.login-field input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:border .15s}
+.login-field input:focus{border-color:var(--brand)}
+.login-btn{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;transition:background .15s}
+.login-btn:hover{background:var(--brand-h)}
+.login-err{color:#c62828;font-size:13px;margin-top:10px;text-align:center;min-height:20px}
+.login-tier{font-size:11px;color:var(--muted);text-align:center;margin-top:16px}
 
-  /* ─── Main ─── */
-  .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
-  .topbar-title { font-size: 16px; font-weight: 700; }
-  .topbar-actions { display: flex; gap: 10px; align-items: center; }
-  .btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
-  .btn-primary { background: var(--brand); color: #fff; }
-  .btn-primary:hover { background: var(--brand-hover); }
-  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
-  .btn-outline:hover { background: var(--bg); }
+/* ── Sidebar ── */
+#app{display:none;width:100%}
+.sidebar{width:240px;background:var(--sb);color:var(--sb-text);display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100}
+.sb-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo .l1{font-size:18px;font-weight:800;color:#fff}
+.sb-logo .l2{font-size:11px;color:var(--sb-muted);margin-top:2px}
+.sb-section{padding:14px 12px 6px;font-size:10px;font-weight:700;color:var(--sb-muted);text-transform:uppercase;letter-spacing:.09em}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:8px;margin:1px 8px;cursor:pointer;font-size:13px;color:var(--sb-text);transition:background .15s;text-decoration:none;user-select:none}
+.sb-item:hover{background:rgba(255,255,255,.07)}
+.sb-item.active{background:var(--brand);color:#fff}
+.sb-item .ic{width:16px;text-align:center;font-style:normal;opacity:.7}
+.sb-item.active .ic{opacity:1}
+.sb-badge{margin-left:auto;background:var(--amber);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px}
+.sb-bottom{margin-top:auto;padding:14px;border-top:1px solid rgba(255,255,255,.07)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:13px;font-weight:600}
+.sb-ur{font-size:11px;color:var(--sb-muted)}
+.logout-btn{display:block;padding:7px 10px;margin-top:10px;border-radius:7px;font-size:12px;font-weight:600;color:var(--sb-muted);cursor:pointer;text-align:center;transition:background .15s;border:none;background:transparent;width:100%}
+.logout-btn:hover{background:rgba(255,255,255,.07);color:#fff}
 
-  .content { padding: 28px; flex: 1; }
+/* ── Main ── */
+.main{margin-left:240px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:15px;font-weight:700}
+.topbar-right{display:flex;gap:10px;align-items:center}
+.btn{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--brand);color:#fff}.btn-primary:hover{background:var(--brand-h)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--bg)}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#b71c1c}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-sm{padding:5px 11px;font-size:12px}
 
-  /* ─── Stats row ─── */
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
-  .stat-value { font-size: 28px; font-weight: 800; line-height: 1; }
-  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .stat-up { color: var(--brand); }
-  .stat-card.highlight { border-color: var(--brand); background: var(--brand-light); }
+.content{padding:26px;flex:1}
 
-  /* ─── Section header ─── */
-  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .section-title { font-size: 15px; font-weight: 700; }
+/* ── Section title ── */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:15px;font-weight:700}
 
-  /* ─── Client table ─── */
-  .table-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 24px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 12px 16px; background: #fafafa; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
-  td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #fafafa; }
+/* ── Stats ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.stat-label{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.stat-value{font-size:26px;font-weight:800;line-height:1}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:5px}
+.stat-card.highlight{border-color:var(--brand);background:var(--brand-light)}
 
-  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
-  .status-dot.active { background: var(--green-dot); box-shadow: 0 0 0 3px rgba(76,175,80,.2); }
-  .status-dot.pending { background: var(--amber-dot); }
-  .status-dot.inactive { background: var(--red-dot); }
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-hdr h3{font-size:14px;font-weight:700}
+.card-body{padding:18px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:20px}
 
-  .client-name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
-  .client-avatar { width: 28px; height: 28px; border-radius: 8px; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+/* ── Table ── */
+.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:11px 15px;background:#fafafa;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+td{padding:13px 15px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
 
-  .tools-chips { display: flex; gap: 4px; flex-wrap: wrap; }
-  .chip { padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--brand-light); color: var(--brand); }
-  .chip.voice { background: #e3f2fd; color: var(--blue); }
-  .chip.sms { background: #fff8e1; color: var(--amber); }
-  .chip.seo { background: #f3e5f5; color: #7b1fa2; }
-  .chip.disabled { background: #f5f5f5; color: #bbb; }
+/* ── Pills & badges ── */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600}
+.pill.green{background:var(--green-bg);color:#166534}
+.pill.red{background:var(--red-bg);color:#991b1b}
+.pill.amber{background:var(--amber-bg);color:#92400e}
+.pill.blue{background:var(--blue-bg);color:#1e40af}
+.pill.gray{background:#f1f5f9;color:#64748b}
+.pill.purple{background:#f3e8ff;color:#6d28d9}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.green{background:var(--green);box-shadow:0 0 0 2px rgba(76,175,80,.2)}
+.dot.red{background:#f44336}
+.dot.amber{background:#ff9800}
+.dot.gray{background:#94a3b8}
 
-  .action-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--text); transition: all .15s; }
-  .action-btn:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
+/* ── Chip tags ── */
+.chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{padding:2px 7px;border-radius:8px;font-size:11px;font-weight:600;background:var(--brand-light);color:var(--brand)}
+.chip.voice{background:#dbeafe;color:#1e40af}
+.chip.sms{background:#fef9c3;color:#92400e}
+.chip.seo{background:#f3e8ff;color:#6d28d9}
 
-  /* ─── Config panel ─── */
-  .config-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 24px; overflow: hidden; }
-  .config-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .config-header h3 { font-size: 14px; font-weight: 700; }
-  .config-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .field-group { }
-  .field-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: .04em; }
-  .field-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; color: var(--text); outline: none; transition: border .15s; }
-  .field-input:focus { border-color: var(--brand); }
-  .field-input[readonly] { background: #fafafa; color: var(--muted); cursor: not-allowed; }
-  .color-row { display: flex; align-items: center; gap: 10px; }
-  .color-swatch { width: 36px; height: 36px; border-radius: 8px; border: 2px solid var(--border); cursor: pointer; flex-shrink: 0; }
+/* ── Env var rows ── */
+.env-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.env-row:last-child{border-bottom:none}
+.env-key{font-size:13px;font-family:monospace;font-weight:600}
+.env-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.env-status{flex-shrink:0;margin-left:12px}
 
-  /* ─── Toggle ─── */
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 13px; font-weight: 600; }
-  .toggle-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider { position: absolute; inset: 0; background: #ddd; border-radius: 22px; cursor: pointer; transition: .2s; }
-  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
-  .toggle input:checked + .toggle-slider { background: var(--brand); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+/* ── Deploy terminal ── */
+.terminal{background:#0f1117;border-radius:10px;padding:16px;font-family:monospace;font-size:12px;color:#e0e0e0;line-height:1.7;overflow-x:auto}
+.terminal .cmd{color:#4caf50}
+.terminal .cmt{color:#666}
+.terminal .warn{color:#ff9800}
+.terminal .ok{color:#69db7c}
+.copy-terminal{background:rgba(255,255,255,.1);border:none;color:#e0e0e0;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;margin-top:10px;transition:background .15s}
+.copy-terminal:hover{background:rgba(255,255,255,.2)}
 
-  /* ─── Activity feed ─── */
-  .activity-feed { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .activity-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-  .activity-dot.chat { background: var(--brand); }
-  .activity-dot.voice { background: var(--blue); }
-  .activity-dot.sms { background: var(--amber); }
-  .activity-dot.booking { background: #9c27b0; }
-  .activity-text { font-size: 13px; flex: 1; }
-  .activity-client { font-weight: 600; }
-  .activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* ── File tree ── */
+.file-tree{font-family:monospace;font-size:12px;line-height:1.8;padding:14px}
+.file-tree .dir{color:#ff9800;font-weight:700}
+.file-tree .file{color:#e0e0e0}
+.file-tree .file.new{color:#69db7c}
+.file-tree .file.key{color:#81d4fa}
+.file-tree .comment{color:#666}
 
-  /* ─── Two col layout ─── */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+/* ── Timeline / activity ── */
+.timeline-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.timeline-item:last-child{border-bottom:none}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-dot.green{background:var(--green)}
+.tl-dot.amber{background:#ff9800}
+.tl-dot.blue{background:var(--blue)}
+.tl-dot.red{background:#f44336}
+.tl-text{font-size:13px;flex:1}
+.tl-bold{font-weight:600}
+.tl-time{font-size:11px;color:var(--muted);margin-top:2px}
 
-  /* ─── Tabs ─── */
-  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
-  .tab { padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; color: var(--muted); transition: all .15s; }
-  .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+/* ── Progress bar ── */
+.progress-wrap{background:#f1f5f9;border-radius:6px;height:8px;overflow:hidden;margin-top:6px}
+.progress-bar{height:100%;background:var(--brand);border-radius:6px;transition:width .3s}
 
-  /* ─── Empty state ─── */
-  .empty { text-align: center; padding: 40px 20px; color: var(--muted); }
-  .empty-icon { font-size: 32px; margin-bottom: 10px; }
+/* ── Field ── */
+.field-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;display:block}
+.field-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);outline:none;transition:border .15s}
+.field-input:focus{border-color:var(--brand)}
+textarea.field-input{min-height:90px;resize:vertical;font-family:monospace}
 
-  /* ─── Modal overlay ─── */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: #fff; border-radius: 16px; padding: 28px; width: 480px; max-width: calc(100vw - 40px); max-height: 80vh; overflow-y: auto; }
-  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+/* ── Toggle ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-lbl{font-size:13px;font-weight:600}
+.toggle-desc{font-size:12px;color:var(--muted)}
+.toggle{position:relative;width:38px;height:21px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-sl{position:absolute;inset:0;background:#ddd;border-radius:21px;cursor:pointer;transition:.2s}
+.toggle-sl::before{content:'';position:absolute;width:15px;height:15px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked+.toggle-sl{background:var(--brand)}
+.toggle input:checked+.toggle-sl::before{transform:translateX(17px)}
 
-  @media(max-width: 900px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    .config-body { grid-template-columns: 1fr; }
-    .two-col { grid-template-columns: 1fr; }
-  }
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:28px;width:540px;max-width:calc(100vw - 32px);max-height:85vh;overflow-y:auto}
+.modal h3{font-size:16px;font-weight:700;margin-bottom:18px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+
+/* ── Health indicator ── */
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.health-item{border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.health-icon{font-size:22px;margin-bottom:6px}
+.health-lbl{font-size:12px;font-weight:700}
+.health-status{font-size:11px;margin-top:3px}
+.health-item.ok{border-color:#86efac;background:#f0fdf4}
+.health-item.warn{border-color:#fde68a;background:#fffbeb}
+.health-item.err{border-color:#fca5a5;background:#fef2f2}
+
+/* ── Changelog entry ── */
+.changelog-entry{border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px}
+.cl-hash{font-family:monospace;font-size:12px;color:var(--blue);font-weight:700}
+.cl-msg{font-size:13px;font-weight:600;margin:4px 0}
+.cl-meta{font-size:11px;color:var(--muted)}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .sidebar{display:none}.main{margin-left:0}
+  .stats-row,.two-col,.three-col,.health-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .stats-row,.two-col,.three-col,.health-grid{grid-template-columns:1fr}
+}
+
+/* ── Page visibility ── */
+.page{display:none}.page.active{display:block}
 </style>
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="l1">512AI</div>
+      <div class="l2">Admin Console</div>
+    </div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="login-user" placeholder="username" autocomplete="username" />
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••••" autocomplete="current-password" />
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-tier">Admin access only · Session expires in 8h</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     APP SHELL
+═══════════════════════════════════════════════════════════ -->
+<div id="app">
+
 <!-- Sidebar -->
 <nav class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-text">512AI</div>
-    <div class="logo-sub">Admin Portal</div>
+  <div class="sb-logo">
+    <div class="l1">512AI</div>
+    <div class="l2">Admin Console</div>
   </div>
 
-  <div class="sidebar-section">Overview</div>
-  <a class="sidebar-item active" onclick="showPage('dashboard')">
-    <i class="icon">◉</i> Dashboard
-  </a>
-  <a class="sidebar-item" onclick="showPage('clients')">
-    <i class="icon">👥</i> Clients
-  </a>
-  <a class="sidebar-item" onclick="showPage('activity')">
-    <i class="icon">⚡</i> Activity Feed
-  </a>
+  <div class="sb-section">Overview</div>
+  <a class="sb-item active" onclick="showPage('dashboard')"><i class="ic">◉</i> Dashboard</a>
+  <a class="sb-item" onclick="showPage('clients')"><i class="ic">👥</i> Clients</a>
+  <a class="sb-item" onclick="showPage('system')"><i class="ic">💻</i> System Health</a>
 
-  <div class="sidebar-section">Tools</div>
-  <a class="sidebar-item" onclick="showPage('chat')">
-    <i class="icon">💬</i> Chat Widgets
-  </a>
-  <a class="sidebar-item" onclick="showPage('voice')">
-    <i class="icon">📞</i> Voice AI
-  </a>
-  <a class="sidebar-item" onclick="showPage('notifications')">
-    <i class="icon">📱</i> Notifications
-  </a>
-  <a class="sidebar-item" onclick="showPage('seo')">
-    <i class="icon">🔍</i> SEO
-  </a>
+  <div class="sb-section">Infrastructure</div>
+  <a class="sb-item" onclick="showPage('deploy')"><i class="ic">🚀</i> Deploy <span class="sb-badge" id="deploy-badge" style="display:none">!</span></a>
+  <a class="sb-item" onclick="showPage('envvars')"><i class="ic">🔐</i> Env Vars <span class="sb-badge" id="env-badge">3</span></a>
+  <a class="sb-item" onclick="showPage('files')"><i class="ic">📁</i> File Inventory</a>
+  <a class="sb-item" onclick="showPage('github')"><i class="ic">🐙</i> GitHub</a>
 
-  <div class="sidebar-section">System</div>
-  <a class="sidebar-item" onclick="showPage('config')">
-    <i class="icon">⚙️</i> Config Editor
-  </a>
-  <a class="sidebar-item" onclick="showPage('billing')">
-    <i class="icon">💳</i> Billing
-  </a>
+  <div class="sb-section">Big Hat Lawn</div>
+  <a class="sb-item" onclick="showPage('bhl-tools')"><i class="ic">🛠</i> Tools Status</a>
+  <a class="sb-item" onclick="showPage('bhl-config')"><i class="ic">⚙️</i> Configuration</a>
 
-  <div class="sidebar-bottom">
-    <div class="sidebar-user">
-      <div class="sidebar-avatar">R</div>
+  <div class="sb-section">Admin</div>
+  <a class="sb-item" onclick="showPage('users')"><i class="ic">🔑</i> Admin Users</a>
+  <a class="sb-item" onclick="showPage('changelog')"><i class="ic">📋</i> Changelog</a>
+
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-av" id="sb-initials">D</div>
       <div>
-        <div class="sidebar-user-name">Ricardo</div>
-        <div class="sidebar-user-role">512AI Admin</div>
+        <div class="sb-un" id="sb-username">Diskat</div>
+        <div class="sb-ur" id="sb-role">Super Admin</div>
       </div>
     </div>
+    <button class="logout-btn" onclick="doLogout()">Sign out</button>
   </div>
 </nav>
 
-<!-- Main Content -->
+<!-- Main -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-title" id="page-title">Dashboard</div>
-    <div class="topbar-actions">
-      <button class="btn btn-outline" onclick="openModal('add-client')">+ Add Client</button>
-      <button class="btn btn-primary">Save Changes</button>
+    <div class="topbar-right">
+      <span style="font-size:12px;color:var(--muted)" id="last-refresh">Loaded just now</span>
+      <button class="btn btn-outline btn-sm" onclick="refreshAll()">↺ Refresh</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('deploy')">🚀 Deploy</button>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- ─── DASHBOARD PAGE ─── -->
-    <div id="page-dashboard">
+    <!-- ═══════════════ DASHBOARD ═══════════════ -->
+    <div id="page-dashboard" class="page active">
       <div class="stats-row">
         <div class="stat-card highlight">
           <div class="stat-label">Active Clients</div>
@@ -235,460 +298,759 @@
           <div class="stat-sub">Big Hat Lawn 🌿</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Chat Conversations (30d)</div>
-          <div class="stat-value">—</div>
-          <div class="stat-sub">Live when widget deployed</div>
+          <div class="stat-label">Tools Deployed</div>
+          <div class="stat-value">4</div>
+          <div class="stat-sub">Chat · Voice · SMS · SEO</div>
+        </div>
+        <div class="stat-card" id="env-stat">
+          <div class="stat-label">Env Vars Set</div>
+          <div class="stat-value" style="color:var(--amber)">7/10</div>
+          <div class="stat-sub">3 pending (Twilio #, LawnPro, Railway)</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Bookings Captured</div>
-          <div class="stat-value">—</div>
-          <div class="stat-sub">Live after LawnPro connect</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">SMS Sent</div>
-          <div class="stat-value">—</div>
-          <div class="stat-sub">Live after Twilio connect</div>
+          <div class="stat-label">Netlify Site</div>
+          <div class="stat-value" style="font-size:14px;padding-top:4px">
+            <span class="pill green"><span class="dot green"></span> Live</span>
+          </div>
+          <div class="stat-sub">512ai.co · adorable-cucurucho</div>
         </div>
       </div>
 
-      <div class="section-header">
-        <div class="section-title">Clients</div>
+      <!-- System health quick view -->
+      <div class="section-hdr"><span class="section-title">System Health</span></div>
+      <div class="health-grid" style="margin-bottom:24px">
+        <div class="health-item ok"><div class="health-icon">🌐</div><div class="health-lbl">512ai.co</div><div class="health-status" style="color:#166534">Live · GitHub deploy</div></div>
+        <div class="health-item ok"><div class="health-icon">🔗</div><div class="health-lbl">512ai.co/portal</div><div class="health-status" style="color:#166534">Live (push fix-root-config)</div></div>
+        <div class="health-item warn"><div class="health-icon">⚙️</div><div class="health-lbl">512ai.co/admin</div><div class="health-status" style="color:#92400e">Push to GitHub to go live</div></div>
+        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai</div><div class="health-status" style="color:#166534">Key set · Lily AI ready</div></div>
+        <div class="health-item warn"><div class="health-icon">📱</div><div class="health-lbl">Twilio SMS</div><div class="health-status" style="color:#92400e">Awaiting phone number (EIN)</div></div>
+        <div class="health-item warn"><div class="health-icon">🏡</div><div class="health-lbl">LawnPro CRM</div><div class="health-status" style="color:#92400e">Awaiting Rudy's access</div></div>
+        <div class="health-item warn"><div class="health-icon">🚂</div><div class="health-lbl">Railway Backend</div><div class="health-status" style="color:#92400e">URL not confirmed yet</div></div>
+        <div class="health-item warn"><div class="health-icon">🌐</div><div class="health-lbl">bighatlawn.com</div><div class="health-status" style="color:#92400e">Widget not deployed yet</div></div>
+        <div class="health-item ok"><div class="health-icon">🐙</div><div class="health-lbl">GitHub Repo</div><div class="health-status" style="color:#166534">kalelra/512ai · main</div></div>
       </div>
-      <div class="table-card">
+
+      <!-- Next actions -->
+      <div class="section-hdr"><span class="section-title">Action Queue</span></div>
+      <div class="card">
+        <div class="card-body" style="padding:0">
+          <div class="timeline-item" style="padding:14px 18px">
+            <div class="tl-dot amber"></div>
+            <div class="tl-text"><span class="tl-bold">Run fix-root-config.sh</span> — Pushes portal + admin to GitHub, creates clean URLs /portal and /admin<br><span class="tl-time">Priority: Immediate · Run from ~/Claude_Projects/512ai/files/</span></div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('deploy')">View</button>
+          </div>
+          <div class="timeline-item" style="padding:14px 18px">
+            <div class="tl-dot amber"></div>
+            <div class="tl-text"><span class="tl-bold">Get Twilio phone number</span> — Requires EIN upgrade on account. BHL_TWILIO_FROM env var pending<br><span class="tl-time">Blocker: SMS notifications won't work until this is done</span></div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('envvars')">View</button>
+          </div>
+          <div class="timeline-item" style="padding:14px 18px">
+            <div class="tl-dot amber"></div>
+            <div class="tl-text"><span class="tl-bold">Get LawnPro CRM access from Rudy</span> — Webhook secret needed for LAWNPRO_WEBHOOK_SECRET<br><span class="tl-time">Waiting on client</span></div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('envvars')">View</button>
+          </div>
+          <div class="timeline-item" style="padding:14px 18px">
+            <div class="tl-dot amber"></div>
+            <div class="tl-text"><span class="tl-bold">Confirm Railway backend URL</span> — Set NOTIFICATION_ENDPOINT on Netlify once known<br><span class="tl-time">Needed for SMS notification routing</span></div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('envvars')">View</button>
+          </div>
+          <div class="timeline-item" style="padding:14px 18px">
+            <div class="tl-dot amber"></div>
+            <div class="tl-text"><span class="tl-bold">Get Squarespace access for bighatlawn.com</span> — Deploy chat + voice widget embed snippets<br><span class="tl-time">Waiting on Rudy's Squarespace credentials</span></div>
+            <button class="btn btn-outline btn-sm" onclick="showPage('bhl-tools')">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ CLIENTS ═══════════════ -->
+    <div id="page-clients" class="page">
+      <div class="section-hdr">
+        <span class="section-title">Clients</span>
+        <button class="btn btn-primary btn-sm">+ Add Client</button>
+      </div>
+      <div class="tbl-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Client</th>
-              <th>Status</th>
-              <th>Active Tools</th>
-              <th>Site</th>
-              <th>Last Activity</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+          <thead><tr>
+            <th>Client</th><th>Status</th><th>Tools</th><th>Site</th><th>Monthly Value</th><th>Last Activity</th><th>Actions</th>
+          </tr></thead>
           <tbody>
             <tr>
-              <td>
-                <div class="client-name">
-                  <div class="client-avatar">BH</div>
-                  Big Hat Lawn
-                </div>
-              </td>
-              <td><span class="status-dot active"></span>Onboarding</td>
-              <td>
-                <div class="tools-chips">
-                  <span class="chip">💬 Chat</span>
-                  <span class="chip voice">📞 Voice</span>
-                  <span class="chip sms">📱 SMS</span>
-                  <span class="chip seo">🔍 SEO</span>
-                </div>
-              </td>
-              <td>bighatlawn.com</td>
-              <td>Today</td>
-              <td><button class="action-btn" onclick="showConfig('bighatlawn')">Configure</button></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:8px;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0">BH</div><div><div style="font-weight:600">Big Hat Lawn</div><div style="font-size:11px;color:var(--muted)">rudy@bighatlawn.com</div></div></div></td>
+              <td><span class="pill amber"><span class="dot amber"></span>Onboarding</span></td>
+              <td><div class="chips"><span class="chip">Chat</span><span class="chip voice">Voice</span><span class="chip sms">SMS</span><span class="chip seo">SEO</span></div></td>
+              <td style="font-size:12px">bighatlawn.com</td>
+              <td style="font-weight:600">$499<span style="color:var(--muted);font-weight:400">/mo</span></td>
+              <td style="font-size:12px">Today</td>
+              <td><button class="btn btn-outline btn-sm" onclick="showPage('bhl-config')">Configure</button></td>
             </tr>
             <tr>
-              <td colspan="6">
-                <div class="empty">
-                  <div class="empty-icon">➕</div>
-                  Next client slot — ready to replicate the BHL stack
-                </div>
+              <td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">
+                <div style="font-size:24px;margin-bottom:8px">+</div>
+                <div style="font-size:13px">Next client slot — replicate BHL stack in ~2 hours</div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Activity feed preview -->
-      <div class="section-header">
-        <div class="section-title">Recent Activity</div>
-      </div>
-      <div class="activity-feed">
-        <div class="activity-item">
-          <div class="activity-dot chat"></div>
-          <div>
-            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — Chat widget deployed to CDN</div>
-            <div class="activity-time">Today • Widget v1.1</div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-hdr"><h3>Revenue Overview</h3></div>
+          <div class="card-body">
+            <div class="env-row"><div><div class="env-key">MRR</div><div class="env-desc">Monthly recurring revenue</div></div><div><strong>$499</strong></div></div>
+            <div class="env-row"><div><div class="env-key">ARR</div><div class="env-desc">Annual run rate</div></div><div><strong>$5,988</strong></div></div>
+            <div class="env-row"><div><div class="env-key">Target MRR (5 clients)</div><div class="env-desc">At $499/mo avg</div></div><div><strong style="color:var(--muted)">$2,495</strong></div></div>
+            <div class="env-row"><div><div class="env-key">Target MRR (10 clients)</div><div class="env-desc">At $499/mo avg</div></div><div><strong style="color:var(--muted)">$4,990</strong></div></div>
           </div>
         </div>
-        <div class="activity-item">
-          <div class="activity-dot voice"></div>
-          <div>
-            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — Voice AI widget built (pending Bland.ai key)</div>
-            <div class="activity-time">Today • Bland.ai integration</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot sms"></div>
-          <div>
-            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — SMS notification engine built (pending Twilio)</div>
-            <div class="activity-time">Today • 6 notification types</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot booking"></div>
-          <div>
-            <div class="activity-text"><span class="activity-client">Big Hat Lawn</span> — SEO action plan delivered</div>
-            <div class="activity-time">Today • 20 action items</div>
+        <div class="card">
+          <div class="card-hdr"><h3>Client Onboarding Template</h3></div>
+          <div class="card-body">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Time to replicate BHL stack for new client:</div>
+            <div class="env-row"><div>Duplicate widget files</div><div class="pill green">~15 min</div></div>
+            <div class="env-row"><div>Update business data + AI script</div><div class="pill amber">~30 min</div></div>
+            <div class="env-row"><div>Set Netlify env vars</div><div class="pill green">~10 min</div></div>
+            <div class="env-row"><div>SEO schema + meta</div><div class="pill amber">~20 min</div></div>
+            <div class="env-row"><div>Deploy widgets to client site</div><div class="pill amber">~30 min</div></div>
+            <div style="margin-top:12px;font-weight:700">Total: ~1.5–2 hrs per client</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── CONFIG PAGE ─── -->
-    <div id="page-config" style="display:none">
-      <div class="tabs">
-        <div class="tab active" onclick="switchTab(this,'tab-general')">General</div>
-        <div class="tab" onclick="switchTab(this,'tab-chat')">Chat Widget</div>
-        <div class="tab" onclick="switchTab(this,'tab-voice')">Voice AI</div>
-        <div class="tab" onclick="switchTab(this,'tab-sms')">Notifications</div>
-        <div class="tab" onclick="switchTab(this,'tab-tools')">Tools Enabled</div>
+    <!-- ═══════════════ SYSTEM HEALTH ═══════════════ -->
+    <div id="page-system" class="page">
+      <div class="section-hdr"><span class="section-title">System Health</span></div>
+
+      <div class="health-grid" style="margin-bottom:24px">
+        <div class="health-item ok"><div class="health-icon">🌐</div><div class="health-lbl">512ai.co (main)</div><div class="health-status" style="color:#166534">Live · GitHub auto-deploy · HTTPS</div></div>
+        <div class="health-item ok"><div class="health-icon">🔗</div><div class="health-lbl">512ai.co/portal</div><div class="health-status" style="color:#166534">Run fix-root-config to activate /portal URL</div></div>
+        <div class="health-item warn"><div class="health-icon">⚙️</div><div class="health-lbl">512ai.co/admin</div><div class="health-status" style="color:#92400e">Push to GitHub first</div></div>
+        <div class="health-item ok"><div class="health-icon">📡</div><div class="health-lbl">Netlify Functions</div><div class="health-status" style="color:#166534">claude-proxy · voice-demo · ready</div></div>
+        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai API</div><div class="health-status" style="color:#166534">Key set · Lily voice AI configured</div></div>
+        <div class="health-item ok"><div class="health-icon">📞</div><div class="health-lbl">Twilio Account</div><div class="health-status" style="color:#166534">SID + Auth Token set · No phone # yet</div></div>
+        <div class="health-item warn"><div class="health-icon">📱</div><div class="health-lbl">Twilio Phone #</div><div class="health-status" style="color:#92400e">Awaiting EIN upgrade · BHL_TWILIO_FROM not set</div></div>
+        <div class="health-item warn"><div class="health-icon">🏡</div><div class="health-lbl">LawnPro Webhook</div><div class="health-status" style="color:#92400e">LAWNPRO_WEBHOOK_SECRET not set</div></div>
+        <div class="health-item warn"><div class="health-icon">🚂</div><div class="health-lbl">Railway Backend</div><div class="health-status" style="color:#92400e">NOTIFICATION_ENDPOINT not confirmed</div></div>
+        <div class="health-item ok"><div class="health-icon">🐙</div><div class="health-lbl">GitHub</div><div class="health-status" style="color:#166534">kalelra/512ai · main · auto-deploy on</div></div>
+        <div class="health-item ok"><div class="health-icon">🔐</div><div class="health-lbl">Auth (Portals)</div><div class="health-status" style="color:#166534">SHA-256 client-side · 24h TTL sessions</div></div>
+        <div class="health-item ok"><div class="health-icon">🗺</div><div class="health-lbl">Google Maps CID</div><div class="health-status" style="color:#166534">CID: 8398378033135539234 set</div></div>
       </div>
 
-      <!-- General -->
-      <div id="tab-general">
-        <div class="config-panel">
-          <div class="config-header">
-            <h3>Big Hat Lawn — Client Config</h3>
-            <span class="chip">Active</span>
-          </div>
-          <div class="config-body">
-            <div class="field-group">
-              <label class="field-label">Client / Business Name</label>
-              <input class="field-input" value="Big Hat Lawn" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Tenant ID (auto)</label>
-              <input class="field-input" value="1d7a261e-5e86-4037-b28a-8b7d7e583c8f" readonly />
-            </div>
-            <div class="field-group">
-              <label class="field-label">API Key</label>
-              <input class="field-input" value="512ai_713664dd917ee4ee35dfc569e109703f" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Website</label>
-              <input class="field-input" value="https://bighatlawn.com" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Owner Name</label>
-              <input class="field-input" placeholder="🔴 Enter Rudy's full name" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Owner Phone (for internal alerts)</label>
-              <input class="field-input" placeholder="🔴 +1 (512) 555-0100" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Business Phone (shown to customers)</label>
-              <input class="field-input" placeholder="🔴 (512) 555-0100" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Business Address</label>
-              <input class="field-input" placeholder="🔴 123 Oak St, Austin TX 78701" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">CRM</label>
-              <input class="field-input" value="LawnPro" readonly />
-            </div>
-            <div class="field-group">
-              <label class="field-label">CRM API Key</label>
-              <input class="field-input" placeholder="🔴 Pending — get from Rudy's LawnPro account" />
-            </div>
+      <div class="two-col">
+        <div class="card">
+          <div class="card-hdr"><h3>Netlify Site</h3></div>
+          <div class="card-body">
+            <div class="env-row"><div class="env-key">Site ID</div><div style="font-family:monospace;font-size:12px">889eddd7-8316-477c-975a-7b971a6d5012</div></div>
+            <div class="env-row"><div class="env-key">Site Name</div><div>adorable-cucurucho-155e93</div></div>
+            <div class="env-row"><div class="env-key">Custom Domain</div><div><a href="https://512ai.co" target="_blank" style="color:var(--blue)">512ai.co</a></div></div>
+            <div class="env-row"><div class="env-key">Build Source</div><div>GitHub · kalelra/512ai · main</div></div>
+            <div class="env-row"><div class="env-key">Publish Dir</div><div style="font-family:monospace">. (repo root)</div></div>
+            <div class="env-row"><div class="env-key">Functions</div><div>claude-proxy · voice-demo (Node 22)</div></div>
+            <div class="env-row"><div class="env-key">Last Deploy</div><div>feat: Big Hat Lawn v3 (Github)</div></div>
           </div>
         </div>
-      </div>
-
-      <!-- Chat Widget -->
-      <div id="tab-chat" style="display:none">
-        <div class="config-panel">
-          <div class="config-header"><h3>Chat Widget Config</h3></div>
-          <div class="config-body">
-            <div class="field-group">
-              <label class="field-label">Brand Color</label>
-              <div class="color-row">
-                <input type="color" class="color-swatch" value="#2E7D32" />
-                <input class="field-input" value="#2E7D32" />
-              </div>
-            </div>
-            <div class="field-group">
-              <label class="field-label">Brand Name (shown in chat header)</label>
-              <input class="field-input" value="Big Hat Lawn" />
-            </div>
-            <div class="field-group" style="grid-column: span 2">
-              <label class="field-label">Greeting Message</label>
-              <input class="field-input" value="Hi! I'm the Big Hat Lawn assistant. I can help you get an estimate or schedule a service. What can I help you with today?" />
-            </div>
-            <div class="field-group" style="grid-column: span 2">
-              <label class="field-label">Proactive Bubble Message (shown after 8s)</label>
-              <input class="field-input" value="Need a lawn quote? I can get you one in 2 minutes! 👋" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Proactive Message Delay (ms)</label>
-              <input class="field-input" value="8000" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">CDN Embed URL (auto-generated)</label>
-              <input class="field-input" value="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js" readonly />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Voice AI -->
-      <div id="tab-voice" style="display:none">
-        <div class="config-panel">
-          <div class="config-header"><h3>Voice AI Config (Bland.ai)</h3></div>
-          <div class="config-body">
-            <div class="field-group">
-              <label class="field-label">Bland.ai API Key</label>
-              <input class="field-input" placeholder="🔴 Get from Bland.ai dashboard" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Outbound From Number</label>
-              <input class="field-input" placeholder="🔴 Rudy's Twilio number or +15126472949" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">AI Assistant Name</label>
-              <input class="field-input" value="Lily" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Max Call Duration (min)</label>
-              <input class="field-input" value="3" />
-            </div>
-            <div class="field-group" style="grid-column: span 2">
-              <label class="field-label">Quote Range — Small (≤5k sq ft)</label>
-              <input class="field-input" placeholder="🔴 e.g. $35-$50 per mow" />
-            </div>
-            <div class="field-group" style="grid-column: span 2">
-              <label class="field-label">Quote Range — Medium (5k-10k sq ft)</label>
-              <input class="field-input" placeholder="🔴 e.g. $50-$80 per mow" />
-            </div>
-            <div class="field-group" style="grid-column: span 2">
-              <label class="field-label">Quote Range — Large (10k+ sq ft)</label>
-              <input class="field-input" placeholder="🔴 e.g. $80-$150 per mow" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notifications -->
-      <div id="tab-sms" style="display:none">
-        <div class="config-panel">
-          <div class="config-header"><h3>SMS Notifications Config (Twilio)</h3></div>
-          <div class="config-body">
-            <div class="field-group">
-              <label class="field-label">Twilio Account SID</label>
-              <input class="field-input" placeholder="🔴 From Twilio console" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Twilio Auth Token</label>
-              <input class="field-input" type="password" placeholder="🔴 From Twilio console" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">SMS From Number</label>
-              <input class="field-input" placeholder="🔴 +15125550100" />
-            </div>
-            <div class="field-group">
-              <label class="field-label">Google Review Link</label>
-              <input class="field-input" placeholder="🔴 https://g.page/bighatlawn (get from GBP)" />
-            </div>
-          </div>
-        </div>
-        <div class="config-panel">
-          <div class="config-header"><h3>Notification Types Enabled</h3></div>
-          <div style="padding: 16px 20px;">
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Booking Confirmed SMS</div>
-                <div class="toggle-desc">Sent to customer immediately when chat AI confirms a booking</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">24h Reminder SMS</div>
-                <div class="toggle-desc">Sent to customer 24 hours before appointment</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Day-Of Reminder SMS</div>
-                <div class="toggle-desc">Sent at 7am on appointment day</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Job Complete SMS</div>
-                <div class="toggle-desc">Sent when crew marks job done — includes Google review link</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Owner New Booking Alert</div>
-                <div class="toggle-desc">Rudy gets SMS alert when AI captures a new booking</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">Owner Daily Schedule Digest</div>
-                <div class="toggle-desc">Rudy gets a morning SMS with that day's job list</div>
-              </div>
-              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tools Enabled -->
-      <div id="tab-tools" style="display:none">
-        <div class="config-panel">
-          <div class="config-header"><h3>Enabled Tools for Big Hat Lawn</h3></div>
-          <div style="padding: 16px 20px;">
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">💬 Chat Widget</div>
-                <div class="toggle-desc">AI chat widget embedded on website — v1.1 on CDN</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">📞 Voice AI (Click-to-Call)</div>
-                <div class="toggle-desc">Bland.ai outbound call widget — pending Bland.ai key + Twilio number</div>
-              </div>
-              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">📱 SMS Notifications</div>
-                <div class="toggle-desc">Booking, reminder, and completion texts — pending Twilio setup</div>
-              </div>
-              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">📅 Scheduling Engine</div>
-                <div class="toggle-desc">Zone-based booking + calendar — pending LawnPro CRM access</div>
-              </div>
-              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">🔍 SEO Tracking</div>
-                <div class="toggle-desc">Google Search Console integration — pending GSC setup</div>
-              </div>
-              <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-            </div>
-            <div class="toggle-row">
-              <div>
-                <div class="toggle-label">📊 Client Dashboard</div>
-                <div class="toggle-desc">Rudy's ROI portal — enabled, data live when tools are wired up</div>
-              </div>
-              <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-            </div>
+        <div class="card">
+          <div class="card-hdr"><h3>Architecture Overview</h3></div>
+          <div class="card-body" style="font-size:13px;line-height:1.8">
+            <div style="margin-bottom:8px"><strong>Repo root</strong> → Netlify publish dir</div>
+            <div><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px">index.html</code> → 512ai.co (main site)</div>
+            <div><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px">_redirects</code> → Clean URL routing</div>
+            <div><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px">files/</code> → All BHL tool files</div>
+            <div><code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:12px">netlify/functions/</code> → Edge functions</div>
+            <div style="margin-top:12px"><strong>Deploy flow:</strong></div>
+            <div>git push → GitHub webhook → Netlify build → Live in ~60s</div>
+            <div style="margin-top:10px;color:var(--red);font-weight:600">⚠️ Never run deploy-portal.sh (disabled)</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── OTHER PAGES (stub) ─── -->
-    <div id="page-clients" style="display:none">
-      <div class="empty"><div class="empty-icon">👥</div><p>Client management — same as dashboard table, expanded view.</p></div>
+    <!-- ═══════════════ DEPLOY ═══════════════ -->
+    <div id="page-deploy" class="page">
+      <div class="section-hdr"><span class="section-title">Deploy</span></div>
+
+      <div class="card" style="border-left:4px solid var(--amber)">
+        <div class="card-hdr"><h3>⚠️ Pending: First-time root config fix required</h3></div>
+        <div class="card-body">
+          <p style="font-size:13px;margin-bottom:14px">Run this <strong>once</strong> from your Mac to fix the _redirects/netlify.toml placement, push portal.html + admin-portal.html to GitHub, and activate the clean URLs <code>/portal</code> and <code>/admin</code>.</p>
+          <div class="terminal">
+<span class="cmt"># Run from your Mac terminal</span>
+<span class="cmd">cd ~/Claude_Projects/512ai/files</span>
+<span class="cmd">bash fix-root-config.sh</span>
+<br>
+<span class="cmt"># What it does:</span>
+<span class="cmt"># 1. Writes _redirects to repo root (enables /portal and /admin clean URLs)</span>
+<span class="cmt"># 2. Writes netlify.toml to repo root (publish = ".")</span>
+<span class="cmt"># 3. Stages all new files (portal.html, admin-portal.html, BHL tools)</span>
+<span class="cmt"># 4. Commits + pushes to GitHub → Netlify auto-deploys in ~60s</span>
+          </div>
+          <button class="copy-terminal" onclick="copyToClipboard('cd ~/Claude_Projects/512ai/files && bash fix-root-config.sh')">📋 Copy command</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Normal Deploy (after setup)</h3></div>
+        <div class="card-body">
+          <p style="font-size:13px;margin-bottom:14px">For all future changes, just push to GitHub. Netlify auto-deploys.</p>
+          <div class="terminal">
+<span class="cmt"># Stage + push all BHL tool updates</span>
+<span class="cmd">cd ~/Claude_Projects/512ai/files</span>
+<span class="cmd">bash push-widget.sh</span>
+<br>
+<span class="cmt"># Or manually:</span>
+<span class="cmd">cd ~/Claude_Projects/512ai</span>
+<span class="cmd">git add files/</span>
+<span class="cmd">git commit -m "your message"</span>
+<span class="cmd">git push origin main</span>
+          </div>
+          <button class="copy-terminal" onclick="copyToClipboard('cd ~/Claude_Projects/512ai/files && bash push-widget.sh')">📋 Copy push-widget command</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>URL Map (after deploy)</h3></div>
+        <div class="card-body" style="padding:0">
+          <table>
+            <thead><tr><th>URL</th><th>Resolves To</th><th>Description</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><code>512ai.co</code></td><td><code>index.html</code></td><td>Main 512AI website</td><td><span class="pill green">Live</span></td></tr>
+              <tr><td><code>512ai.co/portal</code></td><td><code>files/portal.html</code></td><td>Client portal (Rudy login)</td><td><span class="pill amber">Needs root _redirects</span></td></tr>
+              <tr><td><code>512ai.co/admin</code></td><td><code>files/admin-portal.html</code></td><td>This admin console</td><td><span class="pill amber">Needs GitHub push</span></td></tr>
+              <tr><td><code>512ai.co/widget</code></td><td><code>files/widget-test.html</code></td><td>Widget test/preview page</td><td><span class="pill amber">Needs root _redirects</span></td></tr>
+              <tr><td><code>512ai.co/files/widget-bighatlawn.js</code></td><td><code>files/widget-bighatlawn.js</code></td><td>Chat widget CDN (BHL)</td><td><span class="pill green">Live (direct path)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--red)">
+        <div class="card-hdr"><h3>⛔ Disabled Script</h3></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--red);font-weight:600">deploy-portal.sh is permanently disabled.</p>
+          <p style="font-size:13px;margin-top:6px">It previously overwrote 512ai.co by deploying <code>files/</code> as the Netlify root. This destroyed the main site. The script now exits with an error and instructions. Never use <code>netlify deploy --prod --dir files/</code>.</p>
+        </div>
+      </div>
     </div>
-    <div id="page-activity" style="display:none">
-      <div class="empty"><div class="empty-icon">⚡</div><p>Full activity log — live when widgets are deployed and APIs are connected.</p></div>
+
+    <!-- ═══════════════ ENV VARS ═══════════════ -->
+    <div id="page-envvars" class="page">
+      <div class="section-hdr">
+        <span class="section-title">Environment Variables</span>
+        <span style="font-size:12px;color:var(--muted)">Site: adorable-cucurucho-155e93 · Values never shown here</span>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>✅ Set (7/10)</h3></div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="env-row"><div><div class="env-key">TWILIO_ACCOUNT_SID</div><div class="env-desc">Twilio account identifier — AC35601f...</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">TWILIO_AUTH_TOKEN</div><div class="env-desc">Twilio auth token for API calls</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">BLAND_API_KEY_BHL</div><div class="env-desc">Bland.ai key for Big Hat Lawn Lily voice AI</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">NOTIFICATION_SECRET</div><div class="env-desc">Shared HMAC secret for notification payloads</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">BHL_BUSINESS_PHONE</div><div class="env-desc">Big Hat Lawn business phone: +15127482626</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">BHL_OWNER_PHONE</div><div class="env-desc">Rudy's direct phone: +15127482626</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">BHL_GOOGLE_REVIEW_LINK</div><div class="env-desc">Google Maps CID review URL: maps.google.com/?cid=8398378033135539234</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left:4px solid var(--amber)">
+        <div class="card-hdr"><h3>⏳ Pending (3/10)</h3></div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="env-row"><div><div class="env-key">BHL_TWILIO_FROM</div><div class="env-desc">Dedicated Twilio phone # for BHL SMS — waiting on EIN upgrade. Format: +1512XXXXXXX</div></div><div class="env-status"><span class="pill amber">Pending</span></div></div>
+          <div class="env-row"><div><div class="env-key">LAWNPRO_WEBHOOK_SECRET</div><div class="env-desc">LawnPro CRM webhook verification secret — waiting on Rudy to grant CRM access</div></div><div class="env-status"><span class="pill amber">Pending</span></div></div>
+          <div class="env-row"><div><div class="env-key">NOTIFICATION_ENDPOINT</div><div class="env-desc">Railway backend URL for SMS routing — e.g. https://512ai-backend.railway.app/notify. Run: git apply backend-voice-route.patch in 512ai-backend repo first</div></div><div class="env-status"><span class="pill amber">Pending</span></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Set a New Env Var</h3></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Values are set directly via Netlify MCP — never stored in files or this portal.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <div><label class="field-label">Key</label><input class="field-input" id="ev-key" placeholder="e.g. BHL_TWILIO_FROM" /></div>
+            <div><label class="field-label">Value</label><input class="field-input" id="ev-val" placeholder="value" type="password" /></div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="showEnvInstructions()">Show Set Instructions</button>
+          <div id="ev-instructions" style="display:none;margin-top:14px">
+            <div class="terminal" id="ev-terminal-output"><!-- populated by JS --></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="page-chat" style="display:none">
-      <div class="empty"><div class="empty-icon">💬</div><p>Chat widget manager — see conversations, configure per client.</p></div>
+
+    <!-- ═══════════════ FILE INVENTORY ═══════════════ -->
+    <div id="page-files" class="page">
+      <div class="section-hdr"><span class="section-title">File Inventory — kalelra/512ai</span></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-hdr"><h3>Repo Root</h3></div>
+          <div class="card-body" style="padding:10px 0">
+            <div class="file-tree">
+<span class="dir">512ai/ (repo root)</span>
+├── <span class="file key">index.html</span>              <span class="comment">← 512ai.co main site</span>
+├── <span class="file new">_redirects</span>              <span class="comment">← NEW (run fix-root-config.sh)</span>
+├── <span class="file new">netlify.toml</span>            <span class="comment">← NEW (publish = ".")</span>
+├── <span class="dir">files/</span>
+│   ├── <span class="file key">portal.html</span>          <span class="comment">← Client portal (multi-tenant)</span>
+│   ├── <span class="file key">admin-portal.html</span>    <span class="comment">← This admin console</span>
+│   ├── <span class="file">widget-bighatlawn.js</span>  <span class="comment">← BHL chat widget</span>
+│   ├── <span class="file">widget-test.html</span>      <span class="comment">← Widget test page</span>
+│   ├── <span class="file">voice-bighatlawn.js</span>   <span class="comment">← Voice AI trigger</span>
+│   ├── <span class="file">voice-bighatlawn-function.js</span> <span class="comment">← Bland.ai Lily script</span>
+│   ├── <span class="file">notifications-bighatlawn.js</span> <span class="comment">← SMS notification engine</span>
+│   ├── <span class="file">lawnpro-webhook-bighatlawn.js</span> <span class="comment">← CRM webhook handler</span>
+│   ├── <span class="file">seo-bighatlawn.html</span>   <span class="comment">← SEO schema markup</span>
+│   ├── <span class="file">bighatlawn-master.html</span> <span class="comment">← All-in-one integration page</span>
+│   ├── <span class="file">admin-portal.html</span>     <span class="comment">← This file</span>
+│   ├── <span class="file">embed-instructions.html</span> <span class="comment">← Squarespace deploy guide</span>
+│   ├── <span class="file">qa-launch-checklist.html</span> <span class="comment">← Pre-launch QA checklist</span>
+│   ├── <span class="file">rudy-info-form.html</span>   <span class="comment">← Client intake form</span>
+│   ├── <span class="file new">fix-root-config.sh</span>    <span class="comment">← NEW: one-time root fix</span>
+│   ├── <span class="file">push-widget.sh</span>        <span class="comment">← Git add/commit/push helper</span>
+│   ├── <span class="file warn">deploy-portal.sh</span>      <span class="comment">← DISABLED (was dangerous)</span>
+│   └── <span class="file">backend-voice-route.patch</span> <span class="comment">← Patch for Railway backend</span>
+├── <span class="dir">netlify/</span>
+│   └── <span class="dir">functions/</span>
+│       ├── <span class="file">claude-proxy.js</span>       <span class="comment">← Chat function proxy</span>
+│       └── <span class="file">voice-demo.js</span>         <span class="comment">← Voice AI function</span>
+└── <span class="file">README.md</span>               <span class="comment">← Repo docs</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>File Status</h3></div>
+          <div class="card-body" style="padding:0 18px">
+            <div class="env-row"><div><div class="env-key">portal.html</div><div class="env-desc">Multi-tenant client portal with SHA-256 auth</div></div><div class="env-status"><span class="pill amber">Push to GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">admin-portal.html</div><div class="env-desc">This admin console</div></div><div class="env-status"><span class="pill amber">Push to GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">fix-root-config.sh</div><div class="env-desc">Root redirects setup + push script</div></div><div class="env-status"><span class="pill amber">Run first</span></div></div>
+            <div class="env-row"><div><div class="env-key">widget-bighatlawn.js</div><div class="env-desc">BHL chat widget v1.1</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">voice-bighatlawn-function.js</div><div class="env-desc">Lily AI script + real pricing table</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">notifications-bighatlawn.js</div><div class="env-desc">6-type SMS notification engine</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">seo-bighatlawn.html</div><div class="env-desc">Schema markup + 12 zip codes</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">deploy-portal.sh</div><div class="env-desc">DISABLED — exits with error</div></div><div class="env-status"><span class="pill red">Disabled</span></div></div>
+            <div class="env-row"><div><div class="env-key">_redirects (root)</div><div class="env-desc">Clean URL routing for /portal /admin</div></div><div class="env-status"><span class="pill amber">Created locally</span></div></div>
+            <div class="env-row"><div><div class="env-key">netlify.toml (root)</div><div class="env-desc">Publish directory config</div></div><div class="env-status"><span class="pill amber">Created locally</span></div></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="page-voice" style="display:none">
-      <div class="empty"><div class="empty-icon">📞</div><p>Voice AI call logs and configuration per client.</p></div>
+
+    <!-- ═══════════════ GITHUB ═══════════════ -->
+    <div id="page-github" class="page">
+      <div class="section-hdr"><span class="section-title">GitHub — kalelra/512ai</span></div>
+
+      <div class="three-col">
+        <div class="card">
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🐙</div>
+            <div style="font-weight:700">kalelra/512ai</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">Public · main branch</div>
+            <a href="https://github.com/kalelra/512ai" target="_blank" class="btn btn-outline btn-sm" style="margin-top:12px;display:inline-block">Open Repo ↗</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">🔗</div>
+            <div style="font-weight:700">Auto-Deploy Active</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">Push to main → Netlify deploys in ~60s</div>
+            <a href="https://app.netlify.com/projects/adorable-cucurucho-155e93/deploys" target="_blank" class="btn btn-outline btn-sm" style="margin-top:12px;display:inline-block">View Deploys ↗</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">📋</div>
+            <div style="font-weight:700">Secret Scanning</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">Netlify scans each deploy — 0 secrets found last push</div>
+            <span class="pill green" style="margin-top:12px;display:inline-flex">✓ Clean</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Recent Commits</h3></div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="changelog-entry">
+            <div class="cl-hash">6ff9ecb</div>
+            <div class="cl-msg">feat: Big Hat Lawn v3 — Rudy's real business info wired in</div>
+            <div class="cl-meta">kalelra · Today · Netlify deploy: 69d46ec9 (current production)</div>
+          </div>
+          <div class="changelog-entry">
+            <div class="cl-hash">Previous</div>
+            <div class="cl-msg">feat: client portal + BHL AI tools initial build</div>
+            <div class="cl-meta">kalelra · Earlier today</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Git Quick Reference</h3></div>
+        <div class="card-body">
+          <div class="terminal">
+<span class="cmt"># Check status of local changes</span>
+<span class="cmd">cd ~/Claude_Projects/512ai && git status</span>
+<br>
+<span class="cmt"># See what's changed since last push</span>
+<span class="cmd">git diff HEAD</span>
+<br>
+<span class="cmt"># Normal push (use push-widget.sh or this)</span>
+<span class="cmd">git add files/ && git commit -m "update" && git push</span>
+<br>
+<span class="cmt"># Fix root config (one-time setup)</span>
+<span class="cmd">cd ~/Claude_Projects/512ai/files && bash fix-root-config.sh</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="page-notifications" style="display:none">
-      <div class="empty"><div class="empty-icon">📱</div><p>SMS history, template editor, and delivery reports.</p></div>
+
+    <!-- ═══════════════ BHL TOOLS STATUS ═══════════════ -->
+    <div id="page-bhl-tools" class="page">
+      <div class="section-hdr"><span class="section-title">Big Hat Lawn — Tools Status</span></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-hdr"><h3>💬 Chat Widget</h3><span class="pill green">Deployed to CDN</span></div>
+          <div class="card-body">
+            <div class="env-row"><div>File</div><div style="font-family:monospace;font-size:12px">files/widget-bighatlawn.js</div></div>
+            <div class="env-row"><div>CDN URL</div><div style="font-size:11px"><a href="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js" target="_blank" style="color:var(--blue);word-break:break-all">jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js</a></div></div>
+            <div class="env-row"><div>Greeting</div><div style="font-size:11px">SE Austin zip codes, BHL branding</div></div>
+            <div class="env-row"><div>Proactive msg</div><div style="font-size:11px">Mon–Fri 8–5, get quote in 2 min</div></div>
+            <div class="env-row"><div>Deploy to bighatlawn.com</div><div><span class="pill amber">Pending Squarespace</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>📞 Voice AI (Lily)</h3><span class="pill amber">Ready, pending deploy</span></div>
+          <div class="card-body">
+            <div class="env-row"><div>File</div><div style="font-family:monospace;font-size:12px">files/voice-bighatlawn-function.js</div></div>
+            <div class="env-row"><div>Voice</div><div>Bland.ai · Lily</div></div>
+            <div class="env-row"><div>Script sections</div><div style="font-size:12px">BUSINESS INFO · PRICING TABLE · 6-step script</div></div>
+            <div class="env-row"><div>Pricing table</div><div style="font-size:12px">$40–$120+ by sq ft · "averages" qualifier</div></div>
+            <div class="env-row"><div>Service area</div><div style="font-size:12px">12 SE Austin zip codes</div></div>
+            <div class="env-row"><div>BLAND_API_KEY_BHL</div><div><span class="pill green">Set on Netlify</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>📱 SMS Notifications</h3><span class="pill amber">Built, needs Twilio #</span></div>
+          <div class="card-body">
+            <div class="env-row"><div>File</div><div style="font-family:monospace;font-size:12px">files/notifications-bighatlawn.js</div></div>
+            <div class="env-row"><div>Notification types</div><div style="font-size:12px">New booking · Reminder · Follow-up · Review · Re-engage · Promo</div></div>
+            <div class="env-row"><div>Business phone</div><div style="font-size:12px">(512) 748-2626</div></div>
+            <div class="env-row"><div>Review link</div><div style="font-size:11px">maps.google.com/?cid=8398378033135539234</div></div>
+            <div class="env-row"><div>BHL_TWILIO_FROM</div><div><span class="pill red">Not set</span></div></div>
+            <div class="env-row"><div>Blocker</div><div style="font-size:12px">Twilio EIN upgrade → buy phone #</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>🔍 SEO Schema</h3><span class="pill green">In GitHub</span></div>
+          <div class="card-body">
+            <div class="env-row"><div>File</div><div style="font-family:monospace;font-size:12px">files/seo-bighatlawn.html</div></div>
+            <div class="env-row"><div>Schema phone</div><div>+1-512-748-2626</div></div>
+            <div class="env-row"><div>Hours schema</div><div>Mon–Fri 08:00–17:00</div></div>
+            <div class="env-row"><div>areaServed</div><div style="font-size:11px">12 PostalCode objects (78742, 78617, 78719…)</div></div>
+            <div class="env-row"><div>Google Maps</div><div style="font-size:11px">CID link set in sameAs + hasMap</div></div>
+            <div class="env-row"><div>Business address</div><div><span class="pill amber">Pending from Rudy</span></div></div>
+            <div class="env-row"><div>Deploy to bighatlawn.com</div><div><span class="pill amber">Pending Squarespace</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Squarespace Deploy Plan</h3></div>
+        <div class="card-body">
+          <p style="font-size:13px;margin-bottom:14px">Once Rudy provides Squarespace access:</p>
+          <div class="terminal">
+<span class="cmt"># 1. Chat widget — add to every page footer in Squarespace</span>
+<span class="cmd">&lt;script src="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js"&gt;&lt;/script&gt;</span>
+<br>
+<span class="cmt"># 2. Voice AI button — add where customer can click to call</span>
+<span class="cmd">&lt;script src="https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/voice-bighatlawn.js"&gt;&lt;/script&gt;</span>
+<br>
+<span class="cmt"># 3. SEO schema — add to &lt;head&gt; of homepage only</span>
+<span class="cmd">&lt;!-- paste content of files/seo-bighatlawn.html here --&gt;</span>
+<br>
+<span class="cmt"># Full instructions: files/embed-instructions.html</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="page-seo" style="display:none">
-      <div class="empty"><div class="empty-icon">🔍</div><p>SEO rank tracking per client — integrates with Google Search Console.</p></div>
+
+    <!-- ═══════════════ BHL CONFIG ═══════════════ -->
+    <div id="page-bhl-config" class="page">
+      <div class="section-hdr"><span class="section-title">Big Hat Lawn — Configuration</span></div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-hdr"><h3>Business Info</h3></div>
+          <div class="card-body" style="padding:0 18px">
+            <div class="env-row"><div class="env-key">Business name</div><div>Big Hat Lawn</div></div>
+            <div class="env-row"><div class="env-key">Owner</div><div>Rudy</div></div>
+            <div class="env-row"><div class="env-key">Business phone</div><div>(512) 748-2626</div></div>
+            <div class="env-row"><div class="env-key">Owner phone</div><div>(512) 748-2626 (same)</div></div>
+            <div class="env-row"><div class="env-key">Business address</div><div><span class="pill amber">Pending</span></div></div>
+            <div class="env-row"><div class="env-key">Service hours</div><div>Mon–Fri 8AM–5PM</div></div>
+            <div class="env-row"><div class="env-key">Max jobs/day</div><div>15</div></div>
+            <div class="env-row"><div class="env-key">Service area</div><div style="font-size:11px">78742, 78617, 78719, 78747, 78744, 78748, 78652, 78745, 78725, 78653, 78763, 78724</div></div>
+            <div class="env-row"><div class="env-key">Website</div><div>bighatlawn.com</div></div>
+            <div class="env-row"><div class="env-key">Google Maps CID</div><div style="font-family:monospace;font-size:11px">8398378033135539234</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>Pricing Table</h3></div>
+          <div class="card-body" style="padding:0 18px">
+            <div class="env-row"><div class="env-key">Under 5,000 sq ft</div><div style="font-weight:700">$40–$55</div></div>
+            <div class="env-row"><div class="env-key">5,000–8,000 sq ft</div><div style="font-weight:700">$55–$70</div></div>
+            <div class="env-row"><div class="env-key">8,000–12,000 sq ft</div><div style="font-weight:700">$70–$85</div></div>
+            <div class="env-row"><div class="env-key">12,000–17,000 sq ft</div><div style="font-weight:700">$85–$100</div></div>
+            <div class="env-row"><div class="env-key">17,000–22,000 sq ft</div><div style="font-weight:700">$100–$120</div></div>
+            <div class="env-row"><div class="env-key">Over 22,000 sq ft</div><div style="font-weight:700">$120+ (custom)</div></div>
+            <div style="margin-top:12px;font-size:12px;color:var(--muted)">Note: Lily AI always clarifies prices are averages and a site visit confirms the final price.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><h3>Client Portal Access</h3></div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="env-row"><div class="env-key">Portal URL</div><div><a href="https://512ai.co/portal" target="_blank" style="color:var(--blue)">512ai.co/portal</a> (after GitHub push)</div></div>
+          <div class="env-row"><div class="env-key">Rudy's login</div><div>username: <code>rudy</code> · password: <strong>BigHat512!</strong></div></div>
+          <div class="env-row"><div class="env-key">Your admin login</div><div>username: <code>admin</code> · password: <strong>512admin2026!</strong></div></div>
+          <div class="env-row"><div class="env-key">Session TTL</div><div>24 hours</div></div>
+          <div class="env-row"><div class="env-key">Auth method</div><div>SHA-256 client-side (no server)</div></div>
+        </div>
+      </div>
     </div>
-    <div id="page-billing" style="display:none">
-      <div class="empty"><div class="empty-icon">💳</div><p>Billing per client — monthly retainer, usage overage, invoices.</p></div>
+
+    <!-- ═══════════════ ADMIN USERS ═══════════════ -->
+    <div id="page-users" class="page">
+      <div class="section-hdr">
+        <span class="section-title">Admin Users</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Username</th><th>Role</th><th>Access Level</th><th>Session TTL</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>diskat</strong></td>
+              <td><span class="pill purple">Super Admin</span></td>
+              <td>Full — all clients, deploy, env vars, user mgmt</td>
+              <td>8 hours</td>
+              <td>Primary owner — Ricardo Avila</td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted)">partner</td>
+              <td><span class="pill gray">Reserved</span></td>
+              <td>Client config + tools (no env vars, no user mgmt)</td>
+              <td>8 hours</td>
+              <td>Future partner slot — not active</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue)">
+        <div class="card-hdr"><h3>Admin Login Credentials</h3></div>
+        <div class="card-body">
+          <div class="env-row"><div><div class="env-key">diskat</div><div class="env-desc">Your admin login for this console</div></div><div>password: <strong>512Admin!2026</strong></div></div>
+          <p style="font-size:12px;color:var(--muted);margin-top:12px">To change your password, update the SHA-256 hash in admin-portal.html and push to GitHub. Hash = SHA-256(newpassword).</p>
+          <div style="margin-top:12px">
+            <div class="terminal">
+<span class="cmt"># Compute new password hash on Mac:</span>
+<span class="cmd">echo -n "YourNewPassword" | sha256sum</span>
+<span class="cmt"># Then replace ADMIN_USERS['diskat'].hash in admin-portal.html</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ CHANGELOG ═══════════════ -->
+    <div id="page-changelog" class="page">
+      <div class="section-hdr"><span class="section-title">Build Changelog</span></div>
+
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.4 — Today (April 6, 2026)</div>
+        <div class="cl-msg">Admin portal with login + full technical visibility</div>
+        <div class="cl-meta">SHA-256 auth · multi-tenant ready · deploy controls · env var panel · file inventory · system health</div>
+      </div>
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.3 — Today</div>
+        <div class="cl-msg">Multi-tenant client portal (portal.html) — Rudy onboarded</div>
+        <div class="cl-meta">SHA-256 auth · non-technical status pills · ROI tab · 55% onboarding progress</div>
+      </div>
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.2 — Today</div>
+        <div class="cl-msg">Big Hat Lawn v3 — Rudy's real business data wired in</div>
+        <div class="cl-meta">Real pricing table · 12 zip codes · (512) 748-2626 · Mon–Fri 8–5 · Google CID set</div>
+      </div>
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.1 — Earlier</div>
+        <div class="cl-msg">Full BHL AI tool stack built</div>
+        <div class="cl-meta">Chat widget · Lily voice AI · SMS notifications · LawnPro webhook · SEO schema</div>
+      </div>
+      <div class="changelog-entry">
+        <div class="cl-hash">v0.0 — Session 1</div>
+        <div class="cl-msg">512ai.co deployed · Twilio + Bland.ai credentials set</div>
+        <div class="cl-meta">Netlify site · GitHub repo · 7/10 env vars · Netlify functions ready</div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-hdr"><h3>Incident Log</h3></div>
+        <div class="card-body" style="padding:0 18px">
+          <div class="env-row" style="border-left:3px solid var(--red);padding-left:10px;margin-left:-10px">
+            <div><div class="env-key" style="color:var(--red)">INCIDENT — 512ai.co outage (Today)</div><div class="env-desc">Root cause: deploy-portal.sh ran netlify deploy --prod --dir files/ — deployed files/ as site root, overwrote index.html. Resolved by: Netlify "Publish deploy" rollback to commit 69d46ec9. Fixed by: deploy-portal.sh disabled, fix-root-config.sh created for safe root config.</div></div>
+            <div><span class="pill green">Resolved</span></div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
 </div>
-
-<!-- Add Client Modal -->
-<div class="modal-overlay" id="modal-add-client">
-  <div class="modal">
-    <h3>➕ Onboard New Client</h3>
-    <div style="display:grid;gap:14px">
-      <div class="field-group">
-        <label class="field-label">Business Name</label>
-        <input class="field-input" placeholder="e.g. Green Thumb Lawn Care" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Website</label>
-        <input class="field-input" placeholder="https://..." />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Owner Name</label>
-        <input class="field-input" placeholder="First & Last name" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Owner Phone</label>
-        <input class="field-input" placeholder="+1 (512) 555-0100" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Industry</label>
-        <select class="field-input">
-          <option>Lawn Care / Landscaping</option>
-          <option>HVAC / Plumbing</option>
-          <option>Cleaning Services</option>
-          <option>Auto Repair</option>
-          <option>Restaurant</option>
-          <option>Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="closeModal()">Create Client →</button>
-    </div>
-  </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════ -->
 <script>
-  function showPage(name) {
-    document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
-    document.getElementById('page-' + name).style.display = 'block';
-    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-    document.getElementById('page-title').textContent = event.currentTarget.textContent.trim();
+// ── Auth ──────────────────────────────────────────────────────────────
+const ADMIN_USERS = {
+  diskat: {
+    hash: 'b09e90c0da55f11aa3e7b54fc6d47037e067e98ead22340c36898120fd1fba43', // 512Admin!2026
+    role: 'Super Admin',
+    initials: 'D',
+    displayName: 'Diskat'
+  },
+  partner: {
+    hash: '', // not active
+    role: 'Partner',
+    initials: 'P',
+    displayName: 'Partner'
   }
-  function showConfig(client) {
-    document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
-    document.getElementById('page-config').style.display = 'block';
-    document.getElementById('page-title').textContent = 'Config — ' + client;
-  }
-  function switchTab(el, tabId) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
-  }
-  function openModal(name) {
-    document.getElementById('modal-' + name).classList.add('open');
-  }
-  function closeModal() {
-    document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
-  }
-  document.querySelectorAll('.modal-overlay').forEach(m => {
-    m.addEventListener('click', e => { if(e.target === m) closeModal(); });
+};
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const user = document.getElementById('login-user').value.trim().toLowerCase();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = '';
+
+  if (!user || !pass) { errEl.textContent = 'Enter username and password.'; return; }
+
+  const admUser = ADMIN_USERS[user];
+  if (!admUser || !admUser.hash) { errEl.textContent = 'Invalid credentials.'; return; }
+
+  const hash = await sha256(pass);
+  if (hash !== admUser.hash) { errEl.textContent = 'Invalid credentials.'; return; }
+
+  // Store session (8h TTL)
+  const session = { user, role: admUser.role, exp: Date.now() + 8 * 60 * 60 * 1000 };
+  try { sessionStorage.setItem('admin_session', JSON.stringify(session)); } catch(e) {}
+
+  bootApp(admUser);
+}
+
+function bootApp(admUser) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('sb-initials').textContent = admUser.initials;
+  document.getElementById('sb-username').textContent = admUser.displayName;
+  document.getElementById('sb-role').textContent = admUser.role;
+
+  // Set last refresh time
+  document.getElementById('last-refresh').textContent = 'Loaded ' + new Date().toLocaleTimeString();
+}
+
+function doLogout() {
+  try { sessionStorage.removeItem('admin_session'); } catch(e) {}
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// Check for existing session on load
+window.addEventListener('load', () => {
+  try {
+    const s = JSON.parse(sessionStorage.getItem('admin_session') || 'null');
+    if (s && s.exp > Date.now() && ADMIN_USERS[s.user]) {
+      bootApp(ADMIN_USERS[s.user]);
+    }
+  } catch(e) {}
+
+  // Allow Enter key on login form
+  document.getElementById('login-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
   });
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+  document.getElementById('login-user').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('login-pass').focus();
+  });
+});
+
+// ── Navigation ────────────────────────────────────────────────────────
+const PAGE_TITLES = {
+  dashboard: 'Dashboard',
+  clients: 'Clients',
+  system: 'System Health',
+  deploy: 'Deploy',
+  envvars: 'Environment Variables',
+  files: 'File Inventory',
+  github: 'GitHub',
+  'bhl-tools': 'Big Hat Lawn — Tools',
+  'bhl-config': 'Big Hat Lawn — Config',
+  users: 'Admin Users',
+  changelog: 'Changelog'
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+
+  document.querySelectorAll('.sb-item').forEach(item => {
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes("'" + id + "'")) {
+      item.classList.add('active');
+    }
+  });
+
+  document.getElementById('page-title').textContent = PAGE_TITLES[id] || id;
+  window.scrollTo(0, 0);
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    // brief feedback
+    const btns = document.querySelectorAll('.copy-terminal');
+    btns.forEach(b => { if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(text.substring(0,20))) { const orig = b.textContent; b.textContent = '✓ Copied!'; setTimeout(() => b.textContent = orig, 1500); }});
+  }).catch(() => {
+    prompt('Copy this command:', text);
+  });
+}
+
+function refreshAll() {
+  document.getElementById('last-refresh').textContent = 'Refreshed at ' + new Date().toLocaleTimeString();
+}
+
+function showEnvInstructions() {
+  const key = document.getElementById('ev-key').value.trim();
+  const val = document.getElementById('ev-val').value.trim();
+  const out = document.getElementById('ev-terminal-output');
+  const wrap = document.getElementById('ev-instructions');
+  if (!key) { alert('Enter a key name first'); return; }
+  out.innerHTML = `<span class="cmt"># Set ${key} via Netlify MCP (ask Claude in Cowork):</span>
+<span class="cmd"># "Set Netlify env var ${key} to [value] on site 889eddd7-8316-477c-975a-7b971a6d5012"</span>
+<br>
+<span class="cmt"># Or via Netlify CLI on your Mac:</span>
+<span class="cmd">netlify env:set ${key} "${val || 'YOUR_VALUE_HERE'}" --context production</span>`;
+  wrap.style.display = 'block';
+}
 </script>
 </body>
 </html>

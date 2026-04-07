@@ -19,7 +19,8 @@ echo ""
 echo "==> Writing root _redirects..."
 cat > "$REPO_ROOT/_redirects" << 'EOF'
 # 512AI — Netlify URL rewrites (must live at repo root)
-/portal    /files/portal.html    200
+/portal    /files/portal.html         200
+/admin     /files/admin-portal.html   200
 /widget    /files/widget-test.html    200
 EOF
 echo "    ✅ $REPO_ROOT/_redirects"
@@ -67,6 +68,7 @@ git add \
   files/admin-portal.html \
   files/client-portal-bighatlawn.html \
   files/bighatlawn-master.html \
+  files/admin-portal.html \
   files/rudy-info-form.html \
   files/qa-launch-checklist.html \
   files/squarespace-deploy-guide.html \
@@ -82,14 +84,14 @@ echo "    ✅ Files staged"
 
 # ── Step 4: Commit ─────────────────────────────────────────────────────────
 echo "==> Committing..."
-git commit -m "$(cat <<'COMMITMSG'
+COMMIT_MSG=$(cat <<'COMMITMSG'
 fix: restore main site + proper portal URL architecture
 
 - Move _redirects and netlify.toml to repo root (was in files/)
 - /portal now cleanly routes to /files/portal.html
 - /widget routes to /files/widget-test.html
 - portal.html (multi-tenant login portal) now in GitHub
-- All Big Hat Lawn v3 files with Rudy's real business data
+- All Big Hat Lawn v3 files with Rudy real business data
 - deploy-portal.sh neutralized with safety guard
 
 Root cause: deploy-portal.sh deployed files/ as site root,
@@ -98,7 +100,8 @@ push to GitHub from now on (never run deploy-portal.sh).
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 COMMITMSG
-)"
+)
+git commit -m "$COMMIT_MSG"
 
 # ── Step 5: Push ───────────────────────────────────────────────────────────
 echo "==> Pushing to origin main..."
@@ -110,6 +113,7 @@ echo ""
 echo "─── Live URLs (after deploy) ──────────────────────────────────"
 echo "Main site:      https://512ai.co"
 echo "Client portal:  https://512ai.co/portal"
+echo "Admin console:  https://512ai.co/admin"
 echo "Widget test:    https://512ai.co/widget"
 echo "Chat widget CDN: https://cdn.jsdelivr.net/gh/kalelra/512ai@main/files/widget-bighatlawn.js"
 echo ""
