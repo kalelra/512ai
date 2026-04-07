@@ -1430,7 +1430,7 @@ function edParseAndPopulate() {
         <div><div class="ed-label"><label>Nav Link ${i+1} Text</label></div>
           <input class="ed-input" id="ef-nav-link-${i}-text" value="${edEsc(text)}" data-nav-idx="${i}" oninput="edMarkChanged(this)" /></div>
         <div><div class="ed-label"><label>Nav Link ${i+1} URL</label></div>
-          <input class="ed-input" id="ef-nav-link-${i}-href" value="${edEsc(link.getAttribute('href')||'')}" data-nav-idx="${i}" oninput="edMarkChanged(this)" /></div>
+          <input class="ed-input" id="ef-nav-link-${i}-href" value="${edEsc(link.getAttribute('href')||'')}" data-nav-idx="${i}" data-original-href="${edEsc(link.getAttribute('href')||'')}" oninput="edMarkChanged(this)" /></div>
       </div>`;
   });
 
@@ -1643,13 +1643,16 @@ function edBuildUpdatedHTML() {
   // NAV
   set(['[data-field="nav-brand"]','#navbar .logo-text','#navbar .brand','header .logo','#navbar h1'], val('ef-nav-logo'));
 
-  // Nav links
+  // Nav links — only overwrite href if user explicitly changed it
   const navLinks = doc.querySelectorAll('#navbar a:not(.btn), nav .nav-links a, header nav a');
   navLinks.forEach((link, i) => {
     const textEl = document.getElementById(`ef-nav-link-${i}-text`);
     const hrefEl = document.getElementById(`ef-nav-link-${i}-href`);
     if (textEl) link.textContent = textEl.value.trim();
-    if (hrefEl) link.setAttribute('href', hrefEl.value.trim());
+    // Only update href if the user explicitly edited it (has 'changed' class)
+    if (hrefEl && hrefEl.classList.contains('changed')) {
+      link.setAttribute('href', hrefEl.value.trim());
+    }
   });
 
   // HERO
