@@ -320,6 +320,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 
   <div class="sb-section">Big Hat Lawn</div>
   <a class="sb-item" onclick="showPage('bhl-tools')"><i class="ic">🛠</i> Tools Status</a>
+  <a class="sb-item" onclick="showPage('bhl-seo')"><i class="ic">🔍</i> SEO Manager</a>
   <a class="sb-item" onclick="showPage('bhl-config')"><i class="ic">⚙️</i> Configuration</a>
 
   <div class="sb-section">Content</div>
@@ -842,7 +843,196 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
     </div>
 
     <!-- ═══════════════ BHL CONFIG ═══════════════ -->
-    <div id="page-bhl-config" class="page">
+    
+      <!-- ═══════════════════════════════════════════════════════
+           BHL SEO MANAGER — Ricardo's admin view
+      ═══════════════════════════════════════════════════════ -->
+      <div id="page-bhl-seo" class="page">
+        <div class="section-hdr" style="display:flex;align-items:center;gap:12px;justify-content:space-between">
+          <span class="section-title">🔍 Big Hat Lawn — SEO Manager</span>
+          <div style="display:flex;gap:8px">
+            <a href="https://512ai.co/files/seo-bighatlawn.html" target="_blank"
+               style="background:#2E7D32;color:#fff;text-decoration:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700">
+              📋 Client Checklist
+            </a>
+            <a href="https://512ai.co/files/seo-strategy-bighatlawn.html" target="_blank"
+               style="background:#1565C0;color:#fff;text-decoration:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700">
+              📄 Strategy Doc
+            </a>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-hdr"><h3>📊 Overall SEO Progress</h3><span id="seo-admin-pct" class="pill amber">0%</span></div>
+          <div class="card-body">
+            <div style="background:#e0e0e0;border-radius:20px;height:12px;overflow:hidden;margin-bottom:8px">
+              <div id="seo-admin-bar" style="background:#2E7D32;height:100%;width:0%;border-radius:20px;transition:width .5s"></div>
+            </div>
+            <div style="display:flex;gap:24px;font-size:12px;color:var(--muted)">
+              <span>🔴 High priority = do first</span>
+              <span>🟡 Medium = do soon</span>
+              <span>⭐ = Rudy's task</span>
+              <span>✅ = Complete</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task sections -->
+        <div id="seo-admin-tasks"><!-- rendered by JS --></div>
+
+        <!-- Notes -->
+        <div class="card" style="margin-top:16px">
+          <div class="card-hdr"><h3>📝 Admin Notes</h3></div>
+          <div class="card-body">
+            <textarea id="seo-admin-notes" placeholder="Add notes about SEO progress, blockers, Rudy's updates..."
+              style="width:100%;min-height:80px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;font-family:inherit;resize:vertical"></textarea>
+            <button onclick="saveAdminNotes()"
+              style="margin-top:8px;background:#2E7D32;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">
+              Save Notes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      // ── ADMIN SEO MANAGER ──────────────────────────────────────────
+      const ADMIN_SEO = [
+        { section: "⚙️ Squarespace SEO Basics", tasks: [
+          { id:"sq1", label:"Set Homepage Title Tag", owner:"ricardo", done:false, priority:"high",
+            hint:"Big Hat Lawn | Austin Lawn Care & Mowing Service" },
+          { id:"sq2", label:"Set Homepage Meta Description", owner:"ricardo", done:false, priority:"high",
+            hint:"Big Hat Lawn offers professional lawn mowing, cleanup, and maintenance in Austin, TX. Get a free quote — AI scheduling available 24/7." },
+          { id:"sq3", label:"SSL / HTTPS enabled", owner:"ricardo", done:true, priority:"high", hint:"Already done ✅" },
+          { id:"sq4", label:"Connect Google Search Console", owner:"both", done:false, priority:"high",
+            hint:"Needs Rudy's Google account. Share verification steps with him." },
+          { id:"sq5", label:"Set Site Language and Region", owner:"ricardo", done:false, priority:"med",
+            hint:"Squarespace → Settings → Language & Region → English (United States)" },
+          { id:"sq6", label:"Submit Sitemap to Google", owner:"ricardo", done:false, priority:"high",
+            hint:"bighatlawn.com/sitemap.xml → Google Search Console → Sitemaps" },
+        ]},
+        { section: "🏠 Schema Markup", tasks: [
+          { id:"sc1", label:"Add LocalBusiness JSON-LD to site", owner:"ricardo", done:false, priority:"high",
+            hint:"Add to Squarespace → Website Tools → Code Injection → Header. Includes: name, address, phone, hours, services." },
+        ]},
+        { section: "📍 Google Business Profile", tasks: [
+          { id:"gb1", label:"Claim or create GBP listing", owner:"rudy", done:false, priority:"high",
+            hint:"⭐ Rudy task: business.google.com → search Big Hat Lawn Austin → claim. Send him instructions." },
+          { id:"gb2", label:"Fill out every GBP field 100%", owner:"both", done:false, priority:"high",
+            hint:"Business name, address, phone, hours, website URL, business description (Ricardo writes this)" },
+          { id:"gb3", label:"Upload 10+ photos to GBP", owner:"rudy", done:false, priority:"high",
+            hint:"⭐ Rudy task: Before/after lawn photos. At least 10, ideally 20+" },
+          { id:"gb4", label:"Set service areas (zip codes)", owner:"both", done:false, priority:"high",
+            hint:"Add all 12 Austin zip codes Rudy serves. GBP → Service area → add zip codes" },
+          { id:"gb5", label:"List all services with descriptions", owner:"ricardo", done:false, priority:"med",
+            hint:"Lawn Service, Tree and Bush Pruning, Power Wash — write SEO-friendly descriptions" },
+          { id:"gb6", label:"Ask every customer for Google review", owner:"rudy", done:false, priority:"high",
+            hint:"⭐ Rudy task for now. 512AI will automate this with SMS review requests once Twilio is live." },
+        ]},
+        { section: "⚡ Images & Speed", tasks: [
+          { id:"im1", label:"Add ALT text to every site photo", owner:"ricardo", done:false, priority:"high",
+            hint:"Squarespace: click each image → Edit → Accessibility text. Use keywords: 'Austin lawn mowing Big Hat Lawn'" },
+          { id:"im2", label:"Compress photos before uploading", owner:"both", done:false, priority:"med",
+            hint:"Use squoosh.app or tinypng.com. Target: under 200KB per image. Rudy sends raw photos, Ricardo compresses." },
+        ]},
+        { section: "📋 Local Directories", tasks: [
+          { id:"ld1", label:"Add address + phone to site footer", owner:"ricardo", done:false, priority:"high",
+            hint:"Squarespace → Pages → Footer → add: Big Hat Lawn | Austin, TX | (512) 748-2626 | bighatlawn.com" },
+          { id:"ld2", label:"Link to bighatlawn.com from social profiles", owner:"rudy", done:false, priority:"med",
+            hint:"⭐ Rudy task: Add website link on Instagram bio, Facebook About section, Nextdoor profile." },
+        ]},
+      ];
+
+      // Load saved state from localStorage
+      function loadSEOState() {
+        try { return JSON.parse(localStorage.getItem('bhl_seo_state') || '{}'); } catch(e) { return {}; }
+      }
+
+      function saveSEOState(state) {
+        localStorage.setItem('bhl_seo_state', JSON.stringify(state));
+      }
+
+      function renderAdminSEO() {
+        const el = document.getElementById('seo-admin-tasks');
+        if (!el) return;
+        const state = loadSEOState();
+
+        // Merge saved state with task defaults
+        const allTasks = ADMIN_SEO.flatMap(s => s.tasks).map(t => ({
+          ...t, done: state[t.id] !== undefined ? state[t.id] : t.done
+        }));
+        const done = allTasks.filter(t => t.done).length;
+        const pct = Math.round((done / allTasks.length) * 100);
+
+        // Update progress bar
+        const bar = document.getElementById('seo-admin-bar');
+        const pctEl = document.getElementById('seo-admin-pct');
+        if (bar) bar.style.width = pct + '%';
+        if (pctEl) {
+          pctEl.textContent = pct + '% (' + done + '/' + allTasks.length + ')';
+          pctEl.className = 'pill ' + (pct >= 80 ? 'green' : pct >= 40 ? 'amber' : 'red');
+        }
+
+        let html = '';
+        ADMIN_SEO.forEach(function(s) {
+          const sDone = s.tasks.filter(t => (state[t.id] !== undefined ? state[t.id] : t.done)).length;
+          html += '<div class="card" style="margin-bottom:14px"><div class="card-hdr"><h3>' + s.section + '</h3><span class="pill ' + (sDone === s.tasks.length ? 'green' : 'amber') + '">' + sDone + '/' + s.tasks.length + '</span></div><div class="card-body" style="padding:0">';
+
+          s.tasks.forEach(function(t) {
+            const isDone = state[t.id] !== undefined ? state[t.id] : t.done;
+            const pBg = isDone ? '#e8f5e9' : t.priority === 'high' ? '#ffebee' : '#fff8e1';
+            const pColor = isDone ? '#2E7D32' : t.priority === 'high' ? '#c62828' : '#F57F17';
+            const pText = isDone ? 'DONE' : t.priority.toUpperCase();
+            html += '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f0f0;background:' + (isDone ? '#fafff9' : '#fff') + '">' +
+              '<input type="checkbox" ' + (isDone ? 'checked' : '') + ' onchange="toggleSEOTask('' + t.id + '', this.checked)" style="margin-top:3px;width:16px;height:16px;cursor:pointer;accent-color:#2E7D32">' +
+              '<div style="flex:1">' +
+                '<div style="font-size:13px;font-weight:600;color:' + (isDone ? '#2E7D32' : '#1a1a1a') + ';margin-bottom:3px">' + t.label + (t.owner === 'rudy' ? ' <span style="color:#F57F17;font-size:11px">⭐ Rudy</span>' : '') + '</div>' +
+                '<div style="font-size:12px;color:#666">' + t.hint + '</div>' +
+              '</div>' +
+              '<span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;background:' + pBg + ';color:' + pColor + ';flex-shrink:0;margin-top:2px">' + pText + '</span>' +
+            '</div>';
+          });
+          html += '</div></div>';
+        });
+        el.innerHTML = html;
+
+        // Load notes
+        const notes = localStorage.getItem('bhl_seo_notes') || '';
+        const notesEl = document.getElementById('seo-admin-notes');
+        if (notesEl) notesEl.value = notes;
+      }
+
+      function toggleSEOTask(taskId, isDone) {
+        const state = loadSEOState();
+        state[taskId] = isDone;
+        saveSEOState(state);
+        renderAdminSEO();
+        // Show save confirmation
+        const btn = event.target;
+        const orig = btn.style.accentColor;
+        setTimeout(() => renderAdminSEO(), 100);
+      }
+
+      function saveAdminNotes() {
+        const notes = document.getElementById('seo-admin-notes').value;
+        localStorage.setItem('bhl_seo_notes', notes);
+        const btn = event.target;
+        btn.textContent = '✅ Saved!';
+        setTimeout(() => { btn.textContent = 'Save Notes'; }, 1500);
+      }
+
+      // Hook into showPage to render SEO when tab is shown
+      const _origShowPage = typeof showPage === 'function' ? showPage : null;
+      document.addEventListener('DOMContentLoaded', function() {
+        const origShow = window.showPage;
+        window.showPage = function(pageId) {
+          origShow && origShow(pageId);
+          if (pageId === 'bhl-seo') renderAdminSEO();
+        };
+      });
+      </script>
+
+      <div id="page-bhl-config" class="page">
       <div class="section-hdr"><span class="section-title">Big Hat Lawn — Configuration</span></div>
 
       <div class="two-col">
