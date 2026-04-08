@@ -397,10 +397,10 @@ const CLIENT_DATA = {
     ],
 
     tools: [
-      { icon:'💬', color:'green',  name:'AI Chat Widget',         desc:'Answers questions, gives quotes, and captures leads on your website 24/7',          status:'ready',    pill:'Ready to Launch'   },
+      { icon:'💬', color:'green',  name:'AI Chat Widget',         desc:'Answers questions, gives quotes, and captures leads on your website 24/7',          status:'ready',    pill:'Ready to Launch',  link:'https://512ai.co/files/demo-bighatlawn.html', linkLabel:'Try Live AI Chat Demo' },
       { icon:'📞', color:'amber',  name:'AI Voice Assistant',     desc:'A visitor clicks a button and our AI calls them back in 30 seconds with a quote',    status:'progress', pill:'In Progress'       },
       { icon:'📱', color:'amber',  name:'SMS Notifications',      desc:'Auto-texts customers with booking confirmations, reminders, and job updates',        status:'progress', pill:'In Progress'       },
-      { icon:'🔍', color:'green',  name:'SEO Action Plan',        desc:'20-step Google optimization plan specific to bighatlawn.com — delivered',            status:'done',     pill:'Delivered ✓'       },
+      { icon:'🔍', color:'green',  name:'SEO Action Plan',        desc:'20-step Google optimization plan specific to bighatlawn.com — delivered',            status:'done',     pill:'Delivered ✓',      link:'https://512ai.co/files/seo-bighatlawn.html',  linkLabel:'View SEO Checklist' },
       { icon:'📅', color:'blue',   name:'Smart Scheduling',       desc:'Zone-based booking that connects to your job management system automatically',       status:'input',    pill:'Awaiting Your Input'},
       { icon:'📊', color:'purple', name:'Live Dashboard',         desc:'This dashboard shows real leads, calls, and bookings once your tools are connected', status:'auto',     pill:'Activates Automatically'}
     ],
@@ -570,13 +570,14 @@ function renderClient(clientId) {
   const readyCount = d.tools.filter(t => t.status==='done'||t.status==='ready'||t.status==='live').length;
   document.getElementById('tools-sub').textContent = `${d.tools.length} tools · ${readyCount} ready`;
   document.getElementById('tools-list').innerHTML = d.tools.map(t => `
-    <div class="tool-row">
+    <div class="tool-row" style="align-items:flex-start;flex-wrap:wrap">
       <div class="tool-icon-wrap ${t.color}">${t.icon}</div>
-      <div class="tool-info">
+      <div class="tool-info" style="flex:1;min-width:0">
         <div class="tool-name">${t.name}</div>
         <div class="tool-desc">${t.desc}</div>
+        ${t.link ? `<a href="${t.link}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;background:#2E7D32;color:#fff;text-decoration:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.01em;transition:background .15s" onmouseover="this.style.background='#1B5E20'" onmouseout="this.style.background='#2E7D32'">▶ ${t.linkLabel||'Open Tool'}</a>` : ''}
       </div>
-      <div class="tool-status"><span class="status-pill ${t.status}">${t.pill}</span></div>
+      <div class="tool-status" style="flex-shrink:0"><span class="status-pill ${t.status}">${t.pill}</span></div>
     </div>`).join('');
 
   // Setup steps
