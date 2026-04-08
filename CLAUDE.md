@@ -13,7 +13,7 @@
 - Primary machine: MacBook Pro (`~/Claude_Projects/512ai`)
 - Secondary machine: Mac Mini SSH at `192.168.5.133` (`~/Claude-Projects/512ai`)
 - Business email: `contact@512ai.co`
-- Personal email: `avilaricardoe@gmail.com`
+- Personal email: `contact@512ai.co`
 - LinkedIn: `linkedin.com/in/avilaricardoe`
 
 **How Ricardo works:**
