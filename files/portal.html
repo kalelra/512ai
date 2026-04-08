@@ -224,7 +224,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;c
     <button class="tab-btn" onclick="showPage('setup',this)">⚙️ Setup Status</button>
     <button class="tab-btn" onclick="showPage('roi',this)">💰 ROI & Value</button>
     <button class="tab-btn" onclick="showPage('activity',this)">⚡ Recent Activity</button>
-    <button class="tab-btn" onclick="showPage('help',this)">🙋 Get Help</button>
+    <button class="tab-btn" onclick="showPage('seo',this)">🔍 SEO</button>
+          <button class="tab-btn" onclick="showPage('help',this)">🙋 Get Help</button>
   </div>
 
   <!-- Tab nav (admin) -->
@@ -307,7 +308,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;c
     </div>
 
     <!-- ─── HELP ─── -->
-    <div class="page" id="page-help">
+    
+  <!-- SEO PROGRESS PAGE -->
+  <div class="page" id="page-seo">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">🔍 Your SEO Progress</div>
+        <div class="section-sub">Track your Google optimization — 18 tasks across 5 areas</div>
+      </div>
+      <div class="section-body">
+        <div style="background:#e8f5e9;border-radius:10px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+          <div style="font-size:32px">🔍</div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:#1B5E20;margin-bottom:3px">SEO helps customers find you on Google for free</div>
+            <div style="font-size:13px;color:#2E7D32">When someone in Austin searches "lawn mowing near me" — these steps help Big Hat Lawn show up at the top.</div>
+          </div>
+        </div>
+        <div id="seo-sections"><!-- rendered by JS --></div>
+        <div style="margin-top:20px;background:#fff3e0;border-radius:10px;padding:14px;border-left:4px solid #e65100">
+          <div style="font-size:13px;font-weight:700;color:#e65100;margin-bottom:4px">📌 Timeline</div>
+          <div style="font-size:13px;color:#666">SEO results take 60–90 days to appear in Google. Once done, they work 24/7 for free. Tasks marked ⭐ need your involvement — Ricardo handles the rest.</div>
+        </div>
+        <div style="margin-top:16px;text-align:center">
+          <a href="https://512ai.co/files/seo-bighatlawn.html" target="_blank"
+             style="display:inline-flex;align-items:center;gap:8px;background:#2E7D32;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700">
+            📋 Open Full Interactive Checklist
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-help">
       <div class="section">
         <div class="section-head"><div class="section-title">🙋 Get Help & Contact 512AI</div></div>
         <div class="section-body" id="help-body">
@@ -666,6 +698,7 @@ function viewClientAsAdmin(clientId) {
   document.getElementById('admin-tabs').style.display = 'none';
   renderClient(clientId);
   showPage('overview', document.querySelector('#client-tabs .tab-btn'));
+  renderSEO();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -678,6 +711,62 @@ function showPage(pageId, btn) {
   if (page) page.classList.add('active');
   if (btn) btn.classList.add('active');
 }
+
+  // ── SEO PROGRESS ────────────────────────────────────────────────
+  const SEO_TASKS = [
+    { section: "⚙️ Squarespace SEO Basics", tasks: [
+      { label: "Set Homepage Title Tag", done: false, priority: "high" },
+      { label: "Set Homepage Meta Description", done: false, priority: "high" },
+      { label: "SSL / HTTPS enabled", done: true, priority: "high" },
+      { label: "Connect Google Search Console", done: false, priority: "high", note: "⭐ Needs your Google account" },
+      { label: "Set Site Language and Region", done: false, priority: "med" },
+      { label: "Submit Sitemap to Google", done: false, priority: "high" },
+    ]},
+    { section: "🏠 Schema Markup", tasks: [
+      { label: "Add LocalBusiness JSON-LD to site", done: false, priority: "high" },
+    ]},
+    { section: "📍 Google Business Profile", tasks: [
+      { label: "Claim or create GBP listing", done: false, priority: "high", note: "⭐ You do this — 15 min on Google" },
+      { label: "Fill out every GBP field 100%", done: false, priority: "high" },
+      { label: "Upload 10+ photos to GBP", done: false, priority: "high", note: "⭐ Real job photos work best" },
+      { label: "Set service areas (zip codes)", done: false, priority: "high" },
+      { label: "List all services with descriptions", done: false, priority: "med" },
+      { label: "Ask every customer for a Google review", done: false, priority: "high", note: "⭐ AI will automate this later" },
+    ]},
+    { section: "⚡ Images and Speed", tasks: [
+      { label: "Add ALT text to every site photo", done: false, priority: "high" },
+      { label: "Compress photos before uploading", done: false, priority: "med" },
+    ]},
+    { section: "📋 Local Directories", tasks: [
+      { label: "Add address and phone to site footer", done: false, priority: "high" },
+      { label: "Link to bighatlawn.com from social profiles", done: false, priority: "med", note: "⭐ Instagram, Facebook, Nextdoor" },
+    ]},
+  ];
+
+  function renderSEO() {
+    const el = document.getElementById("seo-sections");
+    if (!el) return;
+    const all = SEO_TASKS.flatMap(function(s){ return s.tasks; });
+    const done = all.filter(function(t){ return t.done; }).length;
+    const pct = Math.round((done / all.length) * 100);
+    let html = '<div style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;font-weight:700">Overall Progress</span><span style="font-size:13px;font-weight:700;color:#2E7D32">'+done+'/'+all.length+' complete</span></div><div style="background:#e0e0e0;border-radius:20px;height:10px;overflow:hidden"><div style="background:#2E7D32;height:100%;width:'+pct+'%;border-radius:20px"></div></div><div style="font-size:12px;color:#666;margin-top:3px">'+pct+'% complete</div></div>';
+    SEO_TASKS.forEach(function(s) {
+      const sdone = s.tasks.filter(function(t){ return t.done; }).length;
+      html += '<div style="border:1px solid #e0e0e0;border-radius:10px;margin-bottom:12px;overflow:hidden"><div style="padding:11px 14px;background:#f9f9f9;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:700;flex:1">'+s.section+'</span><span style="font-size:12px;color:#666">'+sdone+'/'+s.tasks.length+'</span></div><div>';
+      s.tasks.forEach(function(t) {
+        const bg = t.done ? '#f1f8f1' : '#fff';
+        const textColor = t.done ? '#2E7D32' : '#1a1a1a';
+        const pillBg = t.done ? '#c8e6c9' : t.priority === 'high' ? '#ffebee' : '#fff8e1';
+        const pillColor = t.done ? '#2E7D32' : t.priority === 'high' ? '#c62828' : '#F57F17';
+        const pillText = t.done ? 'DONE' : t.priority.toUpperCase();
+        const note = t.note ? '<div style="font-size:11px;color:#F57F17;margin-top:2px">'+t.note+'</div>' : '';
+        html += '<div style="padding:9px 14px;display:flex;align-items:flex-start;gap:10px;background:'+bg+';border-bottom:1px solid #f5f5f5"><span style="font-size:15px;flex-shrink:0">'+(t.done?'✅':'⭕')+'</span><div style="flex:1"><div style="font-size:13px;font-weight:500;color:'+textColor+'">'+t.label+'</div>'+note+'</div><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0;background:'+pillBg+';color:'+pillColor+'">'+pillText+'</span></div>';
+      });
+      html += '</div></div>';
+    });
+    el.innerHTML = html;
+  }
+
 </script>
 </body>
 </html>
