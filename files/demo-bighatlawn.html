@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Hat Lawn — AI Assistant Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #2E7D32;
+    --green-dark: #1B5E20;
+    --green-light: #e8f5e9;
+    --green-mid: #388E3C;
+    --yellow: #F9A825;
+    --text: #1a1a1a;
+    --muted: #555;
+    --white: #ffffff;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f9faf7;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Demo banner ─────────────────────────────────────────────── */
+  .demo-banner {
+    background: var(--yellow);
+    color: #1a1a1a;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .01em;
+  }
+  .demo-banner span { opacity: .7; font-weight: 400; margin-left: 8px; }
+
+  /* ── Nav ─────────────────────────────────────────────────────── */
+  nav {
+    background: var(--green);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    height: 68px;
+    gap: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.18);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-hat { font-size: 32px; }
+  .logo-text { font-family: 'Fraunces', serif; font-size: 22px; color: #fff; font-weight: 900; letter-spacing: -.3px; }
+  .logo-text span { color: var(--yellow); }
+  .nav-links { margin-left: auto; display: flex; gap: 28px; }
+  .nav-links a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; font-weight: 500; transition: color .15s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-phone { margin-left: 24px; background: var(--yellow); color: #1a1a1a; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; }
+
+  /* ── Hero ────────────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(160deg, var(--green-dark) 0%, var(--green) 60%, var(--green-mid) 100%);
+    padding: 80px 40px 100px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 60px;
+    background: #f9faf7;
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -.5px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--yellow); font-style: normal; }
+  .hero p { font-size: 18px; opacity: .88; max-width: 540px; margin: 0 auto 36px; line-height: 1.6; }
+  .hero-stats { display: flex; justify-content: center; gap: 48px; margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,.2); }
+  .stat-val { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; color: var(--yellow); display: block; }
+  .stat-lbl { font-size: 13px; opacity: .75; margin-top: 2px; }
+
+  /* ── AI Demo section ─────────────────────────────────────────── */
+  .ai-section {
+    max-width: 860px;
+    margin: -20px auto 60px;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10;
+  }
+  .ai-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 48px rgba(0,0,0,.12);
+    overflow: hidden;
+    border: 1px solid rgba(46,125,50,.12);
+  }
+  .ai-card-header {
+    background: var(--green);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ai-avatar {
+    width: 44px; height: 44px;
+    background: var(--yellow);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .ai-info { flex: 1; }
+  .ai-name { font-size: 16px; font-weight: 700; color: #fff; }
+  .ai-status { font-size: 12px; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+  .ai-dot { width: 7px; height: 7px; background: #69f0ae; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .ai-badge { background: rgba(255,255,255,.15); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+
+  .ai-body { padding: 28px; min-height: 200px; }
+  .intro-msg {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--green-dark);
+  }
+
+  .try-prompts { margin-bottom: 20px; }
+  .try-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+  .prompt-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    background: #fff;
+    border: 1.5px solid #dde8dd;
+    color: var(--green-dark);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .chip:hover { background: var(--green-light); border-color: var(--green); }
+
+  /* ── Services ────────────────────────────────────────────────── */
+  .services {
+    max-width: 1000px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+  .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--green); margin-bottom: 8px; }
+  .section-title { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; margin-bottom: 40px; line-height: 1.15; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media(max-width:720px){ .services-grid{ grid-template-columns:1fr; } }
+  .service-card {
+    background: #fff;
+    border: 1.5px solid #e8f0e8;
+    border-radius: 16px;
+    padding: 28px 24px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(46,125,50,.1); }
+  .service-icon { font-size: 36px; margin-bottom: 14px; display: block; }
+  .service-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .service-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Footer ──────────────────────────────────────────────────── */
+  footer {
+    background: var(--green-dark);
+    color: rgba(255,255,255,.7);
+    text-align: center;
+    padding: 32px 20px;
+    font-size: 14px;
+  }
+  footer strong { color: #fff; }
+  footer a { color: var(--yellow); }
+
+  /* ── Powered by badge ────────────────────────────────────────── */
+  .powered {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .powered a { color: var(--green); font-weight: 600; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- Demo banner -->
+<div class="demo-banner">
+  🤖 Live AI Demo — This is what your customers will experience on bighatlawn.com
+  <span>Powered by 512AI</span>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="logo">
+    <span class="logo-hat">🤠</span>
+    <span class="logo-text">Big Hat <span>Lawn</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="#">Services</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+  <a href="tel:5127482626" class="nav-phone">📞 (512) 748-2626</a>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Reliable Austin<br><em>Lawn Service</em></h1>
+  <p>Professional lawn care, tree pruning, and power washing for Austin homeowners. Text or call us anytime — or chat with our AI assistant below!</p>
+  <div class="hero-stats">
+    <div><span class="stat-val">24/7</span><div class="stat-lbl">AI Chat Available</div></div>
+    <div><span class="stat-val">⚡</span><div class="stat-lbl">Instant Responses</div></div>
+    <div><span class="stat-val">Austin</span><div class="stat-lbl">Local &amp; Reliable</div></div>
+  </div>
+</div>
+
+<!-- AI Demo Card -->
+<div class="ai-section">
+  <div class="ai-card">
+    <div class="ai-card-header">
+      <div class="ai-avatar">🌿</div>
+      <div class="ai-info">
+        <div class="ai-name">Big Hat Lawn Assistant</div>
+        <div class="ai-status"><span class="ai-dot"></span> Online now — responds instantly</div>
+      </div>
+      <div class="ai-badge">AI-Powered by 512AI</div>
+    </div>
+    <div class="ai-body">
+      <div class="intro-msg">
+        👋 Hi! I'm the Big Hat Lawn AI assistant. I can answer questions about our services, give you pricing info, and help you schedule a visit — any time of day or night. What can I help you with?
+      </div>
+      <div class="try-prompts">
+        <div class="try-label">Try asking me:</div>
+        <div class="prompt-chips">
+          <span class="chip" onclick="triggerWidget('What lawn services do you offer?')">🌿 What services do you offer?</span>
+          <span class="chip" onclick="triggerWidget('How much does lawn mowing cost?')">💰 How much does mowing cost?</span>
+          <span class="chip" onclick="triggerWidget('Can I schedule a free estimate?')">📅 Schedule a free estimate</span>
+          <span class="chip" onclick="triggerWidget('Do you serve my area in Austin?')">📍 Do you serve my area?</span>
+          <span class="chip" onclick="triggerWidget('How quickly can you come out?')">⚡ How quickly can you come?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Services -->
+<div class="services">
+  <div class="section-label">What We Do</div>
+  <div class="section-title">Expert Care<br>for Your Lawn</div>
+  <div class="services-grid">
+    <div class="service-card">
+      <span class="service-icon">🚜</span>
+      <div class="service-name">Lawn Service</div>
+      <div class="service-desc">Professional mowing, edging, and trimming to keep your yard looking sharp all season long.</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">🌳</span>
+      <div class="service-name">Tree & Bush Pruning</div>
+      <div class="service-desc">Expert shaping and pruning to keep your trees and shrubs healthy, beautiful, and safe.</div>
+    </div>
+    <div class="service-card">
+      <span class="service-icon">💦</span>
+      <div class="service-name">Power Wash</div>
+      <div class="service-desc">Restore driveways, patios, and walkways to like-new condition with professional pressure washing.</div>
+    </div>
+  </div>
+</div>
+
+<div class="powered">
+  AI assistant powered by <a href="https://512ai.co" target="_blank">512AI</a> — AI tools built for Austin small businesses.
+</div>
+
+<!-- Footer -->
+<footer>
+  <strong>Big Hat Lawn</strong> · Austin, TX · <a href="tel:5127482626">(512) 748-2626</a> · <a href="mailto:bighatlawn@gmail.com">bighatlawn@gmail.com</a>
+</footer>
+
+<!-- Load the real Big Hat Lawn widget -->
+<script src="https://512ai.co/files/widget-bighatlawn.js" async></script>
+
+<script>
+// Auto-open the widget after 1.5s so Rudy sees it immediately
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    // Try to open the widget automatically
+    var btn = document.querySelector('[class*="chat-btn"], [class*="widget-btn"], [class*="launcher"], button[aria-label*="chat"]');
+    if (btn) btn.click();
+  }, 1500);
+});
+
+// Chip click: open widget and pre-fill message
+function triggerWidget(msg) {
+  // Find the widget launcher button and click it
+  var launcher = document.querySelector('[class*="launcher"], [class*="chat-toggle"], [class*="widget-toggle"], [id*="launcher"]');
+  if (launcher) {
+    launcher.click();
+    setTimeout(function() {
+      var input = document.querySelector('[class*="chat-input"], [class*="widget-input"], input[type="text"], textarea');
+      if (input) {
+        input.value = msg;
+        input.dispatchEvent(new Event('input', {bubbles: true}));
+        input.focus();
+      }
+    }, 400);
+  } else {
+    // Widget not open yet — scroll to bottom to find it
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+  }
+}
+</script>
+
+</body>
+</html>
