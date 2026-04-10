@@ -389,7 +389,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
         <div class="health-item ok"><div class="health-icon">🌐</div><div class="health-lbl">512ai.co</div><div class="health-status" style="color:#166534">Live · GitHub deploy</div></div>
         <div class="health-item ok"><div class="health-icon">🔗</div><div class="health-lbl">512ai.co/portal</div><div class="health-status" style="color:#166534">Live (push fix-root-config)</div></div>
         <div class="health-item warn"><div class="health-icon">⚙️</div><div class="health-lbl">512ai.co/admin</div><div class="health-status" style="color:#92400e">Push to GitHub to go live</div></div>
-        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai</div><div class="health-status" style="color:#166534">Key set · Lily AI ready</div></div>
+        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai</div><div class="health-status" style="color:#166534">Key set · Zoe AI ready</div></div>
         <div class="health-item warn"><div class="health-icon">📱</div><div class="health-lbl">Twilio SMS</div><div class="health-status" style="color:#92400e">Awaiting phone number (EIN)</div></div>
         <div class="health-item warn"><div class="health-icon">🏡</div><div class="health-lbl">LawnPro CRM</div><div class="health-status" style="color:#92400e">Awaiting Rudy's access</div></div>
         <div class="health-item warn"><div class="health-icon">🚂</div><div class="health-lbl">Railway Backend</div><div class="health-status" style="color:#92400e">URL not confirmed yet</div></div>
@@ -495,7 +495,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
         <div class="health-item ok"><div class="health-icon">🔗</div><div class="health-lbl">512ai.co/portal</div><div class="health-status" style="color:#166534">Run fix-root-config to activate /portal URL</div></div>
         <div class="health-item warn"><div class="health-icon">⚙️</div><div class="health-lbl">512ai.co/admin</div><div class="health-status" style="color:#92400e">Push to GitHub first</div></div>
         <div class="health-item ok"><div class="health-icon">📡</div><div class="health-lbl">Netlify Functions</div><div class="health-status" style="color:#166534">claude-proxy · voice-demo · ready</div></div>
-        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai API</div><div class="health-status" style="color:#166534">Key set · Lily voice AI configured</div></div>
+        <div class="health-item ok"><div class="health-icon">🤖</div><div class="health-lbl">Bland.ai API</div><div class="health-status" style="color:#166534">Key set · Zoe voice AI configured</div></div>
         <div class="health-item ok"><div class="health-icon">📞</div><div class="health-lbl">Twilio Account</div><div class="health-status" style="color:#166534">SID + Auth Token set · No phone # yet</div></div>
         <div class="health-item warn"><div class="health-icon">📱</div><div class="health-lbl">Twilio Phone #</div><div class="health-status" style="color:#92400e">Awaiting EIN upgrade · BHL_TWILIO_FROM not set</div></div>
         <div class="health-item warn"><div class="health-icon">🏡</div><div class="health-lbl">LawnPro Webhook</div><div class="health-status" style="color:#92400e">LAWNPRO_WEBHOOK_SECRET not set</div></div>
@@ -613,7 +613,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
         <div class="card-body" style="padding:0 18px">
           <div class="env-row"><div><div class="env-key">TWILIO_ACCOUNT_SID</div><div class="env-desc">Twilio account identifier — AC35601f...</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
           <div class="env-row"><div><div class="env-key">TWILIO_AUTH_TOKEN</div><div class="env-desc">Twilio auth token for API calls</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
-          <div class="env-row"><div><div class="env-key">BLAND_API_KEY_BHL</div><div class="env-desc">Bland.ai key for Big Hat Lawn Lily voice AI</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
+          <div class="env-row"><div><div class="env-key">BLAND_API_KEY_BHL</div><div class="env-desc">Bland.ai key for Big Hat Lawn Zoe voice AI</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
           <div class="env-row"><div><div class="env-key">NOTIFICATION_SECRET</div><div class="env-desc">Shared HMAC secret for notification payloads</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
           <div class="env-row"><div><div class="env-key">BHL_BUSINESS_PHONE</div><div class="env-desc">Big Hat Lawn business phone: +15127482626</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
           <div class="env-row"><div><div class="env-key">BHL_OWNER_PHONE</div><div class="env-desc">Rudy's direct phone: +15127482626</div></div><div class="env-status"><span class="pill green">Set</span></div></div>
@@ -665,7 +665,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 │   ├── <span class="file">widget-bighatlawn.js</span>  <span class="comment">← BHL chat widget</span>
 │   ├── <span class="file">widget-test.html</span>      <span class="comment">← Widget test page</span>
 │   ├── <span class="file">voice-bighatlawn.js</span>   <span class="comment">← Voice AI trigger</span>
-│   ├── <span class="file">voice-bighatlawn-function.js</span> <span class="comment">← Bland.ai Lily script</span>
+│   ├── <span class="file">voice-bighatlawn-function.js</span> <span class="comment">← Bland.ai Zoe script</span>
 │   ├── <span class="file">notifications-bighatlawn.js</span> <span class="comment">← SMS notification engine</span>
 │   ├── <span class="file">lawnpro-webhook-bighatlawn.js</span> <span class="comment">← CRM webhook handler</span>
 │   ├── <span class="file">seo-bighatlawn.html</span>   <span class="comment">← SEO schema markup</span>
@@ -693,7 +693,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             <div class="env-row"><div><div class="env-key">admin-portal.html</div><div class="env-desc">This admin console</div></div><div class="env-status"><span class="pill amber">Push to GitHub</span></div></div>
             <div class="env-row"><div><div class="env-key">fix-root-config.sh</div><div class="env-desc">Root redirects setup + push script</div></div><div class="env-status"><span class="pill amber">Run first</span></div></div>
             <div class="env-row"><div><div class="env-key">widget-bighatlawn.js</div><div class="env-desc">BHL chat widget v1.1</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
-            <div class="env-row"><div><div class="env-key">voice-bighatlawn-function.js</div><div class="env-desc">Lily AI script + real pricing table</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
+            <div class="env-row"><div><div class="env-key">voice-bighatlawn-function.js</div><div class="env-desc">Zoe AI script + real pricing table</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
             <div class="env-row"><div><div class="env-key">notifications-bighatlawn.js</div><div class="env-desc">6-type SMS notification engine</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
             <div class="env-row"><div><div class="env-key">seo-bighatlawn.html</div><div class="env-desc">Schema markup + 12 zip codes</div></div><div class="env-status"><span class="pill green">In GitHub</span></div></div>
             <div class="env-row"><div><div class="env-key">deploy-portal.sh</div><div class="env-desc">DISABLED — exits with error</div></div><div class="env-status"><span class="pill red">Disabled</span></div></div>
@@ -787,10 +787,10 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
           </div>
         </div>
         <div class="card">
-          <div class="card-hdr"><h3>📞 Voice AI (Lily)</h3><span class="pill amber">Ready, pending deploy</span></div>
+          <div class="card-hdr"><h3>📞 Voice AI (Zoe)</h3><span class="pill amber">Ready, pending deploy</span></div>
           <div class="card-body">
             <div class="env-row"><div>File</div><div style="font-family:monospace;font-size:12px">files/voice-bighatlawn-function.js</div></div>
-            <div class="env-row"><div>Voice</div><div>Bland.ai · Lily</div></div>
+            <div class="env-row"><div>Voice</div><div>Bland.ai · Zoe</div></div>
             <div class="env-row"><div>Script sections</div><div style="font-size:12px">BUSINESS INFO · PRICING TABLE · 6-step script</div></div>
             <div class="env-row"><div>Pricing table</div><div style="font-size:12px">$40–$120+ by sq ft · "averages" qualifier</div></div>
             <div class="env-row"><div>Service area</div><div style="font-size:12px">12 SE Austin zip codes</div></div>
@@ -1060,7 +1060,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
             <div class="env-row"><div class="env-key">12,000–17,000 sq ft</div><div style="font-weight:700">$85–$100</div></div>
             <div class="env-row"><div class="env-key">17,000–22,000 sq ft</div><div style="font-weight:700">$100–$120</div></div>
             <div class="env-row"><div class="env-key">Over 22,000 sq ft</div><div style="font-weight:700">$120+ (custom)</div></div>
-            <div style="margin-top:12px;font-size:12px;color:var(--muted)">Note: Lily AI always clarifies prices are averages and a site visit confirms the final price.</div>
+            <div style="margin-top:12px;font-size:12px;color:var(--muted)">Note: Zoe AI always clarifies prices are averages and a site visit confirms the final price.</div>
           </div>
         </div>
       </div>
@@ -1618,7 +1618,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
       <div class="changelog-entry">
         <div class="cl-hash">v0.1 — Earlier</div>
         <div class="cl-msg">Full BHL AI tool stack built</div>
-        <div class="cl-meta">Chat widget · Lily voice AI · SMS notifications · LawnPro webhook · SEO schema</div>
+        <div class="cl-meta">Chat widget · Zoe voice AI · SMS notifications · LawnPro webhook · SEO schema</div>
       </div>
       <div class="changelog-entry">
         <div class="cl-hash">v0.0 — Session 1</div>
