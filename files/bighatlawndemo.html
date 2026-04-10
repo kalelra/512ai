@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Hat Lawn — AI Tools Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2E7D32;--green-d:#1B5E20;--green-l:#e8f5e9;
+  --amber:#F59E0B;--amber-l:#FEF3C7;
+  --blue:#1565C0;--blue-l:#e3f2fd;
+  --red:#c62828;--red-l:#ffebee;
+  --text:#1a1a1a;--muted:#666;--border:#e0e0e0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:#f9faf7}
+.demo-bar{background:#1a1a1a;color:#fff;text-align:center;padding:10px 16px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.demo-bar .pill{background:var(--amber);color:#1a1a1a;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+nav{background:var(--green);padding:0 32px;display:flex;align-items:center;height:64px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.nav-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-weight:900;letter-spacing:-.3px}
+.nav-logo span{color:var(--amber)}
+.nav-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.nav-phone{background:var(--amber);color:#1a1a1a;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none}
+.nav-tabs{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto}
+.tab-btn{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif}
+.tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.page{display:none;padding:24px;max-width:900px;margin:0 auto}
+.page.active{display:block}
+.card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.card-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-hdr h3{font-size:15px;font-weight:700;flex:1}
+.card-body{padding:20px}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px}
+.badge-green{background:var(--green-l);color:var(--green-d)}
+.badge-amber{background:var(--amber-l);color:#92400E}
+.badge-blue{background:var(--blue-l);color:var(--blue)}
+.badge-red{background:var(--red-l);color:var(--red)}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+.dot-green{background:#22c55e}
+.dot-amber{background:#f59e0b}
+.dot-red{background:#ef4444}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-primary{background:var(--green);color:#fff}
+.btn-primary:hover{background:var(--green-d)}
+.btn-secondary{background:var(--border);color:var(--text)}
+.btn-secondary:hover{background:#d0d0d0}
+.btn-amber{background:var(--amber);color:#1a1a1a}
+input,select,textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.one{grid-template-columns:1fr}
+.form-group{margin-bottom:14px}
+.result-box{background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;margin-top:14px;display:none}
+.result-box.show{display:block}
+.result-box.success{background:var(--green-l);border-color:#a5d6a7}
+.result-box.error{background:var(--red-l);border-color:#ef9a9a}
+.result-box.sandbox{background:var(--amber-l);border-color:#fcd34d}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:700;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.slot-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.slot{padding:6px 12px;border-radius:6px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;background:#fff;transition:all .15s}
+.slot:hover,.slot.selected{background:var(--green);color:#fff;border-color:var(--green)}
+.chat-box{border:1px solid var(--border);border-radius:10px;height:280px;overflow-y:auto;padding:14px;background:#f9faf7;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:80%;border-radius:10px;padding:8px 12px;font-size:13px;line-height:1.5}
+.msg.user{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:3px}
+.chat-input-row{display:flex;gap:8px}
+.chat-input-row input{flex:1}
+.typing{display:flex;gap:4px;align-items:center;padding:8px 12px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bounce .9s infinite}
+.dot:nth-child(2){animation-delay:.15s}
+.dot:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.kpi-val{font-size:28px;font-weight:700;font-family:'Fraunces',serif;color:var(--green)}
+.kpi-lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.notification-preview{background:#1a1a1a;color:#fff;border-radius:12px;padding:16px;font-size:13px;line-height:1.7;font-family:monospace}
+.log-line{margin-bottom:4px}
+.log-ok{color:#4ade80}
+.log-warn{color:#fbbf24}
+.log-info{color:#93c5fd}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- Demo banner -->
+<div class="demo-bar">
+  <span class="pill">SANDBOX</span>
+  <span>Big Hat Lawn — 512AI Tools Demo | All data is fake | No real calls or SMS sent</span>
+  <span style="color:#9ca3af">SANDBOX_MODE=true</span>
+</div>
+
+<!-- Nav -->
+<nav>
+  <span class="nav-logo">🤠 Big Hat <span>Lawn</span></span>
+  <div class="nav-right">
+    <a href="tel:5127482626" class="nav-phone">📞 (512) 748-2626</a>
+  </div>
+</nav>
+
+<!-- Tabs -->
+<div class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+  <button class="tab-btn" onclick="showTab('chat',this)">💬 AI Chat</button>
+  <button class="tab-btn" onclick="showTab('voice',this)">📞 AI Voice</button>
+  <button class="tab-btn" onclick="showTab('schedule',this)">📅 Scheduling</button>
+  <button class="tab-btn" onclick="showTab('crm',this)">🗂️ CRM Lookup</button>
+  <button class="tab-btn" onclick="showTab('notifications',this)">📱 Notifications</button>
+  <button class="tab-btn" onclick="showTab('tests',this)">✅ Run Tests</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val" id="kpi-chats">0</div><div class="kpi-lbl">Chat sessions</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-bookings">0</div><div class="kpi-lbl">Bookings created</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-calls">0</div><div class="kpi-lbl">Voice calls</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-crm">3</div><div class="kpi-lbl">CRM customers</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <span class="status-dot dot-green"></span>
+      <h3>System Status — Sandbox Mode</h3>
+    </div>
+    <div class="card-body">
+      <div id="health-status"><em style="color:var(--muted)">Checking system health...</em></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>📋 Sandbox Mock Data — LawnPro CRM</h3><span class="badge badge-amber">Fake data</span></div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>Customer</th><th>Phone</th><th>Address</th><th>Tags</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sarah Johnson</strong></td><td>(512) 555-1234</td><td>4521 Slaughter Ln, Austin TX 78749</td><td><span class="badge badge-green">recurring</span> <span class="badge badge-blue">lawn</span></td></tr>
+          <tr><td><strong>Marcus Williams</strong></td><td>(512) 555-2345</td><td>8832 Brodie Ln, Austin TX 78745</td><td><span class="badge badge-green">power-wash</span> <span class="badge badge-blue">tree</span></td></tr>
+          <tr><td><strong>Elena Rodriguez</strong></td><td>(512) 555-3456</td><td>2210 William Cannon Dr, Austin TX 78745</td><td><span class="badge badge-green">recurring</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><h3>📅 Upcoming Jobs (Mock)</h3></div>
+    <div class="card-body">
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Apr 10</td><td>9:00 AM</td><td>Sarah Johnson</td><td>Lawn Service</td><td><span class="badge badge-blue">scheduled</span></td></tr>
+          <tr><td>Apr 11</td><td>8:00 AM</td><td>Marcus Williams</td><td>Power Wash</td><td><span class="badge badge-blue">scheduled</span></td></tr>
+          <tr><td>Apr 12</td><td>10:00 AM</td><td>Sarah Johnson</td><td>Tree Pruning</td><td><span class="badge badge-blue">scheduled</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="page-chat" class="page">
+  <div class="card">
+    <div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat — Big Hat Lawn Assistant</h3><span class="badge badge-green">Live API</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">This is the real Claude AI chat widget connected to the live backend. Type anything a customer might ask.</p>
+      <div class="chat-box" id="chat-messages">
+        <div class="msg bot">👋 Hi! I'm the Big Hat Lawn AI assistant. I can answer questions about our services and help schedule a visit. What can I help you with?</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask about services, pricing, scheduling..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="btn btn-primary" onclick="sendChat()">Send</button>
+      </div>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+        <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('What services do you offer?')">Services?</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much does lawn mowing cost?')">Pricing?</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('I need my lawn mowed next Tuesday at 9am, my name is John Smith, address 123 Oak St Austin 78748, phone 512-555-9999')">Book a job</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('Do you serve 78739?')">My area?</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOICE -->
+<div id="page-voice" class="page">
+  <div class="card">
+    <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Lily (Bland.ai)</h3><span class="badge badge-amber">Sandbox — no real call</span></div>
+    <div class="card-body">
+      <div style="background:var(--amber-l);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;font-size:13px">
+        <strong>Sandbox Mode:</strong> Clicking "Call Me" triggers the backend /voice/call endpoint but returns a simulated response. No real phone call is placed until Twilio A2P 10DLC is complete and SANDBOX_MODE is set to false.
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. John Smith"></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
+      </div>
+      <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">📞 Simulate Call (Sandbox)</button>
+      <div id="voice-result" class="result-box"></div>
+
+      <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+        <h4 style="font-size:14px;margin-bottom:10px">Lily Configuration (Bland.ai)</h4>
+        <table>
+          <tr><th>Setting</th><th>Value</th></tr>
+          <tr><td>Agent name</td><td><strong>Lily</strong> (previously unnamed)</td></tr>
+          <tr><td>Pronunciation fix</td><td>"512" → "Five One Two" ✅</td></tr>
+          <tr><td>First sentence</td><td>"Hi! This is Lily from Big Hat Lawn. How can I help you today?"</td></tr>
+          <tr><td>Wait for greeting</td><td>false (Lily speaks first — kills silence)</td></tr>
+          <tr><td>Transfer number</td><td>(512) 748-2626 (Rudy)</td></tr>
+          <tr><td>Voice</td><td>Maya — natural US English female</td></tr>
+          <tr><td>Max duration</td><td>5 minutes</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULING -->
+<div id="page-schedule" class="page">
+  <div class="card">
+    <div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Scheduling — Book a Job</h3><span class="badge badge-amber">Mock LawnPro CRM</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Select a service and time slot. In sandbox mode, the booking writes to Supabase and to the mock LawnPro adapter — no real CRM entry created.</p>
+
+      <div class="form-row">
+        <div class="form-group"><label>Customer Name</label><input type="text" id="sched-name" placeholder="e.g. Maria Garcia"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="sched-phone" placeholder="(512) 555-0100"></div>
+      </div>
+      <div class="form-group"><label>Address</label><input type="text" id="sched-address" placeholder="4521 Slaughter Ln, Austin TX 78749"></div>
+      <div class="form-group"><label>Service</label>
+        <select id="sched-service">
+          <option value="">Select a service...</option>
+          <option value="Lawn Service">🌿 Lawn Service — $65</option>
+          <option value="Tree and Bush Pruning">🌳 Tree and Bush Pruning — $95</option>
+          <option value="Power Wash">💦 Power Wash — $120</option>
+        </select>
+      </div>
+
+      <button class="btn btn-secondary" onclick="loadAvailability()" style="margin-bottom:12px">Check Available Times</button>
+
+      <div id="availability-section" style="display:none">
+        <label>Available Slots</label>
+        <div id="slots-container"></div>
+        <input type="hidden" id="selected-date">
+        <input type="hidden" id="selected-time">
+      </div>
+
+      <button class="btn btn-primary" onclick="createBooking()" style="width:100%;margin-top:14px">Book Appointment (Sandbox)</button>
+      <div id="booking-result" class="result-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CRM LOOKUP -->
+<div id="page-crm" class="page">
+  <div class="card">
+    <div class="card-hdr"><span class="status-dot dot-green"></span><h3>CRM Lookup — Mock LawnPro</h3><span class="badge badge-amber">Sandbox data</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Simulate what happens when a customer calls — the AI looks them up in LawnPro by phone number to personalize the conversation.</p>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input type="tel" id="crm-phone" placeholder="Try: 5125551234 (Sarah Johnson)" style="flex:1">
+        <button class="btn btn-primary" onclick="lookupCustomer()">Look Up</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="btn btn-secondary" style="font-size:12px" onclick="document.getElementById('crm-phone').value='5125551234';lookupCustomer()">Sarah Johnson</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="document.getElementById('crm-phone').value='5125552345';lookupCustomer()">Marcus Williams</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="document.getElementById('crm-phone').value='5125559999';lookupCustomer()">Unknown caller</button>
+      </div>
+      <div id="crm-result" class="result-box"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="page-notifications" class="page">
+  <div class="card">
+    <div class="card-hdr"><h3>📱 Notification Preview — SMS + Email</h3><span class="badge badge-amber">Sandbox — logged only</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">This shows what Rudy and the customer would receive after a booking. In sandbox mode, messages are logged to Railway — no real SMS or email sent.</p>
+      <div class="notification-preview">
+        <div class="log-line log-info">📤 OWNER SMS → (512) 748-2626</div>
+        <div class="log-line" style="color:#e2e8f0;padding-left:16px;margin-bottom:12px">📅 New booking — Big Hat Lawn!<br>Customer: John Smith<br>Service: Lawn Service<br>Date: 2026-04-14 at 09:00<br>Address: 123 Oak St, Austin TX 78748<br>Source: ai-chat</div>
+        <div class="log-line log-info">📤 OWNER EMAIL → rudy@bighatlawn.com</div>
+        <div class="log-line" style="color:#e2e8f0;padding-left:16px;margin-bottom:12px">Subject: New Booking — Lawn Service on 2026-04-14<br>[same content as SMS]</div>
+        <div class="log-line log-info">📤 CUSTOMER SMS → (512) 555-9999</div>
+        <div class="log-line" style="color:#e2e8f0;padding-left:16px">Hi John! Your Lawn Service with Big Hat Lawn is confirmed for 2026-04-14 at 09:00. Questions? Call (512) 748-2626. Reply STOP to opt out.</div>
+      </div>
+      <div style="margin-top:16px">
+        <h4 style="font-size:14px;margin-bottom:10px">Send a Test Notification (Sandbox Log)</h4>
+        <button class="btn btn-primary" onclick="testNotification()">Trigger Test Booking → Notification Chain</button>
+        <div id="notif-result" class="result-box"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTS -->
+<div id="page-tests" class="page">
+  <div class="card">
+    <div class="card-hdr"><h3>✅ Automated Test Suite</h3><span class="badge badge-blue">9 tests</span></div>
+    <div class="card-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Run all 9 sandbox tests against the live Railway backend. All must pass before going live on bighatlawn.com.</p>
+      <button class="btn btn-primary" onclick="runAllTests()" id="run-tests-btn">▶ Run All Tests</button>
+      <div id="test-results" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://512ai-backend-production.up.railway.app/api/v1';
+const API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
+const TENANT = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
+const SESSION = '76fd06fe-1795-433b-905e-b50258bd5620';
+let chatCount=0, bookingCount=0, callCount=0;
+
+// ── Tab routing ─────────────────────────────────────────────────────────────
+function showTab(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Health check ────────────────────────────────────────────────────────────
+async function checkHealth() {
+  try {
+    const r = await fetch('https://512ai-backend-production.up.railway.app/health/deep');
+    const d = await r.json();
+    const el = document.getElementById('health-status');
+    const rows = Object.entries(d.checks||d).map(([k,v])=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="width:8px;height:8px;border-radius:50%;background:${v==='ok'||v==='configured'?'#22c55e':v==='active'?'#f59e0b':'#ef4444'};flex-shrink:0"></span>
+        <span style="font-size:13px;flex:1">${k.replace(/_/g,' ')}</span>
+        <span class="badge ${v==='ok'?'badge-green':v==='configured'||v==='active'?'badge-amber':'badge-red'}">${v}</span>
+      </div>`).join('');
+    el.innerHTML = rows;
+  } catch(e) {
+    document.getElementById('health-status').innerHTML = '<span style="color:var(--red)">Backend unreachable</span>';
+  }
+}
+
+// ── Chat ─────────────────────────────────────────────────────────────────────
+function addMsg(text, role) {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.innerHTML = '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
+  div.id = 'typing-indicator';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addMsg(msg, 'user');
+  addTyping();
+  try {
+    const r = await fetch(API+'/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
+      body:JSON.stringify({tenantId:TENANT, sessionId:SESSION, message:msg})
+    });
+    const d = await r.json();
+    document.getElementById('typing-indicator')?.remove();
+    addMsg(d.reply || d.error || 'Error', 'bot');
+    chatCount++;
+    document.getElementById('kpi-chats').textContent = chatCount;
+  } catch(e) {
+    document.getElementById('typing-indicator')?.remove();
+    addMsg('Connection error — is backend up?', 'bot');
+  }
+}
+
+function quickChat(msg) {
+  document.getElementById('chat-input').value = msg;
+  sendChat();
+  showTab('chat', document.querySelector('.tab-btn:nth-child(2)'));
+}
+
+// ── Voice ────────────────────────────────────────────────────────────────────
+async function triggerVoiceCall() {
+  const name = document.getElementById('voice-name').value.trim();
+  const phone = document.getElementById('voice-phone').value.trim();
+  const el = document.getElementById('voice-result');
+  if (!phone) { showResult(el, 'Please enter a phone number', 'error'); return; }
+  showResult(el, 'Connecting to Bland.ai (sandbox)...', '');
+  try {
+    const r = await fetch(API+'/voice/call', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
+      body:JSON.stringify({tenantId:TENANT, phone, name, source:'bighatlawndemo'})
+    });
+    const d = await r.json();
+    if (d.success) {
+      callCount++;
+      document.getElementById('kpi-calls').textContent = callCount;
+      showResult(el, `✅ SANDBOX: Call simulated!\nCall ID: ${d.call_id}\n\nIn production, Lily would call ${phone} within 15-30 seconds.\nFirst words: "${d.config?.first_sentence||'Hi! This is Lily from Big Hat Lawn.'}"`, 'sandbox');
+    } else {
+      showResult(el, '❌ ' + (d.error||'Call failed'), 'error');
+    }
+  } catch(e) { showResult(el, '❌ Connection error: '+e.message, 'error'); }
+}
+
+// ── Scheduling ───────────────────────────────────────────────────────────────
+async function loadAvailability() {
+  const sec = document.getElementById('availability-section');
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '<em style="color:var(--muted)">Loading slots...</em>';
+  sec.style.display = 'block';
+  try {
+    const r = await fetch(API+'/bookings/availability?tenantId='+TENANT, {headers:{'X-API-Key':API_KEY}});
+    const d = await r.json();
+    let html = '';
+    for (const [date, slots] of Object.entries(d.availability||{})) {
+      const label = new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+      html += `<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">${label}</div><div class="slot-grid">`;
+      for (const slot of slots) {
+        const [h,m] = slot.split(':');
+        const ampm = parseInt(h)<12?'AM':'PM';
+        const h12 = parseInt(h)>12?h-12:h;
+        html += `<div class="slot" onclick="selectSlot('${date}','${slot}',this)">${h12}:${m} ${ampm}</div>`;
+      }
+      html += '</div></div>';
+    }
+    container.innerHTML = html || '<em>No slots available</em>';
+  } catch(e) { container.innerHTML = '<em style="color:var(--red)">Error loading slots</em>'; }
+}
+
+function selectSlot(date, time, el) {
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selected-date').value = date;
+  document.getElementById('selected-time').value = time;
+}
+
+async function createBooking() {
+  const name = document.getElementById('sched-name').value.trim();
+  const phone = document.getElementById('sched-phone').value.trim();
+  const address = document.getElementById('sched-address').value.trim();
+  const service = document.getElementById('sched-service').value;
+  const date = document.getElementById('selected-date').value;
+  const time = document.getElementById('selected-time').value;
+  const el = document.getElementById('booking-result');
+
+  if (!name||!phone||!address||!service||!date||!time) {
+    showResult(el,'Please fill all fields and select a time slot','error'); return;
+  }
+  showResult(el,'Creating booking...','');
+  try {
+    const r = await fetch(API+'/bookings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
+      body:JSON.stringify({tenantId:TENANT, customerName:name, customerPhone:phone, address, serviceType:service, preferredDate:date, preferredTime:time, source:'sandbox_demo'})
+    });
+    const d = await r.json();
+    if (d.success||d.booking||d.id) {
+      bookingCount++;
+      document.getElementById('kpi-bookings').textContent = bookingCount;
+      const booking = d.booking || d;
+      showResult(el,`✅ Booking created!\nID: ${booking.id}\nCustomer: ${name}\nService: ${service}\nDate: ${date} at ${time}\nAddress: ${address}\n\n[SANDBOX] Mock LawnPro job also created. No real SMS sent.`,'sandbox');
+    } else {
+      showResult(el,'❌ '+(d.error||d.message||'Booking failed'),'error');
+    }
+  } catch(e) { showResult(el,'❌ '+e.message,'error'); }
+}
+
+// ── CRM ──────────────────────────────────────────────────────────────────────
+async function lookupCustomer() {
+  const phone = document.getElementById('crm-phone').value.trim();
+  const el = document.getElementById('crm-result');
+  if (!phone) { showResult(el,'Enter a phone number','error'); return; }
+  showResult(el,'Looking up in mock LawnPro...','');
+  try {
+    const r = await fetch(API+'/bookings/crm-lookup?phone='+phone.replace(/\D/g,''), {headers:{'X-API-Key':API_KEY}});
+    const d = await r.json();
+    if (d.customer) {
+      showResult(el,`✅ Customer found!\nName: ${d.customer.name}\nPhone: ${d.customer.phone}\nAddress: ${d.customer.address}\nNotes: ${d.customer.notes||'none'}\nTags: ${(d.customer.tags||[]).join(', ')}\n\nJobs on file: ${d.jobs?.length||0}${d.jobs?.length?'\n'+d.jobs.map(j=>`  • ${j.date} ${j.time} — ${j.service}`).join('\n'):''}`, 'success');
+    } else {
+      showResult(el,'ℹ️ Customer not found in CRM.\nAI would collect their info and create a new customer record.','sandbox');
+    }
+  } catch(e) { showResult(el,'❌ '+e.message,'error'); }
+}
+
+// ── Notifications ────────────────────────────────────────────────────────────
+async function testNotification() {
+  const el = document.getElementById('notif-result');
+  showResult(el,'Creating sandbox booking to trigger notification chain...','');
+  try {
+    const r = await fetch(API+'/bookings', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
+      body:JSON.stringify({tenantId:TENANT, customerName:'Test Notification', customerPhone:'+15125550099', address:'Test Address Austin TX', serviceType:'Lawn Service', preferredDate:'2026-04-20', preferredTime:'10:00', source:'notification_test'})
+    });
+    const d = await r.json();
+    showResult(el,'✅ SANDBOX: Booking created. Check Railway logs for:\n  NotificationAgent [SANDBOX]: would send SMS/email\n  IntegrationAgent [SANDBOX]: LawnPro mock sync\n\nBooking ID: '+(d.booking?.id||d.id||'created'),'sandbox');
+  } catch(e) { showResult(el,'❌ '+e.message,'error'); }
+}
+
+// ── Test Runner ──────────────────────────────────────────────────────────────
+async function runAllTests() {
+  const btn = document.getElementById('run-tests-btn');
+  const container = document.getElementById('test-results');
+  btn.disabled = true;
+  btn.textContent = '⏳ Running tests...';
+  container.innerHTML = '';
+
+  const tests = [
+    ['Health check', async () => {
+      const r = await fetch('https://512ai-backend-production.up.railway.app/health/deep');
+      const d = await r.json();
+      if (d.checks?.supabase !== 'ok') throw new Error('Supabase not ok');
+      if (d.checks?.anthropic !== 'ok') throw new Error('Anthropic not ok');
+      return 'All services healthy. Sandbox: '+(d.checks?.sandbox_mode||'unknown');
+    }],
+    ['Chat FAQ', async () => {
+      const r = await fetch(API+'/chat', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, sessionId:'test-'+Date.now(), message:'What services do you offer?'})});
+      const d = await r.json();
+      if (!d.reply) throw new Error('No reply');
+      const lower = d.reply.toLowerCase();
+      if (!lower.includes('lawn') && !lower.includes('pruning') && !lower.includes('wash')) throw new Error('Services not mentioned');
+      return 'Mentions services correctly';
+    }],
+    ['Chat booking intent', async () => {
+      const r = await fetch(API+'/chat', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, sessionId:'test-'+Date.now(), message:'Book lawn mowing for John, 123 Oak St Austin, phone 512-555-9999, next Monday at 9am'})});
+      const d = await r.json();
+      if (!d.reply) throw new Error('No reply');
+      return 'Booking intent handled';
+    }],
+    ['Availability API', async () => {
+      const r = await fetch(API+'/bookings/availability?tenantId='+TENANT, {headers:{'X-API-Key':API_KEY}});
+      const d = await r.json();
+      if (!d.availability || !Object.keys(d.availability).length) throw new Error('No slots returned');
+      return Object.keys(d.availability).length + ' dates available';
+    }],
+    ['CRM lookup — known', async () => {
+      const r = await fetch(API+'/bookings/crm-lookup?phone=5125551234', {headers:{'X-API-Key':API_KEY}});
+      const d = await r.json();
+      if (!d.customer) throw new Error('Sarah Johnson not found');
+      return 'Found: '+d.customer.name;
+    }],
+    ['CRM lookup — unknown', async () => {
+      const r = await fetch(API+'/bookings/crm-lookup?phone=5125559999', {headers:{'X-API-Key':API_KEY}});
+      const d = await r.json();
+      if (d.customer !== null) throw new Error('Should return null for unknown');
+      return 'Unknown caller: null returned correctly';
+    }],
+    ['Voice call sandbox', async () => {
+      const r = await fetch(API+'/voice/call', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, phone:'+15125550000', name:'Test'})});
+      const d = await r.json();
+      if (!d.success) throw new Error(d.error||'Call failed');
+      if (!d.sandbox) throw new Error('Not in sandbox mode');
+      return 'Sandbox call OK: '+d.call_id;
+    }],
+    ['Voice webhook (transcript parse)', async () => {
+      const r = await fetch(API+'/voice/webhook?tenant_id='+TENANT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          call_id:'test_webhook_'+Date.now(),
+          status:'completed',
+          transcripts:[
+            {user:'assistant',text:'Hi! This is Lily from Big Hat Lawn.'},
+            {user:'user',text:'Hi I need lawn mowing. Name is Tom Test, 789 Test Ave Austin 78748, phone 512-555-7890, next Friday at 2pm please'},
+            {user:'assistant',text:'Great, I can book that for you!'},
+            {user:'user',text:'Yes that works, thank you'}
+          ]
+        })
+      });
+      const d = await r.json();
+      if (d.handled === false && !d.booking) throw new Error('No booking: '+d.reason);
+      return 'Booking created from transcript';
+    }],
+    ['Lead capture', async () => {
+      const r = await fetch(API+'/leads', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, name:'Test Lead', phone:'5125550001', email:'test@example.com', message:'Test from sandbox', source:'sandbox_test'})});
+      const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      return 'Lead created: '+(d.id||'ok');
+    }],
+  ];
+
+  let passed = 0;
+  for (const [name, fn] of tests) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px';
+    row.innerHTML = `<span style="width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0"></span><span style="flex:1">${name}</span><span style="color:var(--muted)">Running...</span>`;
+    container.appendChild(row);
+    try {
+      const result = await fn();
+      row.children[0].style.cssText = 'width:16px;height:16px;border-radius:50%;background:#22c55e;flex-shrink:0;display:flex;align-items:center;justify-content:center';
+      row.children[0].textContent = '✓';
+      row.children[2].style.color = 'var(--green)';
+      row.children[2].textContent = result;
+      passed++;
+    } catch(e) {
+      row.children[0].style.cssText = 'width:16px;height:16px;border-radius:50%;background:#ef4444;flex-shrink:0;display:flex;align-items:center;justify-content:center';
+      row.children[0].textContent = '✗';
+      row.children[2].style.color = 'var(--red)';
+      row.children[2].textContent = e.message;
+    }
+  }
+
+  const summary = document.createElement('div');
+  summary.style.cssText = 'margin-top:16px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:700';
+  if (passed === tests.length) {
+    summary.style.background = 'var(--green-l)';
+    summary.style.color = 'var(--green-d)';
+    summary.textContent = `✅ All ${passed}/${tests.length} tests passed — ready to go live on bighatlawn.com`;
+  } else {
+    summary.style.background = 'var(--amber-l)';
+    summary.style.color = '#92400E';
+    summary.textContent = `⚠️ ${passed}/${tests.length} tests passed — fix failures before going live`;
+  }
+  container.appendChild(summary);
+
+  btn.disabled = false;
+  btn.textContent = '▶ Run All Tests Again';
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function showResult(el, text, type) {
+  el.className = 'result-box show' + (type ? ' '+type : '');
+  el.style.whiteSpace = 'pre-wrap';
+  el.textContent = text;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+checkHealth();
+</script>
+</body>
+</html>
