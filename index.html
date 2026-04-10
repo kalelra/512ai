@@ -2290,4 +2290,58 @@ Do NOT mention that you are an AI.`;
 
 
 
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "512AI",
+  "description": "AI automation tools for Austin small businesses — AI chat, voice agents, and smart scheduling.",
+  "url": "https://512ai.co",
+  "telephone": "",
+  "email": "contact@512ai.co",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Austin",
+    "addressRegion": "TX",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Austin"
+  },
+  "priceRange": "$$",
+  "openingHours": "Mo-Fr 09:00-18:00",
+  "sameAs": ["https://512ai.co"]
+}
+</script>
+<script>
+  // Wire contact form to Railway backend
+  async function handleContactForm(e) {
+    e.preventDefault();
+    const name = document.getElementById('form-name')?.value?.trim() || '';
+    const biz = document.getElementById('form-biz')?.value?.trim() || '';
+    const email = document.getElementById('form-email')?.value?.trim() || '';
+    const message = document.getElementById('form-message')?.value?.trim() || '';
+    if (!email) return true; // let form submit normally
+    try {
+      await fetch('https://512ai-backend-production.up.railway.app/api/v1/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: biz || name,
+          ownerName: name,
+          email,
+          phone: '',
+          servicesNeeded: ['General Inquiry'],
+          message,
+          source: '512ai_homepage_contact'
+        })
+      });
+    } catch(err) {}
+    // Always let Formspree handle it too
+    e.target.submit();
+  }
+</script>
+
 </body></html>
