@@ -2,3 +2,5 @@
 /portal    /files/portal.html         200
 /admin     /files/admin-portal.html   200
 /widget    /files/widget-test.html    200
+/bighatlawndemo  /files/bighatlawndemo.html  200
+/bighatlawndemo/*  /files/bighatlawndemo.html  200
