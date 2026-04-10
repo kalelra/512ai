@@ -190,7 +190,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 <!-- VOICE -->
 <div id="page-voice" class="page">
   <div class="card">
-    <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Lily (Bland.ai)</h3><span class="badge badge-amber">Sandbox — no real call</span></div>
+    <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Zoe (Bland.ai)</h3><span class="badge badge-amber">Sandbox — no real call</span></div>
     <div class="card-body">
       <div style="background:var(--amber-l);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:16px;font-size:13px">
         <strong>Sandbox Mode:</strong> Clicking "Call Me" triggers the backend /voice/call endpoint but returns a simulated response. No real phone call is placed until Twilio A2P 10DLC is complete and SANDBOX_MODE is set to false.
@@ -203,13 +203,13 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       <div id="voice-result" class="result-box"></div>
 
       <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-        <h4 style="font-size:14px;margin-bottom:10px">Lily Configuration (Bland.ai)</h4>
+        <h4 style="font-size:14px;margin-bottom:10px">Zoe Configuration (Bland.ai)</h4>
         <table>
           <tr><th>Setting</th><th>Value</th></tr>
-          <tr><td>Agent name</td><td><strong>Lily</strong> (previously unnamed)</td></tr>
+          <tr><td>Agent name</td><td><strong>Zoe</strong> (previously unnamed)</td></tr>
           <tr><td>Pronunciation fix</td><td>"512" → "Five One Two" ✅</td></tr>
-          <tr><td>First sentence</td><td>"Hi! This is Lily from Big Hat Lawn. How can I help you today?"</td></tr>
-          <tr><td>Wait for greeting</td><td>false (Lily speaks first — kills silence)</td></tr>
+          <tr><td>First sentence</td><td>"Hi! This is Zoe from Big Hat Lawn. How can I help you today?"</td></tr>
+          <tr><td>Wait for greeting</td><td>false (Zoe speaks first — kills silence)</td></tr>
           <tr><td>Transfer number</td><td>(512) 748-2626 (Rudy)</td></tr>
           <tr><td>Voice</td><td>Maya — natural US English female</td></tr>
           <tr><td>Max duration</td><td>5 minutes</td></tr>
@@ -411,7 +411,7 @@ async function triggerVoiceCall() {
     if (d.success) {
       callCount++;
       document.getElementById('kpi-calls').textContent = callCount;
-      showResult(el, `✅ SANDBOX: Call simulated!\nCall ID: ${d.call_id}\n\nIn production, Lily would call ${phone} within 15-30 seconds.\nFirst words: "${d.config?.first_sentence||'Hi! This is Lily from Big Hat Lawn.'}"`, 'sandbox');
+      showResult(el, `✅ SANDBOX: Call simulated!\nCall ID: ${d.call_id}\n\nIn production, Zoe would call ${phone} within 15-30 seconds.\nFirst words: "${d.config?.first_sentence||'Hi! This is Zoe from Big Hat Lawn.'}"`, 'sandbox');
     } else {
       showResult(el, '❌ ' + (d.error||'Call failed'), 'error');
     }
@@ -576,7 +576,7 @@ async function runAllTests() {
           call_id:'test_webhook_'+Date.now(),
           status:'completed',
           transcripts:[
-            {user:'assistant',text:'Hi! This is Lily from Big Hat Lawn.'},
+            {user:'assistant',text:'Hi! This is Zoe from Big Hat Lawn.'},
             {user:'user',text:'Hi I need lawn mowing. Name is Tom Test, 789 Test Ave Austin 78748, phone 512-555-7890, next Friday at 2pm please'},
             {user:'assistant',text:'Great, I can book that for you!'},
             {user:'user',text:'Yes that works, thank you'}
