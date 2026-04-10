@@ -584,9 +584,9 @@ async function runAllTests() {
         })
       });
       const d = await r.json();
-      if (d.success || d.booking) return 'Booking created: '+(d.booking?.id||'ok');
-      // Even if no intent detected, the webhook endpoint responded correctly
-      return 'Webhook processed: '+(d.reason||d.handled);
+      if (d.success && d.booking) return 'Booking created from transcript: '+d.booking.id.slice(0,8);
+      if (d.handled === false) return 'Webhook responded correctly (no booking intent in transcript)';
+      return 'Webhook processed: '+JSON.stringify(d).slice(0,60);
     }],
     ['Lead capture', async () => {
       const r = await fetch(API+'/leads', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, name:'Test Lead', phone:'5125550001', email:'test@example.com', message:'Test from sandbox', source:'sandbox_test'})});
