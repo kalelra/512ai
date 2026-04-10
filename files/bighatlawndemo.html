@@ -589,7 +589,8 @@ async function runAllTests() {
       return 'Webhook processed: '+JSON.stringify(d).slice(0,60);
     }],
     ['Lead capture', async () => {
-      const r = await fetch(API+'/leads', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY}, body:JSON.stringify({tenantId:TENANT, name:'Test Lead', phone:'5125550001', email:'test@example.com', message:'Test from sandbox', source:'sandbox_test'})});
+      const ts = Date.now();
+      const r = await fetch(API+'/leads', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({businessName:'Sandbox Test Lawn', ownerName:'Test Owner', email:'test'+ts+'@sandbox.com', phone:'5125550001', servicesNeeded:['AI Chat','Voice AI'], message:'Sandbox test lead from demo'})});
       const d = await r.json();
       if (d.error) throw new Error(d.error);
       return 'Lead created: '+(d.id||'ok');
