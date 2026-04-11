@@ -189,6 +189,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         </div>
         <button class="btn btn-primary" id="voice-call-btn" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Zoe Live!</button>
         <div id="voice-result" class="result-box"></div>
+        <div id="call-transcript" style="display:none;margin-top:14px;padding:14px;background:#fff;border:1px solid var(--border);border-radius:10px;max-height:300px;overflow-y:auto"></div>
       </div>
     </div>
   </div>
@@ -443,7 +444,34 @@ function triggerVoiceCall() {
   }).then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.success) {
-        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nZoe will greet you by name, answer pricing questions, schedule jobs, and transfer to Rudy if needed.\n\nCall ID: ' + (d.call_id || 'initiated'), 'success');
+        var callId = d.call_id || 'initiated';
+        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nZoe will greet you by name, answer pricing questions, schedule jobs, and transfer to Rudy if needed.\n\nCall ID: ' + callId, 'success');
+        var transcriptEl = document.getElementById('call-transcript');
+        if (transcriptEl) {
+          transcriptEl.style.display = 'block';
+          transcriptEl.innerHTML = '<div style="font-weight:700;margin-bottom:8px">&#128172; Live Call Log</div><div id="transcript-lines" style="font-size:13px;color:#555">Connecting to Zoe...</div>';
+          var pollCount = 0;
+          var pollTranscript = setInterval(function() {
+            pollCount++;
+            fetch(API + '/voice/call/' + callId + '/status', { headers: { 'X-API-Key': API_KEY } })
+              .then(function(r) { return r.json(); })
+              .then(function(t) {
+                var lines = t.transcript || t.transcripts || [];
+                var tEl = document.getElementById('transcript-lines');
+                if (tEl && lines.length) {
+                  tEl.innerHTML = lines.map(function(l) {
+                    var who = (l.user === 'assistant' || l.role === 'assistant') ? '&#129302; <strong>Zoe</strong>' : '&#128100; <strong>You</strong>';
+                    return '<div style="margin-bottom:6px;padding:6px 8px;border-radius:6px;background:' + ((l.user === 'assistant' || l.role === 'assistant') ? '#f0fdf4' : '#f8faff') + '">' + who + ': ' + (l.text || l.content || '') + '</div>';
+                  }).join('');
+                } else if (tEl && t.status === 'completed') {
+                  if (!lines.length) tEl.innerHTML += '<br><em>Call ended.</em>';
+                  clearInterval(pollTranscript);
+                }
+                if (pollCount > 24) clearInterval(pollTranscript);
+              })
+              .catch(function() { if (pollCount > 5) clearInterval(pollTranscript); });
+          }, 5000);
+        }
       } else {
         if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!'; }
         showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error');
@@ -496,7 +524,7 @@ function loadAvailability() {
         avail[date].forEach(function(slot) {
           var parts = slot.split(':'); var h = parseInt(parts[0]); var m = parts[1];
           var ampm = h < 12 ? 'AM' : 'PM'; var h12 = h > 12 ? h - 12 : h;
-          html += '<div class=\"slot\" onclick=\"selectSlot(\\\'' + date + '\\\',\\\'' + slot + '\\\',this)\">' + h12 + ':' + m + ' ' + ampm + '</div>';
+          html += '<div class="slot" onclick="selectSlot(\'' + date + '\',\'' + slot + '\',this)">' + h12 + ':' + m + ' ' + ampm + '</div>';
         });
         html += '</div></div>';
       });
