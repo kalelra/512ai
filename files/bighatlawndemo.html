@@ -286,7 +286,10 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 </div>
 <script>
 var API     = 'https://512ai-backend-production.up.railway.app/api/v1';
-var SESSION_ID = 'sess-' + Math.random().toString(36).slice(2) + '-' + Date.now();
+var SESSION_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return v.toString(16);
+});
 var API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
 var TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
 var aiCount = 0, aiRev = 0;
@@ -410,7 +413,10 @@ function addTyping() {
   box.appendChild(div); box.scrollTop = box.scrollHeight;
 }
 function clearChat() {
-  SESSION_ID = 'sess-' + Math.random().toString(36).slice(2) + '-' + Date.now();
+  SESSION_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
   var box = document.getElementById('chat-messages');
   box.innerHTML = '<div class="msg bot">&#128075; Hi! I’m Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div>';
 }
