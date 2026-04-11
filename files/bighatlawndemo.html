@@ -80,268 +80,202 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 </style>
 </head>
 <body>
-<!-- LOGIN OVERLAY - injected before body content -->
-<div id="login-overlay" style="
-  position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 50%,#1a1a1a 100%);
+<!-- 512AI LOGIN WALL v2 — deferred, non-blocking -->
+<style>
+#lock-screen{
+  position:fixed;inset:0;z-index:99999;
+  background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 60%,#111 100%);
   display:flex;align-items:center;justify-content:center;
-">
-  <div style="
-    background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:420px;
-    box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center;
-  ">
-    <!-- Logo -->
-    <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;margin-bottom:4px">
-      🤠 Big Hat <span style="color:#F59E0B">Lawn</span>
-    </div>
-    <div style="font-size:13px;color:#666;margin-bottom:6px">AI Tools Demo</div>
-    <div style="font-size:11px;color:#999;background:#f5f5f5;border-radius:6px;padding:4px 10px;display:inline-block;margin-bottom:28px">
-      Powered by <strong>512AI</strong>
-    </div>
+  font-family:'DM Sans',sans-serif;
+}
+#lock-box{
+  background:#fff;border-radius:20px;padding:40px 36px;
+  width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.45);
+  text-align:center;
+}
+#lock-logo{font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:2px}
+#lock-logo span{color:#F59E0B}
+#lock-sub{font-size:12px;color:#999;margin-bottom:24px}
+#lock-err{display:none;background:#ffebee;border:1px solid #ef9a9a;border-radius:8px;
+  padding:9px 13px;font-size:13px;color:#c62828;margin-bottom:14px;text-align:left}
+.lock-label{display:block;font-size:11px;font-weight:700;color:#666;
+  margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;text-align:left}
+.lock-input{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;
+  padding:11px 13px;font-size:14px;font-family:'DM Sans',sans-serif;
+  outline:none;box-sizing:border-box;margin-bottom:14px}
+.lock-input:focus{border-color:#2E7D32}
+#lock-btn{width:100%;background:#2E7D32;color:#fff;border:none;border-radius:10px;
+  padding:13px;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif}
+#lock-btn:hover{background:#1B5E20}
+#lock-footer{margin-top:18px;font-size:12px;color:#999}
+#lock-footer a{color:#2E7D32}
+/* user badge fixed bottom-right */
+#user-badge{
+  position:fixed;bottom:16px;right:16px;z-index:10000;
+  background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 14px;
+  font-size:12px;font-family:'DM Sans',sans-serif;
+  box-shadow:0 4px 16px rgba(0,0,0,.35);
+  display:none;align-items:center;gap:10px;
+}
+</style>
 
-    <div id="login-error" style="
-      display:none;background:#ffebee;border:1px solid #ef9a9a;border-radius:8px;
-      padding:10px 14px;font-size:13px;color:#c62828;margin-bottom:16px;
-    "></div>
-
-    <div style="text-align:left;margin-bottom:14px">
-      <label style="display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Username</label>
-      <input id="login-user" type="text" placeholder="Enter username"
-        style="width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
-        onkeydown="if(event.key==='Enter')doLogin()"
-      >
-    </div>
-    <div style="text-align:left;margin-bottom:24px">
-      <label style="display:block;font-size:11px;font-weight:700;color:#666;margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em">Password</label>
-      <input id="login-pass" type="password" placeholder="Enter password"
-        style="width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:11px 14px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;"
-        onkeydown="if(event.key==='Enter')doLogin()"
-      >
-    </div>
-
-    <button onclick="doLogin()" style="
-      width:100%;background:#2E7D32;color:#fff;border:none;border-radius:10px;
-      padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;
-      transition:background .15s;
-    " onmouseover="this.style.background='#1B5E20'" onmouseout="this.style.background='#2E7D32'">
-      Sign In
-    </button>
-
-    <div style="margin-top:20px;font-size:12px;color:#999">
-      Need access? Contact <a href="mailto:contact@512ai.co" style="color:#2E7D32">contact@512ai.co</a>
-    </div>
+<!-- Lock screen HTML — shown by default, hidden on successful auth -->
+<div id="lock-screen">
+  <div id="lock-box">
+    <div id="lock-logo">🤠 Big Hat <span>Lawn</span></div>
+    <div id="lock-sub">AI Tools Demo &nbsp;·&nbsp; Powered by 512AI</div>
+    <div id="lock-err"></div>
+    <label class="lock-label" for="l-user">Username</label>
+    <input id="l-user" class="lock-input" type="text" placeholder="Enter username" autocomplete="username">
+    <label class="lock-label" for="l-pass">Password</label>
+    <input id="l-pass" class="lock-input" type="password" placeholder="Enter password" autocomplete="current-password">
+    <button id="lock-btn" type="button">Sign In</button>
+    <div id="lock-footer">Need access? <a href="mailto:contact@512ai.co">contact@512ai.co</a></div>
   </div>
 </div>
 
+<!-- User badge shown after login -->
+<div id="user-badge">
+  <div id="ub-avatar" style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0"></div>
+  <div><div id="ub-name" style="font-weight:600"></div><div id="ub-meta" style="color:#9ca3af;font-size:11px"></div></div>
+  <button onclick="doLogout()" style="background:#ef4444;border:none;color:#fff;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Sign out</button>
+</div>
+
 <script>
-// ── AUTH CONFIG ──────────────────────────────────────────────────────────────
-const USERS = {
-  'rudy':  { hash: '29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023', role: 'client',  name: 'Rudy Cantu', business: 'Big Hat Lawn' },
-  'admin': { hash: '9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role: 'admin',   name: 'Ricardo Avila', business: '512AI' }
+// ── AUTH — runs AFTER window loads so page JS is ready ──────────────────────
+const _USERS = {
+  'rudy' :{ h:'29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023', role:'client', name:'Rudy Cantu',   biz:'Big Hat Lawn' },
+  'admin':{ h:'9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role:'admin',  name:'Ricardo Avila', biz:'512AI' }
 };
 
-async function sha256(msg) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+async function _sha256(s){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 }
 
-async function doLogin() {
-  const user = document.getElementById('login-user').value.trim().toLowerCase();
-  const pass = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-
-  if (!user || !pass) {
-    errEl.textContent = 'Please enter your username and password.';
-    errEl.style.display = 'block';
+async function doLogin(){
+  const u=document.getElementById('l-user').value.trim().toLowerCase();
+  const p=document.getElementById('l-pass').value;
+  const err=document.getElementById('lock-err');
+  err.style.display='none';
+  if(!u||!p){ err.textContent='Please enter username and password.'; err.style.display='block'; return; }
+  const h=await _sha256(p);
+  const acc=_USERS[u];
+  if(!acc||acc.h!==h){
+    err.textContent='Incorrect username or password.'; err.style.display='block';
+    document.getElementById('l-pass').value='';
+    document.getElementById('l-pass').focus();
     return;
   }
-
-  const hash = await sha256(pass);
-  const account = USERS[user];
-
-  if (!account || account.hash !== hash) {
-    errEl.textContent = 'Invalid username or password. Please try again.';
-    errEl.style.display = 'block';
-    document.getElementById('login-pass').value = '';
-    document.getElementById('login-pass').focus();
-    return;
-  }
-
-  // ── AUTH PASSED ──────────────────────────────────────────────────────────
-  // Store session (sessionStorage clears on tab close — no persistent tokens)
-  sessionStorage.setItem('512ai_user', JSON.stringify({
-    user, role: account.role, name: account.name, business: account.business,
-    loginAt: new Date().toISOString()
-  }));
-
-  // Hide login overlay
-  document.getElementById('login-overlay').style.display = 'none';
-
-  // Show user badge
-  showUserBadge(account);
-
-  // Admin gets extra tab
-  if (account.role === 'admin') {
-    showAdminTab();
-  }
+  sessionStorage.setItem('_512ai',JSON.stringify({u,role:acc.role,name:acc.name,biz:acc.biz}));
+  _unlock(acc);
 }
 
-function showUserBadge(account) {
-  const badge = document.createElement('div');
-  badge.id = 'user-badge';
-  badge.style.cssText = `
-    position:fixed;bottom:16px;right:16px;z-index:1000;
-    background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 14px;
-    font-size:12px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.3);
-    display:flex;align-items:center;gap:10px;
-  `;
-  const roleColor = account.role === 'admin' ? '#F59E0B' : '#4ade80';
-  badge.innerHTML = `
-    <div style="width:32px;height:32px;border-radius:50%;background:${roleColor};color:#1a1a1a;
-      display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">
-      ${account.name.charAt(0)}
-    </div>
-    <div>
-      <div style="font-weight:600">${account.name}</div>
-      <div style="color:#9ca3af;font-size:11px">${account.business} · ${account.role}</div>
-    </div>
-    <button onclick="doLogout()" style="background:#ef4444;border:none;color:#fff;border-radius:6px;
-      padding:4px 8px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;">Sign out</button>
-  `;
-  document.body.appendChild(badge);
+function _unlock(acc){
+  // Hide login screen
+  document.getElementById('lock-screen').style.display='none';
+  // Show badge
+  const badge=document.getElementById('user-badge');
+  const av=document.getElementById('ub-avatar');
+  const roleColor=acc.role==='admin'?'#F59E0B':'#4ade80';
+  av.style.background=roleColor; av.style.color='#1a1a1a';
+  av.textContent=acc.name.charAt(0);
+  document.getElementById('ub-name').textContent=acc.name;
+  document.getElementById('ub-meta').textContent=acc.biz+' · '+acc.role;
+  badge.style.display='flex';
+  // Admin extra tab — wait for DOM to be fully ready
+  if(acc.role==='admin') _addAdminTab();
 }
 
-function showAdminTab() {
-  // Admin gets a special "Admin View" indicator in the nav tabs
-  const tabs = document.querySelector('.nav-tabs');
-  if (tabs && !document.getElementById('admin-tab-btn')) {
-    const adminBtn = document.createElement('button');
-    adminBtn.id = 'admin-tab-btn';
-    adminBtn.className = 'tab-btn';
-    adminBtn.style.cssText = 'color:#F59E0B;font-weight:700;';
-    adminBtn.textContent = '⚙️ Admin';
-    adminBtn.onclick = function() { showTab('admin-view', this); };
-    tabs.appendChild(adminBtn);
-
-    // Create admin page
-    const adminPage = document.createElement('div');
-    adminPage.id = 'page-admin-view';
-    adminPage.className = 'page';
-    adminPage.innerHTML = `
-      <div class="card">
-        <div class="card-hdr" style="background:#1a1a1a">
-          <span style="font-size:16px">⚙️</span>
-          <h3 style="color:#F59E0B">Admin Panel — 512AI</h3>
-          <span class="badge" style="background:#F59E0B;color:#1a1a1a">Ricardo Avila</span>
+function _addAdminTab(){
+  if(document.getElementById('admin-tab-btn')) return;
+  const tabs=document.querySelector('.nav-tabs');
+  if(!tabs) return;
+  const btn=document.createElement('button');
+  btn.id='admin-tab-btn';
+  btn.className='tab-btn';
+  btn.style.cssText='color:#F59E0B;font-weight:700;border-bottom-color:#F59E0B';
+  btn.innerHTML='⚙️ Admin';
+  btn.onclick=function(){ if(typeof showTab==='function') showTab('admin-view',this); };
+  tabs.appendChild(btn);
+  // Admin page
+  const pg=document.createElement('div');
+  pg.id='page-admin-view'; pg.className='page';
+  pg.innerHTML=`
+    <div class="card">
+      <div class="card-hdr" style="background:#1a1a1a">
+        <span style="font-size:16px">⚙️</span>
+        <h3 style="color:#F59E0B">Admin Panel — 512AI</h3>
+        <span class="badge" style="background:#F59E0B;color:#1a1a1a">Ricardo Avila</span>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
+          ${['🚂|Railway|Backend · Env vars|https://railway.com/project/2c594c14-a636-4a40-808c-f6e8ffc52c01',
+             '🗄️|Supabase|Database · Bookings|https://app.supabase.com',
+             '⚡|Netlify|Frontend · 512ai.co|https://app.netlify.com',
+             '📞|Bland.ai|Zoe · +15128838687|https://app.bland.ai'].map(r=>{
+               const[icon,title,sub,url]=r.split('|');
+               return `<a href="${url}" target="_blank" style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;text-decoration:none;display:block">
+                 <div style="font-size:22px;margin-bottom:6px">${icon}</div>
+                 <div style="font-weight:700">${title}</div>
+                 <div style="font-size:12px;color:#9ca3af;margin-top:2px">${sub}</div></a>`;
+             }).join('')}
         </div>
-        <div class="card-body">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-            <a href="https://railway.com/project/2c594c14-a636-4a40-808c-f6e8ffc52c01" target="_blank"
-              style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;text-decoration:none;display:block">
-              <div style="font-size:20px;margin-bottom:6px">🚂</div>
-              <div style="font-weight:700">Railway</div>
-              <div style="font-size:12px;color:#9ca3af;margin-top:2px">Backend · Env vars · Deploys</div>
-            </a>
-            <a href="https://app.supabase.com" target="_blank"
-              style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;text-decoration:none;display:block">
-              <div style="font-size:20px;margin-bottom:6px">🗄️</div>
-              <div style="font-weight:700">Supabase</div>
-              <div style="font-size:12px;color:#9ca3af;margin-top:2px">Database · Bookings · Auth</div>
-            </a>
-            <a href="https://app.netlify.com" target="_blank"
-              style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;text-decoration:none;display:block">
-              <div style="font-size:20px;margin-bottom:6px">⚡</div>
-              <div style="font-weight:700">Netlify</div>
-              <div style="font-size:12px;color:#9ca3af;margin-top:2px">Frontend · 512ai.co · Deploys</div>
-            </a>
-            <a href="https://app.bland.ai" target="_blank"
-              style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;text-decoration:none;display:block">
-              <div style="font-size:20px;margin-bottom:6px">📞</div>
-              <div style="font-weight:700">Bland.ai</div>
-              <div style="font-size:12px;color:#9ca3af;margin-top:2px">Zoe voice · +1(512)883-8687</div>
-            </a>
-          </div>
-
-          <div style="background:#f9faf7;border:1px solid #e0e0e0;border-radius:10px;padding:16px;margin-bottom:16px">
-            <div style="font-weight:700;font-size:14px;margin-bottom:10px">🔐 Demo Login Credentials</div>
-            <table style="width:100%;font-size:13px">
-              <tr style="border-bottom:1px solid #e0e0e0">
-                <th style="text-align:left;padding:6px;color:#666">Role</th>
-                <th style="text-align:left;padding:6px;color:#666">Username</th>
-                <th style="text-align:left;padding:6px;color:#666">Password</th>
-                <th style="text-align:left;padding:6px;color:#666">Access</th>
-              </tr>
-              <tr style="border-bottom:1px solid #e0e0e0">
-                <td style="padding:8px 6px"><span class="badge badge-amber">Client</span></td>
-                <td style="padding:8px 6px;font-family:monospace">rudy</td>
-                <td style="padding:8px 6px;font-family:monospace">BigHatLawn2026!</td>
-                <td style="padding:8px 6px">All tabs except Admin</td>
-              </tr>
-              <tr>
-                <td style="padding:8px 6px"><span class="badge badge-green">Admin</span></td>
-                <td style="padding:8px 6px;font-family:monospace">admin</td>
-                <td style="padding:8px 6px;font-family:monospace">512AI@Admin2026!</td>
-                <td style="padding:8px 6px">All tabs + Admin panel</td>
-              </tr>
-            </table>
-          </div>
-
-          <div id="live-health-admin" style="background:#f9faf7;border:1px solid #e0e0e0;border-radius:10px;padding:16px">
-            <div style="font-weight:700;font-size:14px;margin-bottom:10px">📡 Live Backend Health</div>
-            <button class="btn btn-primary" onclick="loadAdminHealth()" style="margin-bottom:10px">Check Now</button>
-            <div id="admin-health-result"></div>
-          </div>
+        <div style="background:#f9faf7;border:1px solid #e0e0e0;border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-weight:700;font-size:14px;margin-bottom:10px">🔐 Demo Credentials</div>
+          <table style="width:100%;font-size:13px;border-collapse:collapse">
+            <tr style="border-bottom:1px solid #e0e0e0"><th style="text-align:left;padding:6px;color:#666">Role</th><th style="text-align:left;padding:6px;color:#666">User</th><th style="text-align:left;padding:6px;color:#666">Password</th></tr>
+            <tr style="border-bottom:1px solid #e0e0e0"><td style="padding:8px 6px">Client</td><td style="padding:8px 6px;font-family:monospace">rudy</td><td style="padding:8px 6px;font-family:monospace">BigHatLawn2026!</td></tr>
+            <tr><td style="padding:8px 6px">Admin</td><td style="padding:8px 6px;font-family:monospace">admin</td><td style="padding:8px 6px;font-family:monospace">512AI@Admin2026!</td></tr>
+          </table>
+        </div>
+        <div style="background:#f9faf7;border:1px solid #e0e0e0;border-radius:10px;padding:16px">
+          <div style="font-weight:700;font-size:14px;margin-bottom:10px">📡 Live Backend Health</div>
+          <button class="btn btn-primary" onclick="(function(){
+            const el=document.getElementById('admin-health');el.innerHTML='Checking...';
+            fetch('https://512ai-backend-production.up.railway.app/health/deep').then(r=>r.json()).then(d=>{
+              el.innerHTML=Object.entries(d.checks||d).map(([k,v])=>`<div style='display:flex;gap:10px;font-size:13px;padding:5px 0'>
+                <span style='width:8px;height:8px;border-radius:50%;background:${v==='ok'||v==='configured'?'#22c55e':v==='active'?'#f59e0b':'#ef4444'};flex-shrink:0;margin-top:3px'></span>
+                <span style='flex:1'>${k.replace(/_/g,' ')}</span><span style='color:#666;font-size:11px;font-family:monospace'>${v}</span></div>`).join('');
+            }).catch(()=>{el.innerHTML='<span style=color:red>Backend unreachable</span>';})
+          })()">Check Now</button>
+          <div id="admin-health" style="margin-top:10px"></div>
         </div>
       </div>
-    `;
-    document.querySelector('.page').parentNode.appendChild(adminPage);
-  }
+    </div>`;
+  const container=document.querySelector('.page')?.parentNode;
+  if(container) container.appendChild(pg);
 }
 
-function loadAdminHealth() {
-  const el = document.getElementById('admin-health-result');
-  el.innerHTML = '<em style="color:#666">Checking...</em>';
-  fetch('https://512ai-backend-production.up.railway.app/health/deep')
-    .then(r=>r.json())
-    .then(d=>{
-      const rows = Object.entries(d.checks||d).map(([k,v])=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13px">
-          <span style="width:8px;height:8px;border-radius:50%;background:${v==='ok'||v==='configured'?'#22c55e':v==='active'?'#f59e0b':'#ef4444'};flex-shrink:0"></span>
-          <span style="flex:1;text-transform:capitalize">${k.replace(/_/g,' ')}</span>
-          <span style="font-family:monospace;font-size:11px;color:#666">${v}</span>
-        </div>`).join('');
-      el.innerHTML = rows;
-    })
-    .catch(()=>{el.innerHTML='<span style="color:red">Backend unreachable</span>';});
-}
-
-function doLogout() {
-  sessionStorage.removeItem('512ai_user');
+function doLogout(){
+  sessionStorage.removeItem('_512ai');
   location.reload();
 }
 
-// ── AUTO-CHECK SESSION ON LOAD ────────────────────────────────────────────────
-(function checkSession() {
-  const saved = sessionStorage.getItem('512ai_user');
-  if (saved) {
-    try {
-      const account = JSON.parse(saved);
-      const userData = USERS[account.user];
-      if (userData) {
-        document.getElementById('login-overlay').style.display = 'none';
-        showUserBadge(userData);
-        if (account.role === 'admin') showAdminTab();
-        return;
-      }
-    } catch(e) {}
-  }
-  // No valid session — show login
-  document.getElementById('login-overlay').style.display = 'flex';
-  // Focus username field after a tick
-  setTimeout(()=>document.getElementById('login-user')?.focus(), 100);
-})();
+// ── BOOT: check session AFTER full page load ─────────────────────────────────
+window.addEventListener('load', function(){
+  // Wire enter key
+  ['l-user','l-pass'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  });
+  document.getElementById('lock-btn')?.addEventListener('click', doLogin);
+
+  // Check existing session
+  try{
+    const saved=JSON.parse(sessionStorage.getItem('_512ai')||'null');
+    if(saved && _USERS[saved.u]){
+      _unlock(_USERS[saved.u]);
+      return;
+    }
+  }catch(e){}
+
+  // No valid session — show login, focus username
+  document.getElementById('lock-screen').style.display='flex';
+  setTimeout(()=>document.getElementById('l-user')?.focus(), 150);
+});
 </script>
+
 <div class="demo-bar">
   <span class="pill">SANDBOX</span>
   <span>Big Hat Lawn — 512AI Tools Demo &nbsp;|&nbsp; No real calls or SMS sent in this demo</span>
