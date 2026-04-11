@@ -453,7 +453,7 @@ function triggerVoiceCall() {
           var pollCount = 0;
           var pollTranscript = setInterval(function() {
             pollCount++;
-            fetch(API + '/voice/call/' + callId + '/status', { headers: { 'X-API-Key': API_KEY } })
+            fetch(API + '/voice/call/' + callId, { headers: { 'X-API-Key': API_KEY } })
               .then(function(r) { return r.json(); })
               .then(function(t) {
                 var lines = t.transcript || t.transcripts || [];
