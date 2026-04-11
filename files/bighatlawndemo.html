@@ -442,11 +442,7 @@ function triggerVoiceCall() {
   var btn   = document.getElementById('voice-call-btn');
   if (!phone) { showResult(el, 'Please enter a phone number.', 'error'); return; }
   if (btn && btn.disabled) { return; }
-  var PROTECTED = ['5127482626','5125551234','5125552345','5125559999','5125550100'];
-  if (PROTECTED.indexOf(phone.slice(-10)) !== -1) {
-    showResult(el, '&#9888; That number belongs to a real customer or Rudy. Enter your own phone number to test Zoe.', 'error');
-    return;
-  }
+
   if (btn) {
     btn.disabled = true;
     btn.innerHTML = '&#9203; Calling... (60s cooldown)';
