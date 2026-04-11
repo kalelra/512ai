@@ -3,141 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Big Hat Lawn — AI Tools Demo | 512AI</title>
+<title>Big Hat Lawn &#8212; AI Tools Demo | 512AI</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & BASE ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;color:#1a1a1a;background:#f9faf7}
-:root{--green:#2E7D32;--green-d:#1B5E20;--green-l:#e8f5e9;--amber:#F59E0B;--amber-l:#FEF3C7;
-      --blue:#1565C0;--blue-l:#e3f2fd;--red:#c62828;--red-l:#ffebee;--border:#e0e0e0;--muted:#666}
-
-/* ── LOGIN SCREEN ── */
-#lock{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-       background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 60%,#111 100%)}
-#lock-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;
-            box-shadow:0 24px 60px rgba(0,0,0,.45);text-align:center}
+:root{--green:#2E7D32;--green-d:#1B5E20;--green-l:#e8f5e9;--amber:#F59E0B;--amber-l:#FEF3C7;--blue:#1565C0;--blue-l:#e3f2fd;--red:#c62828;--red-l:#ffebee;--border:#e0e0e0;--muted:#666}
+#lock{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1B5E20 0%,#2E7D32 60%,#111 100%)}
+#lock-box{background:#fff;border-radius:20px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,.45);text-align:center}
 #lock-logo{font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:2px}
 #lock-logo span{color:#F59E0B}
-.lock-label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;
-             text-transform:uppercase;letter-spacing:.05em;text-align:left;margin-top:12px}
-.lock-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;
-             font-size:14px;font-family:'DM Sans',sans-serif;outline:none}
+.lock-label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;text-align:left;margin-top:12px}
+.lock-input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none}
 .lock-input:focus{border-color:var(--green)}
-#lock-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;
-           padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;
-           font-family:'DM Sans',sans-serif}
+#lock-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:20px;font-family:'DM Sans',sans-serif}
 #lock-btn:hover{background:var(--green-d)}
-#lock-err{display:none;background:var(--red-l);border:1px solid #ef9a9a;border-radius:8px;
-           padding:9px 13px;font-size:13px;color:var(--red);margin-top:12px;text-align:left}
+#lock-err{display:none;background:var(--red-l);border:1px solid #ef9a9a;border-radius:8px;padding:9px 13px;font-size:13px;color:var(--red);margin-top:12px;text-align:left}
 #lock-footer{margin-top:16px;font-size:12px;color:#999}
 #lock-footer a{color:var(--green)}
-
-/* ── USER BADGE ── */
-#user-badge{position:fixed;bottom:16px;right:16px;z-index:8000;background:#1a1a1a;color:#fff;
-             border-radius:10px;padding:10px 14px;font-size:12px;font-family:'DM Sans',sans-serif;
-             box-shadow:0 4px 16px rgba(0,0,0,.35);display:none;align-items:center;gap:10px}
-
-/* ── DEMO BAR & NAV ── */
-.demo-bar{background:#1a1a1a;color:#fff;text-align:center;padding:10px 16px;font-size:13px;
-           display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-.demo-bar .pill{background:var(--amber);color:#1a1a1a;border-radius:20px;padding:3px 10px;
-                 font-size:11px;font-weight:700}
-nav{background:var(--green);padding:0 32px;display:flex;align-items:center;height:64px;
-     gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
-.nav-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-weight:900;letter-spacing:-.3px}
+#user-badge{position:fixed;bottom:16px;right:16px;z-index:8000;background:#1a1a1a;color:#fff;border-radius:10px;padding:10px 14px;font-size:12px;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.35);display:none;align-items:center;gap:10px}
+.demo-bar{background:#1a1a1a;color:#fff;text-align:center;padding:10px 16px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.demo-bar .pill{background:var(--amber);color:#1a1a1a;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700}
+nav{background:var(--green);padding:0 32px;display:flex;align-items:center;height:64px;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.nav-logo{font-family:'Fraunces',serif;font-size:22px;color:#fff;font-weight:900}
 .nav-logo span{color:var(--amber)}
 .nav-right{margin-left:auto}
-.nav-phone{background:var(--amber);color:#1a1a1a;padding:7px 16px;border-radius:8px;
-            font-size:13px;font-weight:700;text-decoration:none}
+.nav-phone{background:var(--amber);color:#1a1a1a;padding:7px 16px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none}
 .nav-tabs{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto}
-.tab-btn{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;
-          background:none;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;
-          transition:all .15s;font-family:'DM Sans',sans-serif}
+.tab-btn{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:all .15s;font-family:'DM Sans',sans-serif}
 .tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
 .tab-btn:hover:not(.active){color:#1a1a1a}
-
-/* ── PAGES ── */
 .page{display:none;padding:24px;max-width:960px;margin:0 auto}
 .page.active{display:block}
-
-/* ── CARDS ── */
 .card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px}
 .card-hdr{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .card-hdr h3{font-size:15px;font-weight:700;flex:1}
 .card-body{padding:20px}
 .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px}
-.badge-green{background:var(--green-l);color:var(--green-d)}
-.badge-amber{background:var(--amber-l);color:#92400E}
-.badge-blue{background:var(--blue-l);color:var(--blue)}
-.badge-red{background:var(--red-l);color:var(--red)}
+.badge-green{background:var(--green-l);color:var(--green-d)}.badge-amber{background:var(--amber-l);color:#92400E}
+.badge-blue{background:var(--blue-l);color:var(--blue)}.badge-red{background:var(--red-l);color:var(--red)}
 .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
 .dot-green{background:#22c55e}.dot-amber{background:#f59e0b}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
-/* ── FORMS ── */
-.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;
-      font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
 .btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green-d)}
 .btn-secondary{background:var(--border);color:#1a1a1a}.btn-secondary:hover{background:#d0d0d0}
-input,select,textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;
-  font-size:14px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border .15s}
+input,select,textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:'DM Sans',sans-serif;color:#1a1a1a;outline:none;transition:border .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--green)}
-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;
-       text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .form-group{margin-bottom:14px}
-.result-box{background:#f9faf7;border:1px solid var(--border);border-radius:10px;
-             padding:14px 16px;font-size:13px;line-height:1.7;margin-top:14px;display:none}
+.result-box{background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.7;margin-top:14px;display:none}
 .result-box.show{display:block}
 .result-box.success{background:var(--green-l);border-color:#a5d6a7}
 .result-box.error{background:var(--red-l);border-color:#ef9a9a}
 .result-box.sandbox{background:var(--amber-l);border-color:#fcd34d}
-
-/* ── TABLE ── */
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:700;font-size:12px;
-    color:var(--muted);border-bottom:1px solid var(--border)}
+th{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:700;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border)}
 td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 .pricing-table th{background:var(--green);color:#fff;padding:10px 14px}
 .pricing-table tr:nth-child(even) td{background:#f9faf7}
-
-/* ── CHAT ── */
-.chat-box{border:1px solid var(--border);border-radius:10px;height:340px;overflow-y:auto;
-           padding:14px;background:#f9faf7;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.chat-box{border:1px solid var(--border);border-radius:10px;height:340px;overflow-y:auto;padding:14px;background:#f9faf7;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
 .msg{max-width:82%;border-radius:10px;padding:9px 13px;font-size:13px;line-height:1.55}
 .msg.user{background:var(--green);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
 .msg.bot{background:#fff;border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:3px}
 .chat-row{display:flex;gap:8px}.chat-row input{flex:1}
-.typing{display:flex;gap:4px;align-items:center;padding:8px 12px}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:bounce .9s infinite}
 .dot:nth-child(2){animation-delay:.15s}.dot:nth-child(3){animation-delay:.3s}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-
-/* ── DASHBOARD ── */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
 .kpi-val{font-size:28px;font-weight:700;font-family:'Fraunces',serif;color:var(--green)}
 .kpi-lbl{font-size:12px;color:var(--muted);margin-top:2px}
-.flow-diagram{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:16px 0}
-.flow-step{background:var(--green-l);border:1.5px solid var(--green);border-radius:10px;
-            padding:12px 16px;font-size:13px;font-weight:600;color:var(--green-d);text-align:center;min-width:110px}
+.flow-diagram{display:flex;align-items:center;flex-wrap:wrap;margin:16px 0}
+.flow-step{background:var(--green-l);border:1.5px solid var(--green);border-radius:10px;padding:12px 16px;font-size:13px;font-weight:600;color:var(--green-d);text-align:center;min-width:110px}
 .flow-arrow{font-size:20px;color:var(--green);padding:0 8px;font-weight:700}
-
-/* ── GUIDE ── */
 .guide-section{margin-bottom:24px}
 .guide-section h3{font-size:16px;font-weight:700;color:var(--green-d);margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.step-num{background:var(--green);color:#fff;border-radius:50%;width:28px;height:28px;
-           display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.tip-box{background:var(--amber-l);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;
-          padding:12px 16px;font-size:13px;margin:12px 0}
-
-/* ── SLOTS ── */
+.step-num{background:var(--green);color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.tip-box{background:var(--amber-l);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;margin:12px 0}
 .slot-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.slot{padding:6px 12px;border-radius:6px;border:1.5px solid var(--border);font-size:12px;font-weight:600;
-       cursor:pointer;background:#fff;transition:all .15s}
+.slot{padding:6px 12px;border-radius:6px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;background:#fff;transition:all .15s}
 .slot:hover,.slot.selected{background:var(--green);color:#fff;border-color:var(--green)}
-
 @media(max-width:600px){
   .form-row{grid-template-columns:1fr}
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
@@ -146,53 +93,36 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════ LOGIN SCREEN ═══════════════════════════════ -->
 <div id="lock">
   <div id="lock-box">
-    <div id="lock-logo">🤠 Big Hat <span>Lawn</span></div>
-    <div style="font-size:12px;color:#999;margin-bottom:20px">AI Tools Demo &nbsp;·&nbsp; Powered by 512AI</div>
+    <div id="lock-logo">&#129312; Big Hat <span>Lawn</span></div>
+    <div style="font-size:12px;color:#999;margin-bottom:20px">AI Tools Demo &middot; Powered by 512AI</div>
     <label class="lock-label" for="l-u">Username</label>
     <input id="l-u" class="lock-input" type="text" placeholder="Enter username" autocomplete="username">
     <label class="lock-label" for="l-p">Password</label>
     <input id="l-p" class="lock-input" type="password" placeholder="Enter password" autocomplete="current-password">
     <div id="lock-err"></div>
-    <button id="lock-btn" type="button">Sign In →</button>
+    <button id="lock-btn" type="button">Sign In</button>
     <div id="lock-footer">Need access? <a href="mailto:contact@512ai.co">contact@512ai.co</a></div>
   </div>
 </div>
-
-<!-- ═══════════════════════════ USER BADGE ════════════════════════════════ -->
 <div id="user-badge">
-  <div id="ub-av" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;
-    justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;background:#4ade80;color:#1a1a1a"></div>
-  <div><div id="ub-name" style="font-weight:600"></div>
-       <div id="ub-meta" style="color:#9ca3af;font-size:11px"></div></div>
-  <button onclick="doLogout()" style="background:#ef4444;border:none;color:#fff;border-radius:6px;
-    padding:4px 9px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Sign out</button>
+  <div id="ub-av" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;background:#4ade80;color:#1a1a1a"></div>
+  <div><div id="ub-name" style="font-weight:600"></div><div id="ub-meta" style="color:#9ca3af;font-size:11px"></div></div>
+  <button onclick="doLogout()" style="background:#ef4444;border:none;color:#fff;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Sign out</button>
 </div>
-
-<!-- ═══════════════════════════ DEMO CONTENT ══════════════════════════════ -->
 <div id="demo" style="display:none">
-  <div class="demo-bar">
-    <span class="pill">SANDBOX</span>
-    <span>Big Hat Lawn — 512AI Tools Demo &nbsp;|&nbsp; No real calls or SMS sent</span>
-  </div>
-  <nav>
-    <span class="nav-logo">🤠 Big Hat <span>Lawn</span></span>
-    <div class="nav-right"><a href="tel:5127482626" class="nav-phone">📞 (512) 748-2626</a></div>
-  </nav>
+  <div class="demo-bar"><span class="pill">SANDBOX</span><span>Big Hat Lawn &mdash; 512AI Demo &nbsp;|&nbsp; No real calls sent</span></div>
+  <nav><span class="nav-logo">&#129312; Big Hat <span>Lawn</span></span><div class="nav-right"><a href="tel:5127482626" class="nav-phone">&#128222; (512) 748-2626</a></div></nav>
   <div class="nav-tabs" id="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Overview</button>
-    <button class="tab-btn" onclick="showTab('chat',this)">💬 AI Chat</button>
-    <button class="tab-btn" onclick="showTab('voice',this)">📞 AI Voice</button>
-    <button class="tab-btn" onclick="showTab('schedule',this)">📅 Scheduling</button>
-    <button class="tab-btn" onclick="showTab('crm',this)">🗂️ CRM Lookup</button>
-    <button class="tab-btn" onclick="showTab('guide',this)">📖 User Guide</button>
-    <button class="tab-btn" onclick="showTab('tests',this)">✅ System Tests</button>
+    <button class="tab-btn active" onclick="showTab('dashboard',this)">&#128202; Overview</button>
+    <button class="tab-btn" onclick="showTab('chat',this)">&#128172; AI Chat</button>
+    <button class="tab-btn" onclick="showTab('voice',this)">&#128222; AI Voice</button>
+    <button class="tab-btn" onclick="showTab('schedule',this)">&#128197; Scheduling</button>
+    <button class="tab-btn" onclick="showTab('crm',this)">&#128196; CRM Lookup</button>
+    <button class="tab-btn" onclick="showTab('guide',this)">&#128214; User Guide</button>
+    <button class="tab-btn" onclick="showTab('tests',this)">&#9989; System Tests</button>
   </div>
-
-  <!-- DASHBOARD -->
   <div id="page-dashboard" class="page active">
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-val" id="kpi-customers">47</div><div class="kpi-lbl">Active customers</div></div>
@@ -200,151 +130,98 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       <div class="kpi"><div class="kpi-val" id="kpi-ai">0</div><div class="kpi-lbl">AI bookings today</div></div>
       <div class="kpi"><div class="kpi-val" id="kpi-rev">$0</div><div class="kpi-lbl">AI-generated revenue</div></div>
     </div>
-    <div class="card">
-      <div class="card-hdr"><span class="status-dot dot-green"></span><h3>How 512AI Works for Big Hat Lawn</h3></div>
-      <div class="card-body">
-        <div class="flow-diagram">
-          <div class="flow-step">📱 Customer<br>contacts BHL</div><div class="flow-arrow">→</div>
-          <div class="flow-step">🤖 Zoe answers<br>instantly 24/7</div><div class="flow-arrow">→</div>
-          <div class="flow-step">📋 Booking<br>collected</div><div class="flow-arrow">→</div>
-          <div class="flow-step">📲 Rudy gets<br>SMS alert</div><div class="flow-arrow">→</div>
-          <div class="flow-step">✅ Job added<br>to LawnPro</div>
-        </div>
-        <p style="font-size:13px;color:var(--muted);margin-top:12px">Rudy never misses a lead. Zoe handles inquiries and bookings automatically — day or night, even when Rudy is on a job.</p>
-      </div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>How 512AI Works for Big Hat Lawn</h3></div>
+      <div class="card-body"><div class="flow-diagram">
+        <div class="flow-step">&#128242; Customer contacts BHL</div><div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">&#129302; Zoe answers instantly</div><div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">&#128203; Booking collected</div><div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">&#128242; Rudy gets SMS</div><div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">&#9989; Job in LawnPro</div>
+      </div></div>
     </div>
-    <div class="card">
-      <div class="card-hdr"><h3>📋 Customer Data — LawnPro CRM (Big Hat Lawn)</h3><span class="badge badge-green">Live account</span></div>
-      <div class="card-body">
-        <table><thead><tr><th>Customer</th><th>Address</th><th>Service</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td><strong>Rodriguez, Maria</strong></td><td>4521 Slaughter Ln, Austin 78749</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
-          <tr><td><strong>Hernandez, Juan</strong></td><td>8832 Brodie Ln, Austin 78748</td><td>Lawn + Tree Pruning</td><td><span class="badge badge-green">Active</span></td></tr>
-          <tr><td><strong>Thompson, Lisa</strong></td><td>12008 Mystic Forest Ln, Austin 78739</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
-          <tr><td><strong>Cantu, David</strong></td><td>2210 William Cannon Dr, Austin 78745</td><td>Power Wash + Lawn</td><td><span class="badge badge-amber">Overdue</span></td></tr>
-          <tr><td><strong>Williams, Robert</strong></td><td>9401 Hwy 71, Del Valle 78617</td><td>Lawn Service (weekly)</td><td><span class="badge badge-green">Active</span></td></tr>
-        </tbody></table>
-      </div>
+    <div class="card"><div class="card-hdr"><h3>&#128203; Customer Data &mdash; LawnPro CRM</h3><span class="badge badge-green">Live account</span></div>
+      <div class="card-body"><table><thead><tr><th>Customer</th><th>Address</th><th>Service</th><th>Status</th></tr></thead><tbody>
+        <tr><td><strong>Rodriguez, Maria</strong></td><td>4521 Slaughter Ln, Austin 78749</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Hernandez, Juan</strong></td><td>8832 Brodie Ln, Austin 78748</td><td>Lawn + Tree Pruning</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Thompson, Lisa</strong></td><td>12008 Mystic Forest Ln, Austin 78739</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Cantu, David</strong></td><td>2210 William Cannon Dr, Austin 78745</td><td>Power Wash + Lawn</td><td><span class="badge badge-amber">Overdue</span></td></tr>
+        <tr><td><strong>Williams, Robert</strong></td><td>9401 Hwy 71, Del Valle 78617</td><td>Lawn Service (weekly)</td><td><span class="badge badge-green">Active</span></td></tr>
+      </tbody></table></div>
     </div>
-    <div class="card">
-      <div class="card-hdr"><h3>📅 This Week's Schedule</h3><span class="badge badge-blue">From LawnPro</span></div>
-      <div class="card-body">
-        <table><thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Est.</th><th>Source</th></tr></thead>
-        <tbody>
-          <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$85</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-          <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Thompson, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-          <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$95</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-          <tr><td>Wed Apr 16</td><td>8:00 AM</td><td>Williams, Robert</td><td>Lawn Service</td><td>$65</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-          <tr id="ai-job-row" style="display:none"><td id="ai-d">—</td><td id="ai-t">—</td><td id="ai-c">—</td><td id="ai-s">—</td><td id="ai-p">—</td><td><span class="badge badge-green">🤖 AI Booked</span></td></tr>
-        </tbody></table>
-        <p style="font-size:12px;color:var(--muted);margin-top:10px">💡 Book a job using AI Chat or AI Voice — watch it appear here</p>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><h3>💰 Pricing Guide</h3></div>
-      <div class="card-body">
-        <table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k sq ft</th><th>5–8k sq ft</th><th>8–12k sq ft</th><th>12k+</th></tr></thead>
-        <tbody>
-          <tr><td><strong>🌿 Lawn Service</strong></td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
-          <tr><td><strong>🌳 Tree & Bush Pruning</strong></td><td colspan="4">From $95 — Rudy quotes after review</td></tr>
-          <tr><td><strong>💦 Power Washing</strong></td><td colspan="4">From $120 — Rudy quotes after review</td></tr>
-        </tbody></table>
-        <p style="font-size:12px;color:var(--muted);margin-top:8px">All estimates — Rudy confirms the final price after reviewing your property.</p>
-      </div>
+    <div class="card"><div class="card-hdr"><h3>&#128197; This Week&apos;s Schedule</h3><span class="badge badge-blue">From LawnPro</span></div>
+      <div class="card-body"><table><thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Est.</th><th>Source</th></tr></thead><tbody>
+        <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$85</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Thompson, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$95</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Wed Apr 16</td><td>8:00 AM</td><td>Williams, Robert</td><td>Lawn Service</td><td>$65</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr id="ai-job-row" style="display:none"><td id="ai-d"></td><td id="ai-t"></td><td id="ai-c"></td><td id="ai-s"></td><td id="ai-p"></td><td><span class="badge badge-green">&#129302; AI Booked</span></td></tr>
+      </tbody></table>
+      <p style="font-size:12px;color:var(--muted);margin-top:10px">&#128161; Book via AI Chat &mdash; watch it appear here</p>
+    </div></div>
+    <div class="card"><div class="card-hdr"><h3>&#128176; Pricing Guide</h3></div>
+      <div class="card-body"><table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k sq ft</th><th>5-8k sq ft</th><th>8-12k sq ft</th><th>12k+</th></tr></thead><tbody>
+        <tr><td><strong>&#127807; Lawn Service</strong></td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
+        <tr><td><strong>&#127795; Tree &amp; Bush Pruning</strong></td><td colspan="4">From $95</td></tr>
+        <tr><td><strong>&#128166; Power Washing</strong></td><td colspan="4">From $120</td></tr>
+      </tbody></table></div>
     </div>
   </div>
-
-  <!-- AI CHAT -->
   <div id="page-chat" class="page">
-    <div class="card">
-      <div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat — Big Hat Lawn Assistant</h3><span class="badge badge-green">Live</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat</h3><span class="badge badge-green">Live</span></div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">This is the real AI chat that would live on bighatlawn.com. Try it as a customer would.</p>
-        <div class="chat-box" id="chat-messages">
-          <div class="msg bot">👋 Hi! I'm Zoe, Big Hat Lawn's AI assistant. I can answer questions about services and pricing, or get you scheduled. What can I help you with?</div>
-        </div>
-        <div class="chat-row">
-          <input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="btn btn-primary" onclick="sendChat()">Send</button>
-        </div>
+        <div class="chat-box" id="chat-messages"><div class="msg bot">&#128075; Hi! I&apos;m Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div></div>
+        <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button></div>
         <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
-          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much does lawn mowing cost?')">💵 Pricing?</button>
-          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much to mow at 4521 Slaughter Ln Austin TX 78749?')">🏠 Estimate my yard</button>
-          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('I want to book lawn mowing')">📅 Book a job</button>
-          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('Do you service zip code 78739?')">📍 My area?</button>
+          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much does lawn mowing cost?')">&#128181; Pricing?</button>
+          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much to mow at 4521 Slaughter Ln Austin TX 78749?')">&#127968; Estimate my yard</button>
+          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('I want to book lawn mowing')">&#128197; Book a job</button>
+          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('Do you service zip code 78739?')">&#128205; My area?</button>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- AI VOICE -->
   <div id="page-voice" class="page">
-    <div class="card">
-      <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Zoe &nbsp;📞 +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice &mdash; Zoe &#128222; +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
       <div class="card-body">
-        <div style="background:var(--green-l);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:16px;font-size:13px">
-          <strong>In production</strong>, when a customer calls Big Hat Lawn's AI number, Zoe answers immediately with pricing, books jobs, and transfers to Rudy on request — 24/7.
-        </div>
         <div class="form-row">
           <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. Maria Rodriguez"></div>
           <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
         </div>
-        <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">📞 Simulate Zoe Calling Me (Sandbox)</button>
+        <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">&#128222; Simulate Zoe Calling Me (Sandbox)</button>
         <div id="voice-result" class="result-box"></div>
-        <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-          <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">Sample call with Zoe:</h4>
-          <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.8;font-family:monospace">
-            <div style="color:#4ade80">Zoe:</div><div style="padding-left:16px;margin-bottom:10px">"Hi! This is Zoe from Big Hat Lawn. How can I help you today?"</div>
-            <div style="color:#93c5fd">Customer:</div><div style="padding-left:16px;margin-bottom:10px">"How much to mow my lawn at 4521 Slaughter Ln, 78749?"</div>
-            <div style="color:#4ade80">Zoe:</div><div style="padding-left:16px;margin-bottom:10px">"Great question! Lawn service in 78749 starts at $65 for lots up to 5,000 sq ft, or $85 for 5–8k sq ft. Rudy will confirm after a quick look at your property. Want to get scheduled?"</div>
-            <div style="color:#93c5fd">Customer:</div><div style="padding-left:16px;margin-bottom:10px">"Yes, Thursday at 9am"</div>
-            <div style="color:#4ade80">Zoe:</div><div style="padding-left:16px">"Perfect! I just need your name and phone — then you're all set. Rudy will call to confirm within the hour."</div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
-
-  <!-- SCHEDULING -->
   <div id="page-schedule" class="page">
-    <div class="card">
-      <div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Scheduling — Book a Job</h3><span class="badge badge-amber">Sandbox</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Scheduling &mdash; Book a Job</h3><span class="badge badge-amber">Sandbox</span></div>
       <div class="card-body">
         <div class="form-row">
-          <div class="form-group"><label>Customer Name</label><input type="text" id="sched-name" placeholder="e.g. Maria Rodriguez"></div>
+          <div class="form-group"><label>Customer Name</label><input type="text" id="sched-name" placeholder="Maria Rodriguez"></div>
           <div class="form-group"><label>Phone</label><input type="tel" id="sched-phone" placeholder="(512) 555-0100"></div>
         </div>
         <div class="form-group"><label>Address</label><input type="text" id="sched-address" placeholder="4521 Slaughter Ln, Austin TX 78749"></div>
         <div class="form-group"><label>Service</label>
           <select id="sched-service" onchange="updatePriceEst()">
             <option value="">Select a service...</option>
-            <option value="Lawn Service">🌿 Lawn Service — from $65</option>
-            <option value="Tree and Bush Pruning">🌳 Tree and Bush Pruning — from $95</option>
-            <option value="Power Wash">💦 Power Wash — from $120</option>
+            <option value="Lawn Service">&#127807; Lawn Service &mdash; from $65</option>
+            <option value="Tree and Bush Pruning">&#127795; Tree and Bush Pruning &mdash; from $95</option>
+            <option value="Power Wash">&#128166; Power Wash &mdash; from $120</option>
           </select>
         </div>
         <div id="price-est" style="display:none;background:var(--green-l);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:14px;font-weight:600;color:var(--green-d)"></div>
-        <button class="btn btn-secondary" onclick="loadAvailability()" style="margin-bottom:12px">📅 Check Available Times</button>
-        <div id="avail-section" style="display:none">
-          <label>Available Slots</label>
-          <div id="slots-container"></div>
-          <input type="hidden" id="sel-date"><input type="hidden" id="sel-time">
-        </div>
-        <button class="btn btn-primary" onclick="createBooking()" style="width:100%;margin-top:14px">✅ Book Appointment</button>
+        <button class="btn btn-secondary" onclick="loadAvailability()" style="margin-bottom:12px">&#128197; Check Available Times</button>
+        <div id="avail-section" style="display:none"><label>Available Slots</label><div id="slots-container"></div><input type="hidden" id="sel-date"><input type="hidden" id="sel-time"></div>
+        <button class="btn btn-primary" onclick="createBooking()" style="width:100%;margin-top:14px">&#9989; Book Appointment</button>
         <div id="booking-result" class="result-box"></div>
       </div>
     </div>
   </div>
-
-  <!-- CRM LOOKUP -->
   <div id="page-crm" class="page">
-    <div class="card">
-      <div class="card-hdr"><span class="status-dot dot-green"></span><h3>Customer Lookup — LawnPro CRM</h3><span class="badge badge-green">Real BHL data</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>Customer Lookup &mdash; LawnPro CRM</h3><span class="badge badge-green">Real BHL data</span></div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">When a customer contacts Big Hat Lawn, Zoe checks their history automatically.</p>
         <div style="display:flex;gap:8px;margin-bottom:12px">
           <input type="tel" id="crm-phone" placeholder="Enter phone number" style="flex:1">
-          <button class="btn btn-primary" onclick="lookupCustomer()">🔍 Look Up</button>
+          <button class="btn btn-primary" onclick="lookupCustomer()">&#128269; Look Up</button>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
           <button class="btn btn-secondary" style="font-size:12px" onclick="document.getElementById('crm-phone').value='5125551234';lookupCustomer()">Maria Rodriguez</button>
@@ -355,502 +232,350 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       </div>
     </div>
   </div>
-
-  <!-- USER GUIDE -->
   <div id="page-guide" class="page">
-    <div class="card">
-      <div class="card-hdr"><h3>📖 Big Hat Lawn — AI Tools User Guide</h3><span class="badge badge-green">For Rudy</span></div>
+    <div class="card"><div class="card-hdr"><h3>&#128214; Big Hat Lawn &mdash; AI Tools User Guide</h3><span class="badge badge-green">For Rudy</span></div>
       <div class="card-body">
         <div style="background:var(--green);color:#fff;border-radius:10px;padding:20px;margin-bottom:20px;text-align:center">
-          <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin-bottom:4px">Welcome to Your AI Tools, Rudy! 🤠</div>
-          <div style="font-size:13px;opacity:.9">Powered by 512AI &nbsp;·&nbsp; contact@512ai.co</div>
+          <div style="font-family:'Fraunces',serif;font-size:22px;font-weight:900;margin-bottom:4px">Welcome, Rudy! &#129312;</div>
+          <div style="font-size:13px;opacity:.9">Powered by 512AI &nbsp;&middot;&nbsp; contact@512ai.co</div>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">1</span> What These Tools Do For You</h3>
-          <p style="font-size:13px;line-height:1.8;margin-bottom:10px">Your AI system runs 24/7 so you never miss a customer — even when you're on a job or asleep:</p>
-          <ul style="font-size:13px;line-height:2;padding-left:20px">
-            <li>Customer visits <strong>bighatlawn.com</strong> and types a question → AI answers instantly</li>
-            <li>Customer calls your AI number → <strong>Zoe</strong> answers, gives pricing, books the job</li>
-            <li>Booking made → <strong>you get a text</strong> with all the details</li>
-            <li>Job is automatically added to your <strong>LawnPro schedule</strong></li>
+        <div class="guide-section"><h3><span class="step-num">1</span> What These Tools Do</h3>
+          <ul style="font-size:13px;line-height:2;padding-left:20px;margin-top:8px">
+            <li>Customer visits bighatlawn.com and asks a question &rarr; AI answers instantly</li>
+            <li>Customer calls your AI number &rarr; <strong>Zoe</strong> answers, gives pricing, books the job</li>
+            <li>Booking made &rarr; <strong>you get a text</strong> with all the details</li>
+            <li>Job automatically added to <strong>LawnPro</strong></li>
           </ul>
-          <div class="tip-box">💡 <strong>No app to check, no calls to answer.</strong> The AI handles it and texts you when there's something to confirm.</div>
+          <div class="tip-box">&#128161; No app to check. The AI handles it and texts you to confirm.</div>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">2</span> The AI Chat on Your Website</h3>
-          <p style="font-size:13px;line-height:1.8;margin-bottom:8px">A chat button will appear on bighatlawn.com. Zoe handles: pricing questions, service area checks, and full bookings. Try the <strong>AI Chat</strong> tab above!</p>
+        <div class="guide-section"><h3><span class="step-num">2</span> AI Chat on Your Website</h3>
+          <p style="font-size:13px;line-height:1.8">Zoe answers pricing questions, service area checks, and books appointments. Try the <strong>AI Chat tab</strong> above!</p>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">3</span> The AI Voice Line — Zoe</h3>
-          <p style="font-size:13px;line-height:1.8;margin-bottom:8px">Zoe answers calls to <strong>(512) 883-8687</strong>. She gives pricing by address, books jobs, and transfers to you at <strong>(512) 748-2626</strong> if needed. Try the <strong>AI Voice</strong> tab above!</p>
+        <div class="guide-section"><h3><span class="step-num">3</span> AI Voice Line &mdash; (512) 883-8687</h3>
+          <p style="font-size:13px;line-height:1.8">Zoe answers calls, gives pricing, books jobs, and transfers to you at (512) 748-2626 when needed. Try the <strong>AI Voice tab</strong>!</p>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">4</span> Your Booking Notification Text</h3>
+        <div class="guide-section"><h3><span class="step-num">4</span> Your Booking Text</h3>
           <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.8;font-family:monospace">
-            📅 New booking — Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 4521 Slaughter Ln, Austin TX 78749<br>Estimate: $85<br>Source: AI Chat<br><br>Job added to LawnPro automatically.
+            &#128197; New booking &mdash; Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 4521 Slaughter Ln, Austin TX 78749<br>Estimate: $85<br>Job added to LawnPro.
           </div>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">5</span> Pricing the AI Uses</h3>
-          <table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k sq ft</th><th>5–8k sq ft</th><th>8–12k sq ft</th><th>12k+</th></tr></thead>
-          <tbody>
-            <tr><td>🌿 Lawn Service</td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
-            <tr><td>🌳 Tree & Bush Pruning</td><td colspan="4">From $95</td></tr>
-            <tr><td>💦 Power Washing</td><td colspan="4">From $120</td></tr>
+        <div class="guide-section"><h3><span class="step-num">5</span> Pricing</h3>
+          <table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k</th><th>5-8k</th><th>8-12k</th><th>12k+</th></tr></thead><tbody>
+            <tr><td>&#127807; Lawn Service</td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
+            <tr><td>&#127795; Tree &amp; Bush Pruning</td><td colspan="4">From $95</td></tr>
+            <tr><td>&#128166; Power Washing</td><td colspan="4">From $120</td></tr>
           </tbody></table>
-          <p style="font-size:12px;color:var(--muted);margin-top:8px">AI always adds: "Rudy will confirm the exact price." You have full control.</p>
         </div>
-        <div class="guide-section">
-          <h3><span class="step-num">6</span> Questions? We've Got You.</h3>
-          <p style="font-size:13px;line-height:1.8">📧 <strong>contact@512ai.co</strong> &nbsp;&nbsp; 🌐 <strong>512ai.co</strong></p>
+        <div class="guide-section"><h3><span class="step-num">6</span> Questions?</h3>
+          <p style="font-size:13px">&#128231; <strong>contact@512ai.co</strong> &nbsp; &#127760; <strong>512ai.co</strong></p>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- SYSTEM TESTS -->
   <div id="page-tests" class="page">
-    <div class="card">
-      <div class="card-hdr"><h3>✅ System Tests</h3><span class="badge badge-blue">9 checks</span></div>
+    <div class="card"><div class="card-hdr"><h3>&#9989; System Tests</h3><span class="badge badge-blue">9 checks</span></div>
       <div class="card-body">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Runs live tests against the Railway backend. All must pass before going live on bighatlawn.com.</p>
-        <button class="btn btn-primary" onclick="runAllTests()" id="run-tests-btn">▶ Run All Tests</button>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Live tests against Railway backend. All must pass before going live on bighatlawn.com.</p>
+        <button class="btn btn-primary" onclick="runAllTests()" id="run-tests-btn">&#9654; Run All Tests</button>
         <div id="test-results" style="margin-top:16px"></div>
       </div>
     </div>
   </div>
-
-  <!-- ADMIN PAGE (injected by JS for admin role) -->
-
-</div><!-- end #demo -->
-
-<!-- ═══════════════════════════ ALL JAVASCRIPT ════════════════════════════ -->
+</div>
 <script>
-// ── CONSTANTS ────────────────────────────────────────────────────────────────
-const API     = 'https://512ai-backend-production.up.railway.app/api/v1';
-const API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
-const TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
-const USERS   = {
-  rudy:  { h: '29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023',  role:'client', name:'Rudy Cantu',    biz:'Big Hat Lawn' },
-  admin: { h: '9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role:'admin',  name:'Ricardo Avila', biz:'512AI' }
+var API     = 'https://512ai-backend-production.up.railway.app/api/v1';
+var API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
+var TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
+var aiCount = 0, aiRev = 0;
+var USERS = {
+  'rudy':  { h: '29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023',  role: 'client', name: 'Rudy Cantu',    biz: 'Big Hat Lawn' },
+  'admin': { h: '9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role: 'admin',  name: 'Ricardo Avila', biz: '512AI' }
 };
-let aiCount = 0, aiRev = 0;
-
-// ── AUTH HELPERS ─────────────────────────────────────────────────────────────
-async function sha256(s) {
-  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join('');
+function sha256(s) {
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(b) {
+    return Array.from(new Uint8Array(b)).map(function(x) { return x.toString(16).padStart(2,'0'); }).join('');
+  });
 }
-
-async function doLogin() {
-  const u   = document.getElementById('l-u').value.trim().toLowerCase();
-  const p   = document.getElementById('l-p').value;
-  const err = document.getElementById('lock-err');
+function doLogin() {
+  var u = document.getElementById('l-u').value.trim().toLowerCase();
+  var p = document.getElementById('l-p').value;
+  var err = document.getElementById('lock-err');
   err.style.display = 'none';
-  if (!u || !p) { err.textContent='Please enter username and password.'; err.style.display='block'; return; }
-  const h   = await sha256(p);
-  const acc = USERS[u];
-  if (!acc || acc.h !== h) {
-    err.textContent = 'Incorrect username or password.';
-    err.style.display = 'block';
-    document.getElementById('l-p').value = '';
-    document.getElementById('l-p').focus();
-    return;
-  }
-  sessionStorage.setItem('_s', JSON.stringify({u, role:acc.role, name:acc.name, biz:acc.biz}));
-  unlock(acc, u);
+  if (!u || !p) { err.textContent = 'Please enter username and password.'; err.style.display = 'block'; return; }
+  sha256(p).then(function(h) {
+    var acc = USERS[u];
+    if (!acc || acc.h !== h) {
+      err.textContent = 'Incorrect username or password.';
+      err.style.display = 'block';
+      document.getElementById('l-p').value = '';
+      document.getElementById('l-p').focus();
+      return;
+    }
+    sessionStorage.setItem('_s', JSON.stringify({ u: u, role: acc.role, name: acc.name, biz: acc.biz }));
+    unlock(acc);
+  });
 }
-
-function unlock(acc, u) {
-  // Hide lock, show demo
-  document.getElementById('lock').style.display  = 'none';
-  document.getElementById('demo').style.display  = 'block';
-  // Show badge
-  const badge = document.getElementById('user-badge');
-  const av    = document.getElementById('ub-av');
-  av.textContent   = acc.name.charAt(0);
+function unlock(acc) {
+  document.getElementById('lock').style.display = 'none';
+  document.getElementById('demo').style.display = 'block';
+  var av = document.getElementById('ub-av');
+  av.textContent = acc.name.charAt(0);
   av.style.background = acc.role === 'admin' ? '#F59E0B' : '#4ade80';
-  av.style.color      = '#1a1a1a';
+  av.style.color = '#1a1a1a';
   document.getElementById('ub-name').textContent = acc.name;
   document.getElementById('ub-meta').textContent = acc.biz + ' · ' + acc.role;
-  badge.style.display = 'flex';
-  // Admin tab
-  if (acc.role === 'admin') addAdminTab();
-  // Load health check in background
-  checkHealth();
+  document.getElementById('user-badge').style.display = 'flex';
+  if (acc.role === 'admin') { addAdminTab(); }
 }
-
-function doLogout() {
-  sessionStorage.removeItem('_s');
-  location.reload();
-}
-
+function doLogout() { sessionStorage.removeItem('_s'); location.reload(); }
 function addAdminTab() {
-  if (document.getElementById('adm-btn')) return;
-  const tabs = document.getElementById('nav-tabs');
-  const btn  = document.createElement('button');
-  btn.id = 'adm-btn';
-  btn.className = 'tab-btn';
-  btn.style.cssText = 'color:#F59E0B;font-weight:700';
+  if (document.getElementById('adm-btn')) { return; }
+  var tabs = document.getElementById('nav-tabs');
+  var btn = document.createElement('button');
+  btn.id = 'adm-btn'; btn.className = 'tab-btn'; btn.style.cssText = 'color:#F59E0B;font-weight:700';
   btn.innerHTML = '⚙️ Admin';
   btn.onclick = function() { showTab('admin', this); };
   tabs.appendChild(btn);
-  // Build admin page
-  const pg = document.createElement('div');
+  var pg = document.createElement('div');
   pg.id = 'page-admin'; pg.className = 'page';
-  pg.innerHTML = `
-    <div class="card">
-      <div class="card-hdr" style="background:#1a1a1a">
-        <h3 style="color:#F59E0B">⚙️ Admin Panel — 512AI</h3>
-        <span class="badge" style="background:#F59E0B;color:#1a1a1a">Ricardo Avila</span>
-      </div>
-      <div class="card-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-          ${[['🚂','Railway','Backend · Env vars','https://railway.com/project/2c594c14-a636-4a40-808c-f6e8ffc52c01'],
-             ['🗄️','Supabase','Database · Bookings','https://app.supabase.com'],
-             ['⚡','Netlify','Frontend · 512ai.co','https://app.netlify.com'],
-             ['📞','Bland.ai','Zoe · +15128838687','https://app.bland.ai'],
-             ['⚡','Zapier','Booking webhooks','https://zapier.com/app/zaps'],
-             ['🐙','GitHub','Source code','https://github.com/kalelra/512ai-backend']
-          ].map(([icon,title,sub,url])=>`<a href="${url}" target="_blank" style="background:#1a1a1a;color:#fff;border-radius:10px;padding:14px;text-decoration:none;display:block"><div style="font-size:20px;margin-bottom:4px">${icon}</div><div style="font-weight:700">${title}</div><div style="font-size:11px;color:#9ca3af">${sub}</div></a>`).join('')}
-        </div>
-        <div style="background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
-          <div style="font-weight:700;font-size:14px;margin-bottom:10px">🔐 Demo Credentials</div>
-          <table style="width:100%;font-size:13px;border-collapse:collapse">
-            <tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:6px;color:var(--muted)">Role</th><th style="text-align:left;padding:6px;color:var(--muted)">Username</th><th style="text-align:left;padding:6px;color:var(--muted)">Password</th></tr>
-            <tr style="border-bottom:1px solid var(--border)"><td style="padding:8px 6px">Client (Rudy)</td><td style="padding:8px 6px;font-family:monospace">rudy</td><td style="padding:8px 6px;font-family:monospace">BigHatLawn2026!</td></tr>
-            <tr><td style="padding:8px 6px">Admin (Ricardo)</td><td style="padding:8px 6px;font-family:monospace">admin</td><td style="padding:8px 6px;font-family:monospace">512AI@Admin2026!</td></tr>
-          </table>
-        </div>
-        <div style="background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:16px">
-          <div style="font-weight:700;font-size:14px;margin-bottom:10px">📡 Live Backend Health</div>
-          <button class="btn btn-primary" style="margin-bottom:12px" onclick="runAdminHealth()">Check Now</button>
-          <div id="adm-health"></div>
-        </div>
-      </div>
-    </div>`;
+  var links = [['Railway','Backend','https://railway.com/project/2c594c14-a636-4a40-808c-f6e8ffc52c01'],
+               ['Supabase','Database','https://app.supabase.com'],
+               ['Netlify','Frontend','https://app.netlify.com'],
+               ['Bland.ai','Voice AI','https://app.bland.ai'],
+               ['Zapier','Webhooks','https://zapier.com/app/zaps'],
+               ['GitHub','Source','https://github.com/kalelra/512ai-backend']];
+  var lhtml = '';
+  for (var i = 0; i < links.length; i++) {
+    lhtml += '<a href="' + links[i][2] + '" target="_blank" style="background:#1a1a1a;color:#fff;border-radius:10px;padding:14px;text-decoration:none;display:block">'
+      + '<div style="font-weight:700">' + links[i][0] + '</div>'
+      + '<div style="font-size:11px;color:#9ca3af">' + links[i][1] + '</div></a>';
+  }
+  pg.innerHTML = '<div class="card"><div class="card-hdr" style="background:#1a1a1a"><h3 style="color:#F59E0B">Admin Panel &mdash; 512AI</h3>'
+    + '<span class="badge" style="background:#F59E0B;color:#1a1a1a">Ricardo Avila</span></div>'
+    + '<div class="card-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">' + lhtml + '</div>'
+    + '<div style="background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">'
+    + '<div style="font-weight:700;font-size:14px;margin-bottom:10px">Demo Credentials</div>'
+    + '<table style="width:100%;font-size:13px;border-collapse:collapse">'
+    + '<tr><th style="text-align:left;padding:6px;color:var(--muted)">Role</th><th style="text-align:left;padding:6px;color:var(--muted)">Username</th><th style="text-align:left;padding:6px;color:var(--muted)">Password</th></tr>'
+    + '<tr><td style="padding:8px 6px">Client</td><td style="padding:8px 6px;font-family:monospace">rudy</td><td style="padding:8px 6px;font-family:monospace">BigHatLawn2026!</td></tr>'
+    + '<tr><td style="padding:8px 6px">Admin</td><td style="padding:8px 6px;font-family:monospace">admin</td><td style="padding:8px 6px;font-family:monospace">512AI@Admin2026!</td></tr>'
+    + '</table></div>'
+    + '<div style="background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:16px">'
+    + '<div style="font-weight:700;font-size:14px;margin-bottom:10px">Live Backend Health</div>'
+    + '<button class="btn btn-primary" style="margin-bottom:12px" onclick="runAdminHealth()">Check Now</button>'
+    + '<div id="adm-health"></div></div></div></div>';
   document.getElementById('demo').appendChild(pg);
 }
-
-// ── PAGE NAVIGATION ──────────────────────────────────────────────────────────
-function showTab(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  const pg = document.getElementById('page-' + id);
-  if (pg) pg.classList.add('active');
-  if (btn) btn.classList.add('active');
-}
-
-// ── HEALTH CHECK ─────────────────────────────────────────────────────────────
-function checkHealth() {
-  fetch('https://512ai-backend-production.up.railway.app/health/deep')
-    .then(r => r.json())
-    .then(d => console.log('Health:', d))
-    .catch(() => {});
-}
-
-// ── CHAT ─────────────────────────────────────────────────────────────────────
-function addMsg(text, role) {
-  const box = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + role;
-  div.innerHTML = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/
-/g,'<br>');
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-}
-function addTyping() {
-  const box = document.getElementById('chat-messages');
-  const div = document.createElement('div');
-  div.className = 'msg bot'; div.id = 'typing-ind';
-  div.innerHTML = '<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
-  box.appendChild(div); box.scrollTop = box.scrollHeight;
-}
-async function sendChat() {
-  const inp = document.getElementById('chat-input');
-  const msg = inp.value.trim(); if (!msg) return;
-  inp.value = ''; addMsg(msg, 'user'); addTyping();
-  try {
-    const r = await fetch(API+'/chat', {method:'POST',
-      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-      body: JSON.stringify({tenantId:TENANT, sessionId:'76fd06fe-1795-433b-905e-b50258bd5621', message:msg})});
-    const d = await r.json();
-    document.getElementById('typing-ind')?.remove();
-    addMsg(d.reply || d.error || 'Error', 'bot');
-  } catch(e) {
-    document.getElementById('typing-ind')?.remove();
-    addMsg('Connection error', 'bot');
-  }
-}
-function quickChat(msg) {
-  showTab('chat', document.querySelectorAll('.tab-btn')[1]);
-  document.getElementById('chat-input').value = msg;
-  sendChat();
-}
-
-// ── VOICE ─────────────────────────────────────────────────────────────────────
-async function triggerVoiceCall() {
-  const name  = document.getElementById('voice-name').value.trim();
-  const phone = document.getElementById('voice-phone').value.trim();
-  const el    = document.getElementById('voice-result');
-  if (!phone) { showResult(el,'Please enter a phone number','error'); return; }
-  showResult(el,'Connecting to Zoe (sandbox)...','');
-  try {
-    const r = await fetch(API+'/voice/call', {method:'POST',
-      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-      body: JSON.stringify({tenantId:TENANT, phone, name, source:'bighatlawndemo'})});
-    const d = await r.json();
-    if (d.success && d.sandbox) {
-      showResult(el,'✅ SANDBOX: In production, Zoe would call '+phone+' within 15–30 seconds.
-
-' +
-        'First words: "Hi'+(name?' '+name+'!':'!')+ ' This is Zoe from Big Hat Lawn. How can I help you?"
-
-' +
-        'Zoe can: give pricing by address, book a service, transfer to Rudy anytime.
-
-Call ID: '+d.call_id,'sandbox');
-    } else {
-      showResult(el,'❌ '+(d.error||d.details?.message||'Call failed'),'error');
-    }
-  } catch(e) { showResult(el,'❌ '+e.message,'error'); }
-}
-
-// ── SCHEDULING ────────────────────────────────────────────────────────────────
-function updatePriceEst() {
-  const svc = document.getElementById('sched-service').value;
-  const el  = document.getElementById('price-est');
-  const map = {
-    'Lawn Service': '🌿 Lawn Service estimate: $65–$140 depending on lot size (Rudy confirms)',
-    'Tree and Bush Pruning': '🌳 Tree & Bush Pruning: from $95 (Rudy quotes after review)',
-    'Power Wash': '💦 Power Washing: from $120 (Rudy quotes after review)'
-  };
-  if (svc && map[svc]) { el.textContent = map[svc]; el.style.display='block'; }
-  else el.style.display = 'none';
-}
-async function loadAvailability() {
-  const sec = document.getElementById('avail-section');
-  const con = document.getElementById('slots-container');
-  con.innerHTML = '<em style="color:var(--muted)">Loading available times...</em>';
-  sec.style.display = 'block';
-  try {
-    const r = await fetch(API+'/bookings/availability?tenantId='+TENANT, {headers:{'X-API-Key':API_KEY}});
-    const d = await r.json();
-    let html = '';
-    for (const [date, slots] of Object.entries(d.availability||{})) {
-      const label = new Date(date+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-      html += `<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">${label}</div><div class="slot-grid">`;
-      for (const slot of slots) {
-        const [h,m]=slot.split(':'); const ampm=parseInt(h)<12?'AM':'PM'; const h12=parseInt(h)>12?h-12:h;
-        html += `<div class="slot" onclick="selectSlot('${date}','${slot}',this)">${h12}:${m} ${ampm}</div>`;
-      }
-      html += '</div></div>';
-    }
-    con.innerHTML = html || '<em>No slots available</em>';
-  } catch(e) { con.innerHTML = '<em style="color:var(--red)">Error loading slots</em>'; }
-}
-function selectSlot(date, time, el) {
-  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('sel-date').value = date;
-  document.getElementById('sel-time').value = time;
-}
-async function createBooking() {
-  const name    = document.getElementById('sched-name').value.trim();
-  const phone   = document.getElementById('sched-phone').value.trim().replace(/\D/g,'').slice(-10);
-  const address = document.getElementById('sched-address').value.trim();
-  const service = document.getElementById('sched-service').value;
-  const date    = document.getElementById('sel-date').value;
-  const time    = document.getElementById('sel-time').value;
-  const el      = document.getElementById('booking-result');
-  if (!name||!phone||!address||!service||!date||!time) {
-    showResult(el,'Please fill all fields and select a time slot','error'); return;
-  }
-  showResult(el,'Creating booking...','');
-  try {
-    const r = await fetch(API+'/bookings', {method:'POST',
-      headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-      body: JSON.stringify({tenantId:TENANT,customerName:name,customerPhone:phone,
-        address,serviceType:service,preferredDate:date,preferredTime:time,source:'sandbox_demo'})});
-    const d = await r.json();
-    if (d.success||d.booking||d.id) {
-      aiCount++; aiRev+=85;
-      document.getElementById('kpi-ai').textContent = aiCount;
-      document.getElementById('kpi-rev').textContent = '$'+aiRev;
-      const row = document.getElementById('ai-job-row');
-      if (row) {
-        ['ai-d','ai-t','ai-c','ai-s','ai-p'].forEach(id=>document.getElementById(id).style.display='');
-        document.getElementById('ai-job-row').style.display='';
-        document.getElementById('ai-d').textContent = date;
-        document.getElementById('ai-t').textContent = time.slice(0,5);
-        document.getElementById('ai-c').textContent = name;
-        document.getElementById('ai-s').textContent = service;
-        document.getElementById('ai-p').textContent = '$85 est.';
-      }
-      showResult(el,`✅ Booking confirmed!
-
-Customer: ${name}
-Service: ${service}
-Date: ${date} at ${time}
-Address: ${address}
-Estimate: $85 (Rudy confirms final price)
-
-Rudy has been notified. Job queued for LawnPro.`,'success');
-    } else {
-      showResult(el,'❌ '+(d.error||d.message||'Booking failed'),'error');
-    }
-  } catch(e) { showResult(el,'❌ '+e.message,'error'); }
-}
-
-// ── CRM LOOKUP ────────────────────────────────────────────────────────────────
-const mockCRM = {
-  '5125551234': {name:'Maria Rodriguez',phone:'(512) 555-1234',address:'4521 Slaughter Ln, Austin TX 78749',
-    notes:'Biweekly lawn service. Gate code: 2847.',
-    jobs:[{date:'Apr 7',svc:'Lawn Service',status:'Completed'},{date:'Mar 24',svc:'Lawn Service',status:'Completed'}]},
-  '5125552345': {name:'Juan Hernandez',phone:'(512) 555-2345',address:'8832 Brodie Ln, Austin TX 78748',
-    notes:'Lawn + annual tree pruning. Prefers morning.',
-    jobs:[{date:'Apr 5',svc:'Tree Pruning',status:'Completed'},{date:'Mar 20',svc:'Lawn Service',status:'Completed'}]},
-};
-function lookupCustomer() {
-  const phone = document.getElementById('crm-phone').value.trim().replace(/\D/g,'').slice(-10);
-  const el    = document.getElementById('crm-result');
-  const c     = mockCRM[phone];
-  if (c) {
-    const jobs = c.jobs.map(j=>`<li>${j.date} — ${j.svc} (${j.status})</li>`).join('');
-    showResult(el,`<strong>✅ Customer Found!</strong><br><br>
-      <strong>Name:</strong> ${c.name}<br><strong>Phone:</strong> ${c.phone}<br>
-      <strong>Address:</strong> ${c.address}<br><strong>Notes:</strong> ${c.notes}<br><br>
-      <strong>Recent Jobs:</strong><ul style="padding-left:18px;margin-top:6px">${jobs}</ul><br>
-      <em>Zoe greets this customer by name and references their history.</em>`,'success');
-  } else {
-    showResult(el,'<strong>ℹ️ New Customer</strong><br><br>Not in LawnPro yet.<br><br>' +
-      'Zoe collects their info and creates a new record automatically — no manual entry.','sandbox');
-  }
-}
-
-// ── TEST RUNNER ───────────────────────────────────────────────────────────────
-async function runAllTests() {
-  const btn = document.getElementById('run-tests-btn');
-  const con = document.getElementById('test-results');
-  btn.disabled = true; btn.textContent = '⏳ Running...'; con.innerHTML = '';
-  const tests = [
-    ['Health check', async()=>{
-      const r=await fetch('https://512ai-backend-production.up.railway.app/health/deep');
-      const d=await r.json(); if(d.checks?.supabase!=='ok') throw new Error('Supabase down');
-      return 'All services healthy — sandbox: '+d.checks?.sandbox_mode;}],
-    ['Chat: FAQ', async()=>{
-      const r=await fetch(API+'/chat',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-        body:JSON.stringify({tenantId:TENANT,sessionId:'76fd06fe-1795-433b-905e-b50258bd5621',message:'What services do you offer?'})});
-      const d=await r.json(); if(!d.reply) throw new Error('No reply');
-      const l=d.reply.toLowerCase(); if(!l.includes('lawn')&&!l.includes('pruning')&&!l.includes('wash')) throw new Error('Services not mentioned');
-      return 'Services mentioned correctly';}],
-    ['Chat: pricing estimate', async()=>{
-      const r=await fetch(API+'/chat',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-        body:JSON.stringify({tenantId:TENANT,sessionId:'76fd06fe-1795-433b-905e-b50258bd5622',message:'How much to mow at 12008 Mystic Forest Ln Austin 78739?'})});
-      const d=await r.json(); if(!d.reply) throw new Error('No reply');
-      const l=d.reply.toLowerCase(); if(!l.includes('$')&&!l.includes('estimat')&&!l.includes('price')) throw new Error('No pricing in response');
-      return 'Pricing estimate returned';}],
-    ['Chat: booking intent', async()=>{
-      const r=await fetch(API+'/chat',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-        body:JSON.stringify({tenantId:TENANT,sessionId:'76fd06fe-1795-433b-905e-b50258bd5623',message:'I want to book lawn mowing'})});
-      const d=await r.json(); if(!d.reply) throw new Error('No reply'); return 'Booking intent handled';}],
-    ['Availability API', async()=>{
-      const r=await fetch(API+'/bookings/availability?tenantId='+TENANT,{headers:{'X-API-Key':API_KEY}});
-      const d=await r.json(); if(!d.availability||!Object.keys(d.availability).length) throw new Error('No slots');
-      return Object.keys(d.availability).length+' dates available';}],
-    ['CRM: known customer', async()=>{
-      const r=await fetch(API+'/bookings/crm-lookup?phone=5125551234',{headers:{'X-API-Key':API_KEY}});
-      const d=await r.json(); if(!d.customer) throw new Error('Not found');
-      return 'Found: '+d.customer.name;}],
-    ['CRM: unknown caller', async()=>{
-      const r=await fetch(API+'/bookings/crm-lookup?phone=5559999000',{headers:{'X-API-Key':API_KEY}});
-      const d=await r.json(); if(d.customer!==null) throw new Error('Should be null');
-      return 'Unknown caller handled correctly';}],
-    ['Voice: sandbox call', async()=>{
-      const r=await fetch(API+'/voice/call',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
-        body:JSON.stringify({tenantId:TENANT,phone:'+15125550000',name:'Test'})});
-      const d=await r.json(); if(!d.success) throw new Error(d.error||'failed');
-      if(!d.sandbox) throw new Error('Not in sandbox'); return 'Sandbox OK: '+d.call_id?.slice(0,20);}],
-    ['Lead capture', async()=>{
-      const r=await fetch(API+'/leads',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({businessName:'Test Lawn Co',ownerName:'Test',email:'t'+Date.now()+'@t.com',phone:'5125550001',servicesNeeded:['AI Chat'],message:'test'})});
-      const d=await r.json(); if(d.error) throw new Error(d.error);
-      return 'Lead created: '+(d.message||'ok');}],
-  ];
-  let passed = 0;
-  for (const [name, fn] of tests) {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px';
-    row.innerHTML = `<span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0"></span>
-      <span style="flex:1">${name}</span><span style="color:var(--muted)">Running...</span>`;
-    con.appendChild(row);
-    try {
-      const result = await fn();
-      row.children[0].style.cssText='width:18px;height:18px;border-radius:50%;background:#22c55e;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700';
-      row.children[0].textContent='✓'; row.children[2].style.color='var(--green)'; row.children[2].textContent=result; passed++;
-    } catch(e) {
-      row.children[0].style.cssText='width:18px;height:18px;border-radius:50%;background:#ef4444;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700';
-      row.children[0].textContent='✗'; row.children[2].style.color='var(--red)'; row.children[2].textContent=e.message;
-    }
-  }
-  const sum = document.createElement('div');
-  sum.style.cssText='margin-top:16px;padding:14px 16px;border-radius:10px;font-size:14px;font-weight:700';
-  if (passed===tests.length) { sum.style.cssText+='background:var(--green-l);color:var(--green-d)'; sum.textContent='🎉 All '+passed+'/'+tests.length+' passed — production ready!'; }
-  else { sum.style.cssText+='background:var(--amber-l);color:#92400E'; sum.textContent='⚠️ '+passed+'/'+tests.length+' passed'; }
-  con.appendChild(sum);
-  btn.disabled=false; btn.textContent='▶ Run All Tests Again';
-}
-
-// ── ADMIN HEALTH ─────────────────────────────────────────────────────────────
 function runAdminHealth() {
-  var el = document.getElementById('adm-health');
-  if (!el) return;
+  var el = document.getElementById('adm-health'); if (!el) { return; }
   el.innerHTML = 'Checking...';
   fetch('https://512ai-backend-production.up.railway.app/health/deep')
     .then(function(r) { return r.json(); })
     .then(function(d) {
-      var checks = d.checks || d;
-      var html = '';
+      var checks = d.checks || d; var html = '';
       Object.keys(checks).forEach(function(k) {
         var v = checks[k];
-        var color = (v==='ok'||v==='configured') ? '#22c55e' : (v==='active' ? '#f59e0b' : '#ef4444');
+        var color = (v === 'ok' || v === 'configured') ? '#22c55e' : (v === 'active' ? '#f59e0b' : '#ef4444');
         html += '<div style="display:flex;gap:10px;font-size:13px;padding:5px 0">'
           + '<span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;background:' + color + '"></span>'
-          + '<span style="flex:1">' + k.replace(/_/g,' ') + '</span>'
-          + '<span style="color:#666;font-size:11px;font-family:monospace">' + v + '</span>'
-          + '</div>';
+          + '<span style="flex:1">' + k.replace(/_/g, ' ') + '</span>'
+          + '<span style="color:#666;font-size:11px;font-family:monospace">' + v + '</span></div>';
       });
       el.innerHTML = html;
     })
     .catch(function() { el.innerHTML = '<span style="color:red">Backend unreachable</span>'; });
 }
-
-// ── UTILITY ───────────────────────────────────────────────────────────────────
-function showResult(el, text, type) {
-  el.className = 'result-box show' + (type ? ' '+type : '');
-  el.innerHTML = text.replace(/\n/g,'<br>');
+function showTab(id, btn) {
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  var pg = document.getElementById('page-' + id);
+  if (pg) { pg.classList.add('active'); }
+  if (btn) { btn.classList.add('active'); }
 }
-
-// ── BOOT: CHECK SESSION ON LOAD ───────────────────────────────────────────────
-(function boot() {
-  // Wire enter key on login
-  document.getElementById('l-u').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-  document.getElementById('l-p').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-  document.getElementById('lock-btn').addEventListener('click', doLogin);
-
-  // Check existing session
-  try {
-    const saved = JSON.parse(sessionStorage.getItem('_s') || 'null');
-    if (saved && USERS[saved.u]) {
-      unlock(USERS[saved.u], saved.u);
-      return;
+function addMsg(text, role) {
+  var box = document.getElementById('chat-messages');
+  var div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/
+/g, '<br>');
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+}
+function addTyping() {
+  var box = document.getElementById('chat-messages');
+  var div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing-ind';
+  div.innerHTML = '<div style="display:flex;gap:4px;padding:4px 0"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
+  box.appendChild(div); box.scrollTop = box.scrollHeight;
+}
+function sendChat() {
+  var inp = document.getElementById('chat-input');
+  var msg = inp.value.trim(); if (!msg) { return; }
+  inp.value = ''; addMsg(msg, 'user'); addTyping();
+  fetch(API + '/chat', { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+    body: JSON.stringify({ tenantId: TENANT, sessionId: '76fd06fe-1795-433b-905e-b50258bd5621', message: msg })
+  }).then(function(r) { return r.json(); })
+    .then(function(d) { var t = document.getElementById('typing-ind'); if (t) { t.remove(); } addMsg(d.reply || d.error || 'Error', 'bot'); })
+    .catch(function() { var t = document.getElementById('typing-ind'); if (t) { t.remove(); } addMsg('Connection error', 'bot'); });
+}
+function quickChat(msg) {
+  showTab('chat', document.querySelectorAll('.tab-btn')[1]);
+  document.getElementById('chat-input').value = msg; sendChat();
+}
+function triggerVoiceCall() {
+  var name = document.getElementById('voice-name').value.trim();
+  var phone = document.getElementById('voice-phone').value.trim();
+  var el = document.getElementById('voice-result');
+  if (!phone) { showResult(el, 'Please enter a phone number', 'error'); return; }
+  showResult(el, 'Connecting to Zoe (sandbox)...', '');
+  fetch(API + '/voice/call', { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+    body: JSON.stringify({ tenantId: TENANT, phone: phone, name: name, source: 'bighatlawndemo' })
+  }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success && d.sandbox) {
+        showResult(el, 'SANDBOX: In production, Zoe would call ' + phone + ' within 15-30 seconds.\n\nFirst words: "Hi' + (name ? ' ' + name + '!' : '!') + ' This is Zoe from Big Hat Lawn. How can I help you?"\n\nZoe can: give pricing, book jobs, transfer to Rudy.\n\nCall ID: ' + (d.call_id || 'sandbox'), 'sandbox');
+      } else { showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error'); }
+    })
+    .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
+}
+function updatePriceEst() {
+  var svc = document.getElementById('sched-service').value;
+  var el = document.getElementById('price-est');
+  var map = { 'Lawn Service': 'Lawn Service: $65-$140 by lot size (Rudy confirms)', 'Tree and Bush Pruning': 'Tree & Bush Pruning: from $95', 'Power Wash': 'Power Washing: from $120' };
+  if (svc && map[svc]) { el.textContent = map[svc]; el.style.display = 'block'; } else { el.style.display = 'none'; }
+}
+function loadAvailability() {
+  var sec = document.getElementById('avail-section');
+  var con = document.getElementById('slots-container');
+  con.innerHTML = '<em style="color:var(--muted)">Loading times...</em>'; sec.style.display = 'block';
+  fetch(API + '/bookings/availability?tenantId=' + TENANT, { headers: { 'X-API-Key': API_KEY } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var html = ''; var avail = d.availability || {};
+      Object.keys(avail).forEach(function(date) {
+        var label = new Date(date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        html += '<div style="margin-bottom:12px"><div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px">' + label + '</div><div class="slot-grid">';
+        avail[date].forEach(function(slot) {
+          var parts = slot.split(':'); var h = parseInt(parts[0]); var m = parts[1];
+          var ampm = h < 12 ? 'AM' : 'PM'; var h12 = h > 12 ? h - 12 : h;
+          html += '<div class="slot" onclick="selectSlot('' + date + '','' + slot + '',this)">' + h12 + ':' + m + ' ' + ampm + '</div>';
+        });
+        html += '</div></div>';
+      });
+      con.innerHTML = html || '<em>No slots available</em>';
+    })
+    .catch(function() { con.innerHTML = '<em style="color:var(--red)">Error loading slots</em>'; });
+}
+function selectSlot(date, time, el) {
+  document.querySelectorAll('.slot').forEach(function(s) { s.classList.remove('selected'); });
+  el.classList.add('selected');
+  document.getElementById('sel-date').value = date;
+  document.getElementById('sel-time').value = time;
+}
+function createBooking() {
+  var name    = document.getElementById('sched-name').value.trim();
+  var phone   = document.getElementById('sched-phone').value.trim().replace(/\D/g, '').slice(-10);
+  var address = document.getElementById('sched-address').value.trim();
+  var service = document.getElementById('sched-service').value;
+  var date    = document.getElementById('sel-date').value;
+  var time    = document.getElementById('sel-time').value;
+  var el      = document.getElementById('booking-result');
+  if (!name || !phone || !address || !service || !date || !time) { showResult(el, 'Please fill all fields and select a time slot', 'error'); return; }
+  showResult(el, 'Creating booking...', '');
+  fetch(API + '/bookings', { method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+    body: JSON.stringify({ tenantId: TENANT, customerName: name, customerPhone: phone, address: address, serviceType: service, preferredDate: date, preferredTime: time, source: 'sandbox_demo' })
+  }).then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success || d.booking || d.id) {
+        aiCount++; aiRev += 85;
+        document.getElementById('kpi-ai').textContent = aiCount;
+        document.getElementById('kpi-rev').textContent = '$' + aiRev;
+        var row = document.getElementById('ai-job-row');
+        if (row) {
+          row.style.display = '';
+          document.getElementById('ai-d').textContent = date; document.getElementById('ai-t').textContent = time.slice(0, 5);
+          document.getElementById('ai-c').textContent = name; document.getElementById('ai-s').textContent = service;
+          document.getElementById('ai-p').textContent = '$85 est.';
+        }
+        showResult(el, 'Booking confirmed!\n\nCustomer: ' + name + '\nService: ' + service + '\nDate: ' + date + ' at ' + time + '\nAddress: ' + address + '\nEstimate: $85\n\nRudy notified. Job queued for LawnPro.', 'success');
+      } else { showResult(el, 'Error: ' + (d.error || d.message || 'Booking failed'), 'error'); }
+    })
+    .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
+}
+var mockCRM = {
+  '5125551234': { name: 'Maria Rodriguez', phone: '(512) 555-1234', address: '4521 Slaughter Ln, Austin TX 78749', notes: 'Biweekly lawn. Gate code: 2847.', jobs: [{ date: 'Apr 7', svc: 'Lawn Service', status: 'Completed' }, { date: 'Mar 24', svc: 'Lawn Service', status: 'Completed' }] },
+  '5125552345': { name: 'Juan Hernandez', phone: '(512) 555-2345', address: '8832 Brodie Ln, Austin TX 78748', notes: 'Lawn + annual pruning. Prefers morning.', jobs: [{ date: 'Apr 5', svc: 'Tree Pruning', status: 'Completed' }, { date: 'Mar 20', svc: 'Lawn Service', status: 'Completed' }] }
+};
+function lookupCustomer() {
+  var phone = document.getElementById('crm-phone').value.trim().replace(/\D/g, '').slice(-10);
+  var el = document.getElementById('crm-result');
+  var c = mockCRM[phone];
+  if (c) {
+    var jobs = c.jobs.map(function(j) { return '<li>' + j.date + ' — ' + j.svc + ' (' + j.status + ')</li>'; }).join('');
+    showResult(el, '<strong>Customer Found!</strong><br><br><strong>Name:</strong> ' + c.name + '<br><strong>Phone:</strong> ' + c.phone + '<br><strong>Address:</strong> ' + c.address + '<br><strong>Notes:</strong> ' + c.notes + '<br><br><strong>Recent Jobs:</strong><ul style="padding-left:18px;margin-top:6px">' + jobs + '</ul><br><em>Zoe greets by name and references history.</em>', 'success');
+  } else {
+    showResult(el, '<strong>New Customer</strong><br><br>Not in LawnPro yet. Zoe collects info and creates a record automatically.', 'sandbox');
+  }
+}
+function runAllTests() {
+  var btn = document.getElementById('run-tests-btn');
+  var con = document.getElementById('test-results');
+  btn.disabled = true; btn.textContent = 'Running...'; con.innerHTML = '';
+  var tests = [
+    ['Health check', function() { return fetch('https://512ai-backend-production.up.railway.app/health/deep').then(function(r) { return r.json(); }).then(function(d) { if (d.checks && d.checks.supabase !== 'ok') { throw new Error('Supabase down'); } return 'All services healthy'; }); }],
+    ['Chat: FAQ', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'test-001', message: 'What services do you offer?' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } var l = d.reply.toLowerCase(); if (l.indexOf('lawn') < 0 && l.indexOf('pruning') < 0 && l.indexOf('wash') < 0) { throw new Error('Services not mentioned'); } return 'Services mentioned correctly'; }); }],
+    ['Chat: pricing', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'test-002', message: 'How much to mow at 12008 Mystic Forest Ln Austin 78739?' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } var l = d.reply.toLowerCase(); if (l.indexOf('$') < 0 && l.indexOf('estimat') < 0 && l.indexOf('price') < 0) { throw new Error('No pricing'); } return 'Pricing estimate returned'; }); }],
+    ['Chat: booking', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'test-003', message: 'I want to book lawn mowing' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } return 'Booking intent handled'; }); }],
+    ['Availability', function() { return fetch(API + '/bookings/availability?tenantId=' + TENANT, { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (!d.availability || !Object.keys(d.availability).length) { throw new Error('No slots'); } return Object.keys(d.availability).length + ' dates available'; }); }],
+    ['CRM: known', function() { return fetch(API + '/bookings/crm-lookup?phone=5125551234', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (!d.customer) { throw new Error('Not found'); } return 'Found: ' + d.customer.name; }); }],
+    ['CRM: unknown', function() { return fetch(API + '/bookings/crm-lookup?phone=5559999000', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (d.customer !== null) { throw new Error('Should be null'); } return 'Unknown caller handled'; }); }],
+    ['Voice sandbox', function() { return fetch(API + '/voice/call', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, phone: '+15125550000', name: 'Test' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.success) { throw new Error(d.error || 'failed'); } if (!d.sandbox) { throw new Error('Not sandbox'); } return 'Sandbox OK'; }); }],
+    ['Lead capture', function() { return fetch(API + '/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessName: 'Test Lawn Co', ownerName: 'Test', email: 'test' + Date.now() + '@test.com', phone: '5125550001', servicesNeeded: ['AI Chat'], message: 'test' }) }).then(function(r) { return r.json(); }).then(function(d) { if (d.error) { throw new Error(d.error); } return 'Lead created'; }); }]
+  ];
+  var idx = 0;
+  function runNext() {
+    if (idx >= tests.length) {
+      var passed = con.querySelectorAll('[data-p="1"]').length;
+      var sum = document.createElement('div');
+      sum.style.cssText = 'margin-top:16px;padding:14px 16px;border-radius:10px;font-size:14px;font-weight:700;';
+      if (passed === tests.length) { sum.style.background = 'var(--green-l)'; sum.style.color = 'var(--green-d)'; sum.textContent = 'All ' + passed + '/' + tests.length + ' passed!'; }
+      else { sum.style.background = 'var(--amber-l)'; sum.style.color = '#92400E'; sum.textContent = passed + '/' + tests.length + ' passed'; }
+      con.appendChild(sum); btn.disabled = false; btn.textContent = 'Run All Tests Again'; return;
     }
-  } catch(e) {}
-
-  // No session — show lock, focus username
-  document.getElementById('lock').style.display  = 'flex';
-  document.getElementById('demo').style.display  = 'none';
-  setTimeout(() => document.getElementById('l-u').focus(), 100);
+    var test = tests[idx++];
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px';
+    var icon = document.createElement('span'); icon.style.cssText = 'width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0';
+    var label = document.createElement('span'); label.style.flex = '1'; label.textContent = test[0];
+    var status = document.createElement('span'); status.style.color = 'var(--muted)'; status.textContent = 'Running...';
+    row.appendChild(icon); row.appendChild(label); row.appendChild(status); con.appendChild(row);
+    test[1]().then(function(result) {
+      icon.style.cssText = 'width:18px;height:18px;border-radius:50%;background:#22c55e;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700';
+      icon.textContent = '✓'; status.style.color = 'var(--green)'; status.textContent = result; row.setAttribute('data-p', '1'); runNext();
+    }).catch(function(e) {
+      icon.style.cssText = 'width:18px;height:18px;border-radius:50%;background:#ef4444;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700';
+      icon.textContent = '✗'; status.style.color = 'var(--red)'; status.textContent = e.message; runNext();
+    });
+  }
+  runNext();
+}
+function showResult(el, text, type) {
+  el.className = 'result-box show' + (type ? ' ' + type : '');
+  el.innerHTML = text.replace(/\n/g, '<br>');
+}
+document.getElementById('l-u').addEventListener('keydown', function(e) { if (e.key === 'Enter') { doLogin(); } });
+document.getElementById('l-p').addEventListener('keydown', function(e) { if (e.key === 'Enter') { doLogin(); } });
+document.getElementById('lock-btn').addEventListener('click', doLogin);
+(function boot() {
+  try {
+    var saved = JSON.parse(sessionStorage.getItem('_s') || 'null');
+    if (saved && USERS[saved.u]) { unlock(USERS[saved.u]); return; }
+  } catch (e) {}
+  document.getElementById('lock').style.display = 'flex';
+  document.getElementById('demo').style.display = 'none';
+  setTimeout(function() { document.getElementById('l-u').focus(); }, 100);
 })();
 </script>
 </body>
