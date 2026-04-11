@@ -458,7 +458,7 @@ function loadAvailability() {
         avail[date].forEach(function(slot) {
           var parts = slot.split(':'); var h = parseInt(parts[0]); var m = parts[1];
           var ampm = h < 12 ? 'AM' : 'PM'; var h12 = h > 12 ? h - 12 : h;
-          html += '<div class="slot" onclick="selectSlot('' + date + '','' + slot + '',this)">' + h12 + ':' + m + ' ' + ampm + '</div>';
+          html += '<div class=\"slot\" onclick=\"selectSlot(\\\'' + date + '\\\',\\\'' + slot + '\\\',this)\">' + h12 + ':' + m + ' ' + ampm + '</div>';
         });
         html += '</div></div>';
       });
