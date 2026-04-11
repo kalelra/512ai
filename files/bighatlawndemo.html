@@ -812,6 +812,30 @@ async function runAllTests() {
   btn.disabled=false; btn.textContent='▶ Run All Tests Again';
 }
 
+// ── ADMIN HEALTH ─────────────────────────────────────────────────────────────
+function runAdminHealth() {
+  var el = document.getElementById('adm-health');
+  if (!el) return;
+  el.innerHTML = 'Checking...';
+  fetch('https://512ai-backend-production.up.railway.app/health/deep')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var checks = d.checks || d;
+      var html = '';
+      Object.keys(checks).forEach(function(k) {
+        var v = checks[k];
+        var color = (v==='ok'||v==='configured') ? '#22c55e' : (v==='active' ? '#f59e0b' : '#ef4444');
+        html += '<div style="display:flex;gap:10px;font-size:13px;padding:5px 0">'
+          + '<span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;background:' + color + '"></span>'
+          + '<span style="flex:1">' + k.replace(/_/g,' ') + '</span>'
+          + '<span style="color:#666;font-size:11px;font-family:monospace">' + v + '</span>'
+          + '</div>';
+      });
+      el.innerHTML = html;
+    })
+    .catch(function() { el.innerHTML = '<span style="color:red">Backend unreachable</span>'; });
+}
+
 // ── UTILITY ───────────────────────────────────────────────────────────────────
 function showResult(el, text, type) {
   el.className = 'result-box show' + (type ? ' '+type : '');
