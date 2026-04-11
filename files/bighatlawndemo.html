@@ -170,7 +170,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat</h3><span class="badge badge-green">Live</span></div>
       <div class="card-body">
         <div class="chat-box" id="chat-messages"><div class="msg bot">&#128075; Hi! I&apos;m Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div></div>
-        <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button></div>
+        <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button>
+        <button class="btn btn-secondary" onclick="clearChat()" style="font-size:12px;padding:8px 12px">&#128465; Clear</button></div>
         <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
           <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much does lawn mowing cost?')">&#128181; Pricing?</button>
           <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much to mow at 4521 Slaughter Ln Austin TX 78749?')">&#127968; Estimate my yard</button>
@@ -285,6 +286,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 </div>
 <script>
 var API     = 'https://512ai-backend-production.up.railway.app/api/v1';
+var SESSION_ID = 'sess-' + Math.random().toString(36).slice(2) + '-' + Date.now();
 var API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
 var TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
 var aiCount = 0, aiRev = 0;
@@ -407,13 +409,18 @@ function addTyping() {
   div.innerHTML = '<div style="display:flex;gap:4px;padding:4px 0"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
   box.appendChild(div); box.scrollTop = box.scrollHeight;
 }
+function clearChat() {
+  SESSION_ID = 'sess-' + Math.random().toString(36).slice(2) + '-' + Date.now();
+  var box = document.getElementById('chat-messages');
+  box.innerHTML = '<div class="msg bot">&#128075; Hi! I'm Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div>';
+}
 function sendChat() {
   var inp = document.getElementById('chat-input');
   var msg = inp.value.trim(); if (!msg) { return; }
   inp.value = ''; addMsg(msg, 'user'); addTyping();
   fetch(API + '/chat', { method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
-    body: JSON.stringify({ tenantId: TENANT, sessionId: '76fd06fe-1795-433b-905e-b50258bd5621', message: msg })
+    body: JSON.stringify({ tenantId: TENANT, sessionId: SESSION_ID, message: msg })
   }).then(function(r) { return r.json(); })
     .then(function(d) { var t = document.getElementById('typing-ind'); if (t) { t.remove(); } addMsg(d.reply || d.error || 'Error', 'bot'); })
     .catch(function() { var t = document.getElementById('typing-ind'); if (t) { t.remove(); } addMsg('Connection error', 'bot'); });
