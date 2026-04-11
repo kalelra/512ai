@@ -288,8 +288,8 @@ var API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
 var TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
 var aiCount = 0, aiRev = 0;
 var USERS = {
-  'rudy':  { h: '29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023',  role: 'client', name: 'Rudy Cantu',    biz: 'Big Hat Lawn' },
-  'admin': { h: '9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role: 'admin',  name: 'Ricardo Avila', biz: '512AI' }
+  'rudy':  { h: 'aa6d9a34b9bb8678fb7b1067e627c06917ef846f5a713ae19b026dbf1cd687de',  role: 'client', name: 'Rudy Cantu',    biz: 'Big Hat Lawn' },
+  'admin': { h: '4af17de4c8d5210f02822a3adf40c5c863f5a39694fc2179b1e2ac06a171b224', role: 'admin',  name: 'Ricardo Avila', biz: '512AI' }
 };
 function sha256(s) {
   return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function(b) {
@@ -396,8 +396,7 @@ function addMsg(text, role) {
   var box = document.getElementById('chat-messages');
   var div = document.createElement('div');
   div.className = 'msg ' + role;
-  div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/
-/g, '<br>');
+  div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
   box.appendChild(div); box.scrollTop = box.scrollHeight;
 }
 function addTyping() {
