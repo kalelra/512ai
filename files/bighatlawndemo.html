@@ -112,7 +112,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
   <button onclick="doLogout()" style="background:#ef4444;border:none;color:#fff;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">Sign out</button>
 </div>
 <div id="demo" style="display:none">
-  <div class="demo-bar"><span class="pill">SANDBOX</span><span>Big Hat Lawn &mdash; 512AI Demo &nbsp;|&nbsp; No real calls sent</span></div>
+  <div class="demo-bar"><span class="pill">SANDBOX</span><span>Big Hat Lawn &mdash; 512AI Demo &nbsp;|&nbsp; Live Demo &mdash; Real AI, Real Calls</span></div>
   <nav><span class="nav-logo">&#129312; Big Hat <span>Lawn</span></span><div class="nav-right"><a href="tel:5127482626" class="nav-phone">&#128222; (512) 748-2626</a></div></nav>
   <div class="nav-tabs" id="nav-tabs">
     <button class="tab-btn active" onclick="showTab('dashboard',this)">&#128202; Overview</button>
@@ -181,13 +181,13 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     </div>
   </div>
   <div id="page-voice" class="page">
-    <div class="card"><div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice &mdash; Zoe &#128222; +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Voice &mdash; Zoe &#128222; +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
       <div class="card-body">
         <div class="form-row">
           <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. Maria Rodriguez"></div>
           <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
         </div>
-        <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">&#128222; Simulate Zoe Calling Me (Sandbox)</button>
+        <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Zoe Live!</button>
         <div id="voice-result" class="result-box"></div>
       </div>
     </div>
@@ -426,14 +426,14 @@ function triggerVoiceCall() {
   var phone = document.getElementById('voice-phone').value.trim();
   var el = document.getElementById('voice-result');
   if (!phone) { showResult(el, 'Please enter a phone number', 'error'); return; }
-  showResult(el, 'Connecting to Zoe (sandbox)...', '');
+  showResult(el, '&#128222; Connecting... Zoe will call you in 15-30 seconds!', '');
   fetch(API + '/voice/call', { method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
-    body: JSON.stringify({ tenantId: TENANT, phone: phone, name: name, source: 'bighatlawndemo' })
+    body: JSON.stringify({ tenantId: TENANT, phone: phone, name: name, source: 'bighatlawndemo', sandbox: false })
   }).then(function(r) { return r.json(); })
     .then(function(d) {
-      if (d.success && d.sandbox) {
-        showResult(el, 'SANDBOX: In production, Zoe would call ' + phone + ' within 15-30 seconds.\n\nFirst words: "Hi' + (name ? ' ' + name + '!' : '!') + ' This is Zoe from Big Hat Lawn. How can I help you?"\n\nZoe can: give pricing, book jobs, transfer to Rudy.\n\nCall ID: ' + (d.call_id || 'sandbox'), 'sandbox');
+      if (d.success) {
+        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nShe will introduce herself as Zoe from Big Hat Lawn, answer pricing questions, book jobs, and transfer to Rudy if needed.\n\nCall ID: ' + (d.call_id || d.callId || 'initiated'), 'success');
       } else { showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error'); }
     })
     .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
@@ -443,6 +443,28 @@ function updatePriceEst() {
   var el = document.getElementById('price-est');
   var map = { 'Lawn Service': 'Lawn Service: $65-$140 by lot size (Rudy confirms)', 'Tree and Bush Pruning': 'Tree & Bush Pruning: from $95', 'Power Wash': 'Power Washing: from $120' };
   if (svc && map[svc]) { el.textContent = map[svc]; el.style.display = 'block'; } else { el.style.display = 'none'; }
+}
+function lookupCustomer() {
+  var phone = document.getElementById('crm-phone').value.trim().replace(/\D/g, '').slice(-10);
+  var el = document.getElementById('crm-result');
+  if (!phone) { showResult(el, 'Please enter a phone number', 'error'); return; }
+  showResult(el, 'Looking up customer...', '');
+  fetch(API + '/bookings/crm-lookup?phone=' + phone, { headers: { 'X-API-Key': API_KEY } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.customer) {
+        var cu = d.customer;
+        showResult(el, '<strong>&#9989; Customer Found in LawnPro!</strong><br><br>' +
+          '<strong>Name:</strong> ' + (cu.name || '') + '<br>' +
+          '<strong>Phone:</strong> ' + (cu.phone || phone) + '<br>' +
+          '<strong>Address:</strong> ' + (cu.address || 'N/A') + '<br>' +
+          '<strong>Notes:</strong> ' + (cu.notes || 'None') + '<br><br>' +
+          '<em style="color:var(--muted);font-size:12px">&#128204; Zoe uses this to personalize her greeting</em>', 'success');
+      } else {
+        showResult(el, '<strong>&#128100; New Customer</strong><br><br>Not in LawnPro yet. Zoe will collect info automatically.', '');
+      }
+    })
+    .catch(function(e) { showResult(el, 'Lookup error: ' + e.message, 'error'); });
 }
 function loadAvailability() {
   var sec = document.getElementById('avail-section');
@@ -502,21 +524,6 @@ function createBooking() {
       } else { showResult(el, 'Error: ' + (d.error || d.message || 'Booking failed'), 'error'); }
     })
     .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
-}
-var mockCRM = {
-  '5125551234': { name: 'Maria Rodriguez', phone: '(512) 555-1234', address: '4521 Slaughter Ln, Austin TX 78749', notes: 'Biweekly lawn. Gate code: 2847.', jobs: [{ date: 'Apr 7', svc: 'Lawn Service', status: 'Completed' }, { date: 'Mar 24', svc: 'Lawn Service', status: 'Completed' }] },
-  '5125552345': { name: 'Juan Hernandez', phone: '(512) 555-2345', address: '8832 Brodie Ln, Austin TX 78748', notes: 'Lawn + annual pruning. Prefers morning.', jobs: [{ date: 'Apr 5', svc: 'Tree Pruning', status: 'Completed' }, { date: 'Mar 20', svc: 'Lawn Service', status: 'Completed' }] }
-};
-function lookupCustomer() {
-  var phone = document.getElementById('crm-phone').value.trim().replace(/\D/g, '').slice(-10);
-  var el = document.getElementById('crm-result');
-  var c = mockCRM[phone];
-  if (c) {
-    var jobs = c.jobs.map(function(j) { return '<li>' + j.date + ' — ' + j.svc + ' (' + j.status + ')</li>'; }).join('');
-    showResult(el, '<strong>Customer Found!</strong><br><br><strong>Name:</strong> ' + c.name + '<br><strong>Phone:</strong> ' + c.phone + '<br><strong>Address:</strong> ' + c.address + '<br><strong>Notes:</strong> ' + c.notes + '<br><br><strong>Recent Jobs:</strong><ul style="padding-left:18px;margin-top:6px">' + jobs + '</ul><br><em>Zoe greets by name and references history.</em>', 'success');
-  } else {
-    showResult(el, '<strong>New Customer</strong><br><br>Not in LawnPro yet. Zoe collects info and creates a record automatically.', 'sandbox');
-  }
 }
 function runAllTests() {
   var btn = document.getElementById('run-tests-btn');
