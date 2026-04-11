@@ -187,7 +187,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
           <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. Maria Rodriguez"></div>
           <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
         </div>
-        <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Zoe Live!</button>
+        <button class="btn btn-primary" id="voice-call-btn" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Zoe Live!</button>
         <div id="voice-result" class="result-box"></div>
       </div>
     </div>
@@ -422,10 +422,20 @@ function quickChat(msg) {
   document.getElementById('chat-input').value = msg; sendChat();
 }
 function triggerVoiceCall() {
-  var name = document.getElementById('voice-name').value.trim();
+  var name  = document.getElementById('voice-name').value.trim();
   var phone = document.getElementById('voice-phone').value.trim();
-  var el = document.getElementById('voice-result');
-  if (!phone) { showResult(el, 'Please enter a phone number', 'error'); return; }
+  var el    = document.getElementById('voice-result');
+  var btn   = document.getElementById('voice-call-btn');
+  if (!phone) { showResult(el, 'Please enter a phone number.', 'error'); return; }
+  if (btn && btn.disabled) { return; }
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '&#9203; Calling... (60s cooldown)';
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!';
+    }, 60000);
+  }
   showResult(el, '&#128222; Connecting... Zoe will call you in 15-30 seconds!', '');
   fetch(API + '/voice/call', { method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
@@ -433,10 +443,16 @@ function triggerVoiceCall() {
   }).then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.success) {
-        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nShe will introduce herself as Zoe from Big Hat Lawn, answer pricing questions, book jobs, and transfer to Rudy if needed.\n\nCall ID: ' + (d.call_id || d.callId || 'initiated'), 'success');
-      } else { showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error'); }
+        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nZoe will greet you by name, answer pricing questions, schedule jobs, and transfer to Rudy if needed.\n\nCall ID: ' + (d.call_id || 'initiated'), 'success');
+      } else {
+        if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!'; }
+        showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error');
+      }
     })
-    .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
+    .catch(function(e) {
+      if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!'; }
+      showResult(el, 'Error: ' + e.message, 'error');
+    });
 }
 function updatePriceEst() {
   var svc = document.getElementById('sched-service').value;
