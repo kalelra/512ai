@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f5f5f5}
+.container{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.header{background:#2E7D32;padding:24px;text-align:center}
+.header h1{color:#fff;font-size:22px;margin:0;font-family:Georgia,serif}
+.header p{color:#a5d6a7;font-size:14px;margin:4px 0 0}
+.body{padding:24px}
+.booking-card{background:#e8f5e9;border-left:4px solid #2E7D32;border-radius:0 8px 8px 0;padding:16px;margin:16px 0}
+.booking-card h3{color:#1B5E20;margin:0 0 12px;font-size:15px}
+.field{display:flex;gap:8px;margin-bottom:8px;font-size:14px}
+.field-label{color:#666;min-width:100px;font-weight:600}
+.field-value{color:#1a1a1a;font-weight:500}
+.action-box{background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:8px;padding:16px;margin:16px 0;text-align:center}
+.action-box p{margin:0 0 4px;font-size:14px;font-weight:600;color:#92400E}
+.action-box small{color:#b45309;font-size:12px}
+.footer{background:#f5f5f5;padding:16px;text-align:center;font-size:12px;color:#999}
+.footer a{color:#2E7D32}
+</style></head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🤠 Big Hat Lawn — New Booking!</h1>
+    <p>Powered by 512AI &nbsp;·&nbsp; Automated customer intake</p>
+  </div>
+  <div class="body">
+    <p style="font-size:14px;color:#333;margin:0 0 16px">Hey Rudy! You have a new booking from your AI assistant. Here are the details:</p>
+    <div class="booking-card">
+      <h3>📋 Booking Details</h3>
+      <div class="field"><span class="field-label">Customer:</span><span class="field-value">{{booking__customer_name}}</span></div>
+      <div class="field"><span class="field-label">Phone:</span><span class="field-value">{{booking__customer_phone}}</span></div>
+      <div class="field"><span class="field-label">Address:</span><span class="field-value">{{booking__address}}</span></div>
+      <div class="field"><span class="field-label">Service:</span><span class="field-value">{{booking__service_type}}</span></div>
+      <div class="field"><span class="field-label">Date:</span><span class="field-value">{{booking__date}}</span></div>
+      <div class="field"><span class="field-label">Time:</span><span class="field-value">{{booking__time}}</span></div>
+      <div class="field"><span class="field-label">Source:</span><span class="field-value">{{booking__source}}</span></div>
+    </div>
+    <div class="action-box">
+      <p>✅ Call or text the customer to confirm</p>
+      <small>Tap their phone number above to call directly</small>
+    </div>
+    <p style="font-size:13px;color:#666">This booking was captured automatically by Zoe, your AI assistant. The job has been added to your LawnPro schedule. If anything needs adjusting, just call the customer directly.</p>
+  </div>
+  <div class="footer">
+    <p>Sent by <a href="https://512ai.co">512AI</a> &nbsp;·&nbsp; Questions? <a href="mailto:contact@512ai.co">contact@512ai.co</a></p>
+  </div>
+</div>
+</body>
+</html>
