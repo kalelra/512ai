@@ -2274,6 +2274,23 @@ Do NOT mention that you are an AI.`;
         'Notes: ' + document.getElementById('f-notes').value
       ].join('\n');
 
+      // POST to backend (non-blocking — Formspree is the primary success path)
+      fetch('https://512ai-backend-production.up.railway.app/api/v1/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: biz,
+          ownerName: name,
+          email: email,
+          phone: document.getElementById('f-phone').value || '',
+          servicesNeeded: [document.getElementById('f-category').value || 'General'],
+          message: body,
+          source: '512ai_intake_form',
+          crmUsed: '',
+          preferredContactTime: ''
+        })
+      }).catch(function(){ /* silent fail — Formspree is the fallback */ });
+
       try {
         const res = await fetch('https://formspree.io/f/mojklvjq', {
           method: 'POST',
