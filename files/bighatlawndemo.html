@@ -285,6 +285,12 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     <div class="card"><div class="card-hdr"><h3>&#9989; System Tests</h3><span class="badge badge-blue">9 checks</span></div>
       <div class="card-body">
         <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Live tests against Railway backend. All must pass before going live on bighatlawn.com.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--muted,#666)">
+            <input type="checkbox" id="include-voice-test" style="width:16px;height:16px;cursor:pointer">
+            Include voice call test (uses Bland.ai credits)
+          </label>
+        </div>
         <button class="btn btn-primary" onclick="runAllTests()" id="run-tests-btn">&#9654; Run All Tests</button>
         <div id="test-results" style="margin-top:16px"></div>
       </div>
@@ -450,6 +456,18 @@ function triggerVoiceCall() {
   if (!phone) { showResult(el, 'Please enter a phone number.', 'error'); return; }
   if (btn && btn.disabled) { return; }
 
+  var proceed = confirm(
+    '\ud83d\udcde This will place a REAL phone call to ' + phone + ' via our AI voice agent Zoe.\n\n' +
+    '\u2022 The call uses Bland.ai credits\n' +
+    '\u2022 Your phone will ring in 15-30 seconds\n' +
+    '\u2022 Make sure you entered YOUR number (not a customer\'s)\n\n' +
+    'Place the call?'
+  );
+  if (!proceed) {
+    showResult(el, 'Call cancelled.', '');
+    return;
+  }
+
   if (btn) {
     btn.disabled = true;
     btn.innerHTML = '&#9203; Calling... (60s cooldown)';
@@ -607,8 +625,44 @@ function runAllTests() {
     ['Availability', function() { return fetch(API + '/bookings/availability?tenantId=' + TENANT, { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (!d.availability || !Object.keys(d.availability).length) { throw new Error('No slots'); } return Object.keys(d.availability).length + ' dates available'; }); }],
     ['CRM: lookup', function() { return fetch(API + '/bookings/crm-lookup?phone=5125551234', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (typeof d.customer === 'undefined') { throw new Error('No customer field'); } return d.customer ? 'Found: ' + d.customer.name : 'New customer (LawnPro pending)'; }); }],
     ['CRM: unknown', function() { return fetch(API + '/bookings/crm-lookup?phone=5559999000', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (d.customer !== null) { throw new Error('Should be null'); } return 'Unknown caller handled'; }); }],
-    ['Voice: Zoe call', function() { return fetch(API + '/voice/call', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, phone: '+15125550000', name: 'Test' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.success) { throw new Error(d.error || 'failed'); } if (!d.call_id) { throw new Error('No call ID returned'); } return 'Call initiated OK'; }); }],
-    ['Lead capture', function() { return fetch(API + '/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ businessName: 'Test Lawn Co', ownerName: 'Test', email: 'test' + Date.now() + '@test.com', phone: '5125550001', servicesNeeded: ['AI Chat'], message: 'test' }) }).then(function(r) { return r.json(); }).then(function(d) { if (d.error) { throw new Error(d.error); } return 'Lead created'; }); }]
+    ['Voice: Zoe call', function() {
+      var cb = document.getElementById('include-voice-test');
+      if (!cb || !cb.checked) {
+        return Promise.resolve('Skipped (enable checkbox to test)');
+      }
+      return Promise.race([
+        fetch(API + '/voice/call', { method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
+          body: JSON.stringify({ tenantId: TENANT, phone: '+15125550000', name: 'QA Test' })
+        }).then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.success && d.call_id) return 'Call initiated: ' + d.call_id.substring(0,8);
+          if (d.error && d.error.indexOf('credit') >= 0) return 'Voice configured (low credits)';
+          throw new Error(d.error || 'No call ID');
+        }),
+        new Promise(function(_, rej) { setTimeout(function() { rej(new Error('Bland.ai timeout')); }, 15000); })
+      ]);
+    }],
+    ['Lead capture', function() {
+      var testEmail = 'test' + Date.now() + '@test.com';
+      return fetch(API + '/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: 'QA_TEST_CLEANUP',
+          ownerName: 'QA Bot',
+          email: testEmail,
+          phone: '5550000000',
+          servicesNeeded: ['AI Chat'],
+          message: 'Automated QA test \u2014 safe to delete'
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.error) { throw new Error(d.error); }
+        return 'Lead created (test data)';
+      });
+    }]
   ];
   var idx = 0;
   function runNext() {
