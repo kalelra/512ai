@@ -133,7 +133,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>How 512AI Works for Big Hat Lawn</h3></div>
       <div class="card-body"><div class="flow-diagram">
         <div class="flow-step">&#128242; Customer contacts BHL</div><div class="flow-arrow">&rarr;</div>
-        <div class="flow-step">&#129302; Zoe answers instantly</div><div class="flow-arrow">&rarr;</div>
+        <div class="flow-step">&#129302; Divi answers instantly</div><div class="flow-arrow">&rarr;</div>
         <div class="flow-step">&#128203; Booking collected</div><div class="flow-arrow">&rarr;</div>
         <div class="flow-step">&#128242; Rudy gets SMS</div><div class="flow-arrow">&rarr;</div>
         <div class="flow-step">&#9989; Job in LawnPro</div>
@@ -169,7 +169,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
   <div id="page-chat" class="page">
     <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat</h3><span class="badge badge-green">Live</span></div>
       <div class="card-body">
-        <div class="chat-box" id="chat-messages"><div class="msg bot">&#128075; Hi! I&apos;m Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div></div>
+        <div class="chat-box" id="chat-messages"><div class="msg bot">&#128075; Hi! I&apos;m Divi from Big Hat Lawn. Ask me about pricing, services, or book a job!</div></div>
         <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button>
         <button class="btn btn-secondary" onclick="clearChat()" style="font-size:12px;padding:8px 12px">&#128465; Clear</button></div>
         <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
@@ -182,13 +182,13 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     </div>
   </div>
   <div id="page-voice" class="page">
-    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Voice &mdash; Zoe &#128222; +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
+    <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>AI Voice &mdash; Divi &#128222; +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox</span></div>
       <div class="card-body">
         <div class="form-row">
           <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. Maria Rodriguez"></div>
           <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
         </div>
-        <button class="btn btn-primary" id="voice-call-btn" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Zoe Live!</button>
+        <button class="btn btn-primary" id="voice-call-btn" onclick="triggerVoiceCall()" style="width:100%">&#128222; Call Me Now — Hear Divi Live!</button>
         <div id="voice-result" class="result-box"></div>
         <div id="call-transcript" style="display:none;margin-top:14px;padding:14px;background:#fff;border:1px solid var(--border);border-radius:10px;max-height:300px;overflow-y:auto"></div>
       </div>
@@ -251,17 +251,17 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         <div class="guide-section"><h3><span class="step-num">1</span> What These Tools Do</h3>
           <ul style="font-size:13px;line-height:2;padding-left:20px;margin-top:8px">
             <li>Customer visits bighatlawn.com and asks a question &rarr; AI answers instantly</li>
-            <li>Customer calls your AI number &rarr; <strong>Zoe</strong> answers, gives pricing, books the job</li>
+            <li>Customer calls your AI number &rarr; <strong>Divi</strong> answers, gives pricing, books the job</li>
             <li>Booking made &rarr; <strong>you get a text</strong> with all the details</li>
             <li>Job automatically added to <strong>LawnPro</strong></li>
           </ul>
           <div class="tip-box">&#128161; No app to check. The AI handles it and texts you to confirm.</div>
         </div>
         <div class="guide-section"><h3><span class="step-num">2</span> AI Chat on Your Website</h3>
-          <p style="font-size:13px;line-height:1.8">Zoe answers pricing questions, service area checks, and books appointments. Try the <strong>AI Chat tab</strong> above!</p>
+          <p style="font-size:13px;line-height:1.8">Divi answers pricing questions, service area checks, and books appointments. Try the <strong>AI Chat tab</strong> above!</p>
         </div>
         <div class="guide-section"><h3><span class="step-num">3</span> AI Voice Line &mdash; (512) 883-8687</h3>
-          <p style="font-size:13px;line-height:1.8">Zoe answers calls, gives pricing, books jobs, and transfers to you at (512) 748-2626 when needed. Try the <strong>AI Voice tab</strong>!</p>
+          <p style="font-size:13px;line-height:1.8">Divi answers calls, gives pricing, books jobs, and transfers to you at (512) 748-2626 when needed. Try the <strong>AI Voice tab</strong>!</p>
         </div>
         <div class="guide-section"><h3><span class="step-num">4</span> Your Booking Text</h3>
           <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.8;font-family:monospace">
@@ -431,7 +431,7 @@ function clearChat() {
     return v.toString(16);
   });
   var box = document.getElementById('chat-messages');
-  box.innerHTML = '<div class="msg bot">&#128075; Hi! I’m Zoe from Big Hat Lawn. Ask me about pricing, services, or book a job!</div>';
+  box.innerHTML = '<div class="msg bot">&#128075; Hi! I’m Divi from Big Hat Lawn. Ask me about pricing, services, or book a job!</div>';
 }
 function sendChat() {
   var inp = document.getElementById('chat-input');
@@ -457,7 +457,7 @@ function triggerVoiceCall() {
   if (btn && btn.disabled) { return; }
 
   var proceed = confirm(
-    '\ud83d\udcde This will place a REAL phone call to ' + phone + ' via our AI voice agent Zoe.\n\n' +
+    '\ud83d\udcde This will place a REAL phone call to ' + phone + ' via our AI voice agent Divi.\n\n' +
     '\u2022 The call uses Bland.ai credits\n' +
     '\u2022 Your phone will ring in 15-30 seconds\n' +
     '\u2022 Make sure you entered YOUR number (not a customer\'s)\n\n' +
@@ -473,10 +473,10 @@ function triggerVoiceCall() {
     btn.innerHTML = '&#9203; Calling... (60s cooldown)';
     setTimeout(function() {
       btn.disabled = false;
-      btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!';
+      btn.innerHTML = '&#128222; Call Me Now — Hear Divi Live!';
     }, 60000);
   }
-  showResult(el, '&#128222; Connecting... Zoe will call you in 15-30 seconds!', '');
+  showResult(el, '&#128222; Connecting... Divi will call you in 15-30 seconds!', '');
   fetch(API + '/voice/call', { method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY },
     body: JSON.stringify({ tenantId: TENANT, phone: phone, name: name, source: 'bighatlawndemo', sandbox: false })
@@ -484,11 +484,11 @@ function triggerVoiceCall() {
     .then(function(d) {
       if (d.success) {
         var callId = d.call_id || 'initiated';
-        showResult(el, '&#9989; Zoe is calling ' + phone + ' now!\n\nZoe will greet you by name, answer pricing questions, schedule jobs, and transfer to Rudy if needed.\n\nCall ID: ' + callId, 'success');
+        showResult(el, '&#9989; Divi is calling ' + phone + ' now!\n\nDivi will greet you by name, answer pricing questions, schedule jobs, and transfer to Rudy if needed.\n\nCall ID: ' + callId, 'success');
         var transcriptEl = document.getElementById('call-transcript');
         if (transcriptEl) {
           transcriptEl.style.display = 'block';
-          transcriptEl.innerHTML = '<div style="font-weight:700;margin-bottom:8px">&#128172; Live Call Log</div><div id="transcript-lines" style="font-size:13px;color:#555">Connecting to Zoe...</div>';
+          transcriptEl.innerHTML = '<div style="font-weight:700;margin-bottom:8px">&#128172; Live Call Log</div><div id="transcript-lines" style="font-size:13px;color:#555">Connecting to Divi...</div>';
           var pollCount = 0;
           var pollTranscript = setInterval(function() {
             pollCount++;
@@ -499,7 +499,7 @@ function triggerVoiceCall() {
                 var tEl = document.getElementById('transcript-lines');
                 if (tEl && lines.length) {
                   tEl.innerHTML = lines.map(function(l) {
-                    var who = (l.user === 'assistant' || l.role === 'assistant') ? '&#129302; <strong>Zoe</strong>' : '&#128100; <strong>You</strong>';
+                    var who = (l.user === 'assistant' || l.role === 'assistant') ? '&#129302; <strong>Divi</strong>' : '&#128100; <strong>You</strong>';
                     return '<div style="margin-bottom:6px;padding:6px 8px;border-radius:6px;background:' + ((l.user === 'assistant' || l.role === 'assistant') ? '#f0fdf4' : '#f8faff') + '">' + who + ': ' + (l.text || l.content || '') + '</div>';
                   }).join('');
                 } else if (tEl && t.status === 'completed') {
@@ -512,12 +512,12 @@ function triggerVoiceCall() {
           }, 5000);
         }
       } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!'; }
+        if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Divi Live!'; }
         showResult(el, 'Error: ' + (d.error || 'Call failed'), 'error');
       }
     })
     .catch(function(e) {
-      if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Zoe Live!'; }
+      if (btn) { btn.disabled = false; btn.innerHTML = '&#128222; Call Me Now — Hear Divi Live!'; }
       showResult(el, 'Error: ' + e.message, 'error');
     });
 }
@@ -542,9 +542,9 @@ function lookupCustomer() {
           '<strong>Phone:</strong> ' + (cu.phone || phone) + '<br>' +
           '<strong>Address:</strong> ' + (cu.address || 'N/A') + '<br>' +
           '<strong>Notes:</strong> ' + (cu.notes || 'None') + '<br><br>' +
-          '<em style="color:var(--muted);font-size:12px">&#128204; Zoe uses this to personalize her greeting</em>', 'success');
+          '<em style="color:var(--muted);font-size:12px">&#128204; Divi uses this to personalize her greeting</em>', 'success');
       } else {
-        showResult(el, '<strong>&#128100; New Customer</strong><br><br>Not in LawnPro yet. Zoe will collect info automatically.', '');
+        showResult(el, '<strong>&#128100; New Customer</strong><br><br>Not in LawnPro yet. Divi will collect info automatically.', '');
       }
     })
     .catch(function(e) { showResult(el, 'Lookup error: ' + e.message, 'error'); });
@@ -625,7 +625,7 @@ function runAllTests() {
     ['Availability', function() { return fetch(API + '/bookings/availability?tenantId=' + TENANT, { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (!d.availability || !Object.keys(d.availability).length) { throw new Error('No slots'); } return Object.keys(d.availability).length + ' dates available'; }); }],
     ['CRM: lookup', function() { return fetch(API + '/bookings/crm-lookup?phone=5125551234', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (typeof d.customer === 'undefined') { throw new Error('No customer field'); } return d.customer ? 'Found: ' + d.customer.name : 'New customer (LawnPro pending)'; }); }],
     ['CRM: unknown', function() { return fetch(API + '/bookings/crm-lookup?phone=5559999000', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (d.customer !== null) { throw new Error('Should be null'); } return 'Unknown caller handled'; }); }],
-    ['Voice: Zoe call', function() {
+    ['Voice: Divi call', function() {
       var cb = document.getElementById('include-voice-test');
       if (!cb || !cb.checked) {
         return Promise.resolve('Skipped (enable checkbox to test)');

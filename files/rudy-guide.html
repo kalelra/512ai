@@ -93,7 +93,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 <div class="nav-tabs">
   <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Overview</button>
   <button class="tab-btn" onclick="showTab('chat',this)">💬 AI Chat</button>
-  <button class="tab-btn" onclick="showTab('voice',this)">📞 AI Voice (Zoe)</button>
+  <button class="tab-btn" onclick="showTab('voice',this)">📞 AI Voice (Divi)</button>
   <button class="tab-btn" onclick="showTab('schedule',this)">📅 Scheduling</button>
   <button class="tab-btn" onclick="showTab('crm',this)">🗂️ Customer Lookup</button>
   <button class="tab-btn" onclick="showTab('guide',this)">📖 User Guide</button>
@@ -115,7 +115,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       <div class="flow-diagram">
         <div class="flow-step">📱 Customer texts<br>or calls</div>
         <div class="flow-arrow">→</div>
-        <div class="flow-step">🤖 Zoe answers<br>instantly 24/7</div>
+        <div class="flow-step">🤖 Divi answers<br>instantly 24/7</div>
         <div class="flow-arrow">→</div>
         <div class="flow-step">📋 Booking<br>collected</div>
         <div class="flow-arrow">→</div>
@@ -123,7 +123,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         <div class="flow-arrow">→</div>
         <div class="flow-step">✅ Job added<br>to LawnPro</div>
       </div>
-      <p style="font-size:13px;color:var(--muted);margin-top:12px">Rudy never misses a lead. Zoe handles inquiries and bookings automatically — day or night, even when Rudy is on a job.</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:12px">Rudy never misses a lead. Divi handles inquiries and bookings automatically — day or night, even when Rudy is on a job.</p>
     </div>
   </div>
 
@@ -184,7 +184,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     <div class="card-body">
       <p style="font-size:13px;color:var(--muted);margin-bottom:14px">This is the real AI chat that would live on bighatlawn.com. Try it as a customer would — ask about pricing, your address, or book a service.</p>
       <div class="chat-box" id="chat-messages">
-        <div class="msg bot">👋 Hi! I'm Zoe, Big Hat Lawn's AI assistant. I can answer questions about services and pricing, or get you scheduled.<br><br>What can I help you with today?</div>
+        <div class="msg bot">👋 Hi! I'm Divi, Big Hat Lawn's AI assistant. I can answer questions about services and pricing, or get you scheduled.<br><br>What can I help you with today?</div>
       </div>
       <div class="chat-input-row">
         <input type="text" id="chat-input" placeholder="Try: 'How much for lawn mowing at 12008 Mystic Forest Ln Austin 78739?'" onkeydown="if(event.key==='Enter')sendChat()">
@@ -204,29 +204,29 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 <!-- VOICE -->
 <div id="page-voice" class="page">
   <div class="card">
-    <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Zoe (Bland.ai) 📞 +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox mode</span></div>
+    <div class="card-hdr"><span class="status-dot dot-amber"></span><h3>AI Voice — Divi (Bland.ai) 📞 +1 (512) 883-8687</h3><span class="badge badge-amber">Sandbox mode</span></div>
     <div class="card-body">
       <div style="background:var(--green-l);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:16px;font-size:13px">
-        <strong>In production</strong>, when a customer calls Big Hat Lawn's AI number, Zoe answers immediately. She handles pricing questions, books jobs, and transfers to Rudy on request — 24 hours a day, 7 days a week.
+        <strong>In production</strong>, when a customer calls Big Hat Lawn's AI number, Divi answers immediately. She handles pricing questions, books jobs, and transfers to Rudy on request — 24 hours a day, 7 days a week.
       </div>
       <div class="form-row">
         <div class="form-group"><label>Your Name</label><input type="text" id="voice-name" placeholder="e.g. Maria Rodriguez"></div>
         <div class="form-group"><label>Phone Number</label><input type="tel" id="voice-phone" placeholder="(512) 555-0100"></div>
       </div>
-      <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">📞 Simulate Zoe Calling Me (Sandbox)</button>
+      <button class="btn btn-primary" onclick="triggerVoiceCall()" style="width:100%">📞 Simulate Divi Calling Me (Sandbox)</button>
       <div id="voice-result" class="result-box"></div>
       <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
-        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">What Zoe says on a real call:</h4>
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">What Divi says on a real call:</h4>
         <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.7;font-family:monospace">
-          <div style="color:#4ade80">Zoe:</div>
-          <div style="padding-left:16px;margin-bottom:12px">"Hi! This is Zoe from Big Hat Lawn. How can I help you today?"</div>
+          <div style="color:#4ade80">Divi:</div>
+          <div style="padding-left:16px;margin-bottom:12px">"Hi! This is Divi from Big Hat Lawn. How can I help you today?"</div>
           <div style="color:#93c5fd">Customer:</div>
           <div style="padding-left:16px;margin-bottom:12px">"How much to mow my lawn at 4521 Slaughter Ln, 78749?"</div>
-          <div style="color:#4ade80">Zoe:</div>
+          <div style="color:#4ade80">Divi:</div>
           <div style="padding-left:16px;margin-bottom:12px">"Great question! For that zip code, a standard lawn service starts at $65 for lots up to 5,000 sq ft, or $85 for 5–8k sq ft. Rudy will confirm the exact price after a quick look at your property. Would you like to get scheduled?"</div>
           <div style="color:#93c5fd">Customer:</div>
           <div style="padding-left:16px;margin-bottom:12px">"Yes please, Thursday at 9am"</div>
-          <div style="color:#4ade80">Zoe:</div>
+          <div style="color:#4ade80">Divi:</div>
           <div style="padding-left:16px">"Perfect! I need your name and phone number to lock it in — and then you're all set! Rudy will call to confirm within the hour."</div>
         </div>
       </div>
@@ -270,7 +270,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
   <div class="card">
     <div class="card-hdr"><span class="status-dot dot-green"></span><h3>Customer Lookup — LawnPro CRM</h3><span class="badge badge-green">Real BHL data</span></div>
     <div class="card-body">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">When a customer contacts Big Hat Lawn, Zoe checks their history automatically. Recognized customers get a personalized experience.</p>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">When a customer contacts Big Hat Lawn, Divi checks their history automatically. Recognized customers get a personalized experience.</p>
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <input type="tel" id="crm-phone" placeholder="Enter phone number to look up" style="flex:1">
         <button class="btn btn-primary" onclick="lookupCustomer()">🔍 Look Up</button>
@@ -300,7 +300,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         <p style="font-size:13px;line-height:1.8;margin-bottom:10px">Your AI system runs 24/7 so you never miss a customer — even when you're on a job or asleep. Here's what happens automatically:</p>
         <ul style="font-size:13px;line-height:2;padding-left:20px">
           <li>A customer visits <strong>bighatlawn.com</strong> and types a question → the AI answers instantly</li>
-          <li>A customer calls your AI number → <strong>Zoe</strong> answers, gives pricing, and books the job</li>
+          <li>A customer calls your AI number → <strong>Divi</strong> answers, gives pricing, and books the job</li>
           <li>A booking is made → <strong>you get a text message</strong> with all the details</li>
           <li>The job is automatically added to your <strong>LawnPro schedule</strong></li>
         </ul>
@@ -309,8 +309,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 
       <div class="guide-section">
         <h3><span class="step-num">2</span> The AI Chat on Your Website</h3>
-        <p style="font-size:13px;line-height:1.8;margin-bottom:10px">A chat button will appear on your bighatlawn.com website. When customers click it, they chat with Zoe — your AI assistant.</p>
-        <p style="font-size:13px;line-height:1.8;margin-bottom:10px"><strong>What Zoe handles in chat:</strong></p>
+        <p style="font-size:13px;line-height:1.8;margin-bottom:10px">A chat button will appear on your bighatlawn.com website. When customers click it, they chat with Divi — your AI assistant.</p>
+        <p style="font-size:13px;line-height:1.8;margin-bottom:10px"><strong>What Divi handles in chat:</strong></p>
         <ul style="font-size:13px;line-height:2;padding-left:20px">
           <li>Pricing questions ("How much to mow my lawn?")</li>
           <li>Service area questions ("Do you service 78739?")</li>
@@ -321,11 +321,11 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       </div>
 
       <div class="guide-section">
-        <h3><span class="step-num">3</span> The AI Voice Line (Zoe)</h3>
-        <p style="font-size:13px;line-height:1.8;margin-bottom:10px">Zoe answers calls to your AI phone number <strong>(512) 883-8687</strong>. She sounds natural and professional — not like a robot.</p>
+        <h3><span class="step-num">3</span> The AI Voice Line (Divi)</h3>
+        <p style="font-size:13px;line-height:1.8;margin-bottom:10px">Divi answers calls to your AI phone number <strong>(512) 883-8687</strong>. She sounds natural and professional — not like a robot.</p>
         <p style="font-size:13px;line-height:1.8;margin-bottom:10px"><strong>When a customer calls:</strong></p>
         <ul style="font-size:13px;line-height:2;padding-left:20px">
-          <li>Zoe answers immediately — no hold time, no missed calls</li>
+          <li>Divi answers immediately — no hold time, no missed calls</li>
           <li>She gives pricing estimates based on the customer's address</li>
           <li>She collects booking info and confirms the appointment</li>
           <li>If they want to speak with you directly, she transfers the call to <strong>(512) 748-2626</strong></li>
@@ -455,17 +455,17 @@ async function triggerVoiceCall() {
   const phone = document.getElementById('voice-phone').value.trim();
   const el = document.getElementById('voice-result');
   if (!phone) { showResult(el,'Please enter a phone number','error'); return; }
-  showResult(el,'Connecting to Zoe (sandbox mode)...','');
+  showResult(el,'Connecting to Divi (sandbox mode)...','');
   try {
     const r = await fetch(API+'/voice/call', {method:'POST', headers:{'Content-Type':'application/json','X-API-Key':API_KEY},
       body:JSON.stringify({tenantId:TENANT, phone, name, source:'bighatlawndemo'})});
     const d = await r.json();
     if (d.success) {
-      showResult(el, '✅ SANDBOX: In production, Zoe would call ' + phone + ' within 15–30 seconds.
+      showResult(el, '✅ SANDBOX: In production, Divi would call ' + phone + ' within 15–30 seconds.
 
-First words: "Hi' + (name ? ' '+name+'!' : '!') + ' This is Zoe from Big Hat Lawn. How can I help you today?"
+First words: "Hi' + (name ? ' '+name+'!' : '!') + ' This is Divi from Big Hat Lawn. How can I help you today?"
 
-Zoe can:
+Divi can:
 • Give pricing based on your address
 • Book a service appointment
 • Transfer you to Rudy anytime
@@ -571,9 +571,9 @@ function lookupCustomer() {
   const customer = mockCRM[phone];
   if (customer) {
     const jobsHtml = customer.jobs.map(j=>`<li>${j.date} — ${j.service} (${j.status})</li>`).join('');
-    showResult(el, `<strong>✅ Customer Found in LawnPro!</strong><br><br><strong>Name:</strong> ${customer.name}<br><strong>Phone:</strong> ${customer.phone}<br><strong>Address:</strong> ${customer.address}<br><strong>Notes:</strong> ${customer.notes}<br><br><strong>Recent Jobs:</strong><ul style="padding-left:18px;margin-top:6px">${jobsHtml}</ul><br><em>Zoe would greet this customer by name and reference their history.</em>`, 'success');
+    showResult(el, `<strong>✅ Customer Found in LawnPro!</strong><br><br><strong>Name:</strong> ${customer.name}<br><strong>Phone:</strong> ${customer.phone}<br><strong>Address:</strong> ${customer.address}<br><strong>Notes:</strong> ${customer.notes}<br><br><strong>Recent Jobs:</strong><ul style="padding-left:18px;margin-top:6px">${jobsHtml}</ul><br><em>Divi would greet this customer by name and reference their history.</em>`, 'success');
   } else {
-    showResult(el,'<strong>ℹ️ New Customer</strong><br><br>This number is not in LawnPro yet.<br><br>Zoe would collect their info and create a new customer record automatically — no manual entry needed.', 'sandbox');
+    showResult(el,'<strong>ℹ️ New Customer</strong><br><br>This number is not in LawnPro yet.<br><br>Divi would collect their info and create a new customer record automatically — no manual entry needed.', 'sandbox');
   }
 }
 
