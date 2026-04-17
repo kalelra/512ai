@@ -141,17 +141,17 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     </div>
     <div class="card"><div class="card-hdr"><h3>&#128203; Customer Data &mdash; LawnPro CRM</h3><span class="badge badge-green">Live account</span></div>
       <div class="card-body"><table><thead><tr><th>Customer</th><th>Address</th><th>Service</th><th>Status</th></tr></thead><tbody>
-        <tr><td><strong>Rodriguez, Maria</strong></td><td>4521 Slaughter Ln, Austin 78749</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td><strong>Hernandez, Juan</strong></td><td>8832 Brodie Ln, Austin 78748</td><td>Lawn + Tree Pruning</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td><strong>Thompson, Lisa</strong></td><td>12008 Mystic Forest Ln, Austin 78739</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
-        <tr><td><strong>Cantu, David</strong></td><td>2210 William Cannon Dr, Austin 78745</td><td>Power Wash + Lawn</td><td><span class="badge badge-amber">Overdue</span></td></tr>
+        <tr><td><strong>Rodriguez, Maria</strong></td><td>5678 Sample Creek Blvd, Austin TX 78745</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Hernandez, Juan</strong></td><td>9012 Example Ridge Ln, Austin TX 78748</td><td>Lawn + Tree Pruning</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Demo Customer, Lisa</strong></td><td>1234 Demo Oak Dr, Austin TX 78749</td><td>Lawn Service (biweekly)</td><td><span class="badge badge-green">Active</span></td></tr>
+        <tr><td><strong>Cantu, David</strong></td><td>3456 Showcase Bend Dr, Austin TX 78745</td><td>Power Wash + Lawn</td><td><span class="badge badge-amber">Overdue</span></td></tr>
         <tr><td><strong>Williams, Robert</strong></td><td>9401 Hwy 71, Del Valle 78617</td><td>Lawn Service (weekly)</td><td><span class="badge badge-green">Active</span></td></tr>
       </tbody></table></div>
     </div>
     <div class="card"><div class="card-hdr"><h3>&#128197; This Week&apos;s Schedule</h3><span class="badge badge-blue">From LawnPro</span></div>
       <div class="card-body"><table><thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Est.</th><th>Source</th></tr></thead><tbody>
         <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$85</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-        <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Thompson, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Demo Customer, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$95</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Wed Apr 16</td><td>8:00 AM</td><td>Williams, Robert</td><td>Lawn Service</td><td>$65</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr id="ai-job-row" style="display:none"><td id="ai-d"></td><td id="ai-t"></td><td id="ai-c"></td><td id="ai-s"></td><td id="ai-p"></td><td><span class="badge badge-green">&#129302; AI Booked</span></td></tr>
@@ -170,11 +170,11 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     <div class="card"><div class="card-hdr"><span class="status-dot dot-green"></span><h3>Live AI Chat</h3><span class="badge badge-green">Live</span></div>
       <div class="card-body">
         <div class="chat-box" id="chat-messages"><div class="msg bot">&#128075; Hi! I&apos;m Divi from Big Hat Lawn. Ask me about pricing, services, or book a job!</div></div>
-        <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow 12008 Mystic Forest Ln Austin 78739?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button>
+        <div class="chat-row"><input type="text" id="chat-input" placeholder="Try: How much to mow at 5678 Sample Creek Blvd Austin TX 78745?" onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-primary" onclick="sendChat()">Send</button>
         <button class="btn btn-secondary" onclick="clearChat()" style="font-size:12px;padding:8px 12px">&#128465; Clear</button></div>
         <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
           <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much does lawn mowing cost?')">&#128181; Pricing?</button>
-          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much to mow at 4521 Slaughter Ln Austin TX 78749?')">&#127968; Estimate my yard</button>
+          <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('How much to mow at 5678 Sample Creek Blvd Austin TX 78745?')">&#127968; Estimate my yard</button>
           <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('I want to book lawn mowing')">&#128197; Book a job</button>
           <button class="btn btn-secondary" style="font-size:12px" onclick="quickChat('Do you service zip code 78739?')">&#128205; My area?</button>
         </div>
@@ -201,7 +201,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
           <div class="form-group"><label>Customer Name</label><input type="text" id="sched-name" placeholder="Maria Rodriguez"></div>
           <div class="form-group"><label>Phone</label><input type="tel" id="sched-phone" placeholder="(512) 555-0100"></div>
         </div>
-        <div class="form-group"><label>Address</label><input type="text" id="sched-address" placeholder="4521 Slaughter Ln, Austin TX 78749"></div>
+        <div class="form-group"><label>Address</label><input type="text" id="sched-address" placeholder="5678 Sample Creek Blvd, Austin TX 78745"></div>
         <div class="form-group"><label>Service</label>
           <select id="sched-service" onchange="updatePriceEst()">
             <option value="">Select a service...</option>
@@ -265,7 +265,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         </div>
         <div class="guide-section"><h3><span class="step-num">4</span> Your Booking Text</h3>
           <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.8;font-family:monospace">
-            &#128197; New booking &mdash; Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 4521 Slaughter Ln, Austin TX 78749<br>Estimate: $85<br>Job added to LawnPro.
+            &#128197; New booking &mdash; Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 5678 Sample Creek Blvd, Austin TX 78745<br>Estimate: $85<br>Job added to LawnPro.
           </div>
         </div>
         <div class="guide-section"><h3><span class="step-num">5</span> Pricing</h3>
@@ -620,7 +620,7 @@ function runAllTests() {
   var tests = [
     ['Health check', function() { return fetch('https://512ai-backend-production.up.railway.app/health/deep').then(function(r) { return r.json(); }).then(function(d) { if (d.checks && d.checks.supabase !== 'ok') { throw new Error('Supabase down'); } return 'All services healthy'; }); }],
     ['Chat: FAQ', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'a1b2c3d4-0001-4000-8000-000000000001', message: 'What services do you offer?' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } var l = d.reply.toLowerCase(); if (l.indexOf('lawn') < 0 && l.indexOf('pruning') < 0 && l.indexOf('wash') < 0) { throw new Error('Services not mentioned'); } return 'Services mentioned correctly'; }); }],
-    ['Chat: pricing', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'a1b2c3d4-0002-4000-8000-000000000002', message: 'How much to mow at 12008 Mystic Forest Ln Austin 78739?' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } var l = d.reply.toLowerCase(); if (l.indexOf('$') < 0 && l.indexOf('estimat') < 0 && l.indexOf('price') < 0 && l.indexOf('quot') < 0 && l.indexOf('cost') < 0 && l.indexOf('service') < 0) { throw new Error('No pricing'); } return 'Pricing estimate returned'; }); }],
+    ['Chat: pricing', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'a1b2c3d4-0002-4000-8000-000000000002', message: 'How much to mow at 5678 Sample Creek Blvd Austin TX 78745?' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } var l = d.reply.toLowerCase(); if (l.indexOf('$') < 0 && l.indexOf('estimat') < 0 && l.indexOf('price') < 0 && l.indexOf('quot') < 0 && l.indexOf('cost') < 0 && l.indexOf('service') < 0) { throw new Error('No pricing'); } return 'Pricing estimate returned'; }); }],
     ['Chat: booking', function() { return fetch(API + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': API_KEY }, body: JSON.stringify({ tenantId: TENANT, sessionId: 'a1b2c3d4-0003-4000-8000-000000000003', message: 'I want to book lawn mowing' }) }).then(function(r) { return r.json(); }).then(function(d) { if (!d.reply) { throw new Error('No reply'); } return 'Booking intent handled'; }); }],
     ['Availability', function() { return fetch(API + '/bookings/availability?tenantId=' + TENANT, { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (!d.availability || !Object.keys(d.availability).length) { throw new Error('No slots'); } return Object.keys(d.availability).length + ' dates available'; }); }],
     ['CRM: lookup', function() { return fetch(API + '/bookings/crm-lookup?phone=5125551234', { headers: { 'X-API-Key': API_KEY } }).then(function(r) { return r.json(); }).then(function(d) { if (typeof d.customer === 'undefined') { throw new Error('No customer field'); } return d.customer ? 'Found: ' + d.customer.name : 'New customer (LawnPro pending)'; }); }],
