@@ -150,8 +150,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
     </div>
     <div class="card"><div class="card-hdr"><h3>&#128197; This Week&apos;s Schedule</h3><span class="badge badge-blue">From LawnPro</span></div>
       <div class="card-body"><table><thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Est.</th><th>Source</th></tr></thead><tbody>
-        <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$85</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-        <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Demo Customer, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$55</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Demo Customer, Lisa</td><td>Lawn Service</td><td>$70</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$100/hr</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Wed Apr 16</td><td>8:00 AM</td><td>Williams, Robert</td><td>Lawn Service</td><td>$65</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr id="ai-job-row" style="display:none"><td id="ai-d"></td><td id="ai-t"></td><td id="ai-c"></td><td id="ai-s"></td><td id="ai-p"></td><td><span class="badge badge-green">&#129302; AI Booked</span></td></tr>
@@ -265,7 +265,7 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         </div>
         <div class="guide-section"><h3><span class="step-num">4</span> Your Booking Text</h3>
           <div style="background:#1a1a1a;color:#fff;border-radius:10px;padding:16px;font-size:13px;line-height:1.8;font-family:monospace">
-            &#128197; New booking &mdash; Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 5678 Sample Creek Blvd, Austin TX 78745<br>Estimate: $85<br>Job added to LawnPro.
+            &#128197; New booking &mdash; Big Hat Lawn!<br>Customer: Maria Rodriguez<br>Service: Lawn Service<br>Date: Monday April 14 at 9:00 AM<br>Address: 5678 Sample Creek Blvd, Austin TX 78745<br>Estimate: $50-$75<br>Job added to LawnPro.
           </div>
         </div>
         <div class="guide-section"><h3><span class="step-num">5</span> Pricing</h3>
@@ -595,7 +595,13 @@ function createBooking() {
   }).then(function(r) { return r.json(); })
     .then(function(d) {
       if (d.success || d.booking || d.id) {
-        aiCount++; aiRev += 85;
+        var estMap = {
+          'Lawn Service': { label: '$50-$75 est.', revenue: 65 },
+          'Tree and Bush Pruning': { label: '$100/hr+', revenue: 100 },
+          'Power Wash': { label: '$120+ est.', revenue: 120 }
+        };
+        var est = estMap[service] || { label: '$65 est.', revenue: 65 };
+        aiCount++; aiRev += est.revenue;
         document.getElementById('kpi-ai').textContent = aiCount;
         document.getElementById('kpi-rev').textContent = '$' + aiRev;
         var row = document.getElementById('ai-job-row');
@@ -603,12 +609,12 @@ function createBooking() {
           row.style.display = '';
           document.getElementById('ai-d').textContent = date; document.getElementById('ai-t').textContent = time.slice(0, 5);
           document.getElementById('ai-c').textContent = name; document.getElementById('ai-s').textContent = service;
-          document.getElementById('ai-p').textContent = '$85 est.';
+          document.getElementById('ai-p').textContent = est.label;
         }
         var notifLine = d.notified
           ? '\u2705 Rudy notified. Job queued for LawnPro.'
           : '\ud83d\udd15 Notification skipped (demo mode). Enable the toggle above to send real notifications.';
-        showResult(el, 'Booking confirmed!\n\nCustomer: ' + name + '\nService: ' + service + '\nDate: ' + date + ' at ' + time + '\nAddress: ' + address + '\nEstimate: $85\n\n' + notifLine, 'success');
+        showResult(el, 'Booking confirmed!\n\nCustomer: ' + name + '\nService: ' + service + '\nDate: ' + date + ' at ' + time + '\nAddress: ' + address + '\nEstimate: ' + est.label + '\n\n' + notifLine, 'success');
       } else { showResult(el, 'Error: ' + (d.error || d.message || 'Booking failed'), 'error'); }
     })
     .catch(function(e) { showResult(el, 'Error: ' + e.message, 'error'); });
