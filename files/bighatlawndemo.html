@@ -152,17 +152,17 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
       <div class="card-body"><table><thead><tr><th>Date</th><th>Time</th><th>Customer</th><th>Service</th><th>Est.</th><th>Source</th></tr></thead><tbody>
         <tr><td>Mon Apr 14</td><td>8:00 AM</td><td>Rodriguez, Maria</td><td>Lawn Service</td><td>$85</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Mon Apr 14</td><td>10:00 AM</td><td>Demo Customer, Lisa</td><td>Lawn Service</td><td>$110</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
-        <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$95</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
+        <tr><td>Tue Apr 15</td><td>9:00 AM</td><td>Hernandez, Juan</td><td>Tree Pruning</td><td>$100/hr</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr><td>Wed Apr 16</td><td>8:00 AM</td><td>Williams, Robert</td><td>Lawn Service</td><td>$65</td><td><span class="badge badge-blue">LawnPro</span></td></tr>
         <tr id="ai-job-row" style="display:none"><td id="ai-d"></td><td id="ai-t"></td><td id="ai-c"></td><td id="ai-s"></td><td id="ai-p"></td><td><span class="badge badge-green">&#129302; AI Booked</span></td></tr>
       </tbody></table>
       <p style="font-size:12px;color:var(--muted);margin-top:10px">&#128161; Book via AI Chat &mdash; watch it appear here</p>
     </div></div>
     <div class="card"><div class="card-hdr"><h3>&#128176; Pricing Guide</h3></div>
-      <div class="card-body"><table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k sq ft</th><th>5-8k sq ft</th><th>8-12k sq ft</th><th>12k+</th></tr></thead><tbody>
-        <tr><td><strong>&#127807; Lawn Service</strong></td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
-        <tr><td><strong>&#127795; Tree &amp; Bush Pruning</strong></td><td colspan="4">From $95</td></tr>
-        <tr><td><strong>&#128166; Power Washing</strong></td><td colspan="4">From $120</td></tr>
+      <div class="card-body"><table class="pricing-table"><thead><tr><th>Service</th><th>Price</th><th>Details</th></tr></thead><tbody>
+        <tr><td><strong>&#127807; Lawn Service</strong></td><td>$50&ndash;$75 / visit</td><td>Based on property size &mdash; we estimate via aerial map and confirm on arrival</td></tr>
+        <tr><td><strong>&#127795; Tree &amp; Bush Pruning</strong></td><td>$100 / hour</td><td>Includes pruning, cleanup, haul away, and disposal</td></tr>
+        <tr><td><strong>&#128166; Power Washing</strong></td><td>From $120</td><td>Final price depends on area size</td></tr>
       </tbody></table></div>
     </div>
   </div>
@@ -205,8 +205,8 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
         <div class="form-group"><label>Service</label>
           <select id="sched-service" onchange="updatePriceEst()">
             <option value="">Select a service...</option>
-            <option value="Lawn Service">&#127807; Lawn Service &mdash; from $65</option>
-            <option value="Tree and Bush Pruning">&#127795; Tree and Bush Pruning &mdash; from $95</option>
+            <option value="Lawn Service">&#127807; Lawn Service &mdash; $50&ndash;$75/visit</option>
+            <option value="Tree and Bush Pruning">&#127795; Tree and Bush Pruning &mdash; $100/hr</option>
             <option value="Power Wash">&#128166; Power Wash &mdash; from $120</option>
           </select>
         </div>
@@ -269,10 +269,10 @@ td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
           </div>
         </div>
         <div class="guide-section"><h3><span class="step-num">5</span> Pricing</h3>
-          <table class="pricing-table"><thead><tr><th>Service</th><th>Up to 5k</th><th>5-8k</th><th>8-12k</th><th>12k+</th></tr></thead><tbody>
-            <tr><td>&#127807; Lawn Service</td><td>$65</td><td>$85</td><td>$110</td><td>$140+</td></tr>
-            <tr><td>&#127795; Tree &amp; Bush Pruning</td><td colspan="4">From $95</td></tr>
-            <tr><td>&#128166; Power Washing</td><td colspan="4">From $120</td></tr>
+          <table class="pricing-table"><thead><tr><th>Service</th><th>Price</th><th>Details</th></tr></thead><tbody>
+            <tr><td>&#127807; Lawn Service</td><td>$50&ndash;$75 / visit</td><td>Based on property size &mdash; we estimate via aerial map and confirm on arrival</td></tr>
+            <tr><td>&#127795; Tree &amp; Bush Pruning</td><td>$100 / hour</td><td>Includes pruning, cleanup, haul away, and disposal</td></tr>
+            <tr><td>&#128166; Power Washing</td><td>From $120</td><td>Final price depends on area size</td></tr>
           </tbody></table>
         </div>
         <div class="guide-section"><h3><span class="step-num">6</span> Questions?</h3>
@@ -524,7 +524,7 @@ function triggerVoiceCall() {
 function updatePriceEst() {
   var svc = document.getElementById('sched-service').value;
   var el = document.getElementById('price-est');
-  var map = { 'Lawn Service': 'Lawn Service: $65-$140 by lot size (Rudy confirms)', 'Tree and Bush Pruning': 'Tree & Bush Pruning: from $95', 'Power Wash': 'Power Washing: from $120' };
+  var map = { 'Lawn Service': 'Lawn Service: $50–$75/visit (confirmed on site)', 'Tree and Bush Pruning': 'Tree & Bush Pruning: $100/hour (incl cleanup, haul, disposal)', 'Power Wash': 'Power Washing: from $120' };
   if (svc && map[svc]) { el.textContent = map[svc]; el.style.display = 'block'; } else { el.style.display = 'none'; }
 }
 function lookupCustomer() {
