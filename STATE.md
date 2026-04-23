@@ -36,7 +36,6 @@
 |--------|--------|-------|
 | Rudy — Big Hat Lawn | Active | Tenant 1d7a261e..., demo at 512ai.co/bighatlawndemo |
 | Daniel | Paused | No response |
-| Kevin | Pending | Partner kickoff not done |
 
 ## Credentials
 - Source of truth: ~/.config/512ai/.env on MacBook

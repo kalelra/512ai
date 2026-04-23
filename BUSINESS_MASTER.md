@@ -12,7 +12,6 @@
 |--------|--------|-----|-------------|
 | Rudy (landscaping) | Active pilot | LawnPro | ASAP |
 | Daniel | No response — paused | TBD | TBD |
-| Kevin | Partner kickoff pending | TBD | TBD |
 
 ## 3. Infrastructure Checklist
 - [ ] Railway backend deployed (Node.js, multi-tenant)
