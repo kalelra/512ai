@@ -65,3 +65,12 @@
 - Idempotent: second tap shows "Already confirmed"
 - Endpoint: GET /api/v1/notifications/confirm/:bookingId
 - QA rule: customer SMS uses fake phone, Rudy's real number only gets one alert per booking
+
+## Session Apr 24 — What Got Done
+- ✅ SMS workflow: Rudy-confirms-first → customer SMS (notifications.js + split NotificationAgent)
+- ✅ Zapier tables: customers, payments, crm_sync_log all confirmed in Supabase
+- ✅ Zapier endpoint live: POST /api/v1/zapier/inbound (auth-protected, 6 event handlers)
+- ✅ LawnPro Zap #1 + #2 saved as drafts (blocked: Rudy needs API plan upgrade)
+- ✅ widget-bighatlawn.js: standalone embed, tested live on bighatlawn.com
+- ⏳ LawnPro Zapier: call (661) 384-7070 to enable API permissions on Rudy's plan
+- ⏳ Squarespace install: Rudy adds <script src="https://512ai.co/widget-bighatlawn.js"></script> to footer
