@@ -1,26 +1,25 @@
 # 512AI — Project State
-> Last updated: 2026-04-23 | Session: BHL demo QA, Divi naming, platform fixes
+> Last updated: 2026-04-24 | Session: Divi prompt, voice fix, backend crash/recovery
 
 ## Repos
-| Repo | Branch | Notes |
-|------|--------|-------|
-| kalelra/512ai | main | Netlify auto-deploy, frontend + demo files |
-| kalelra/512ai-backend | main | Railway auto-deploy, Express API |
-| kalelra/512ai-skills | main | QA skill + teaching agent |
+| Repo | Notes |
+|------|-------|
+| kalelra/512ai | Netlify auto-deploy, frontend + demo files |
+| kalelra/512ai-backend | Railway auto-deploy, Express API |
+| kalelra/512ai-skills | QA skill + teaching agent |
 
 ## Infrastructure — All Live
 | Service | Status | Notes |
 |---------|--------|-------|
-| Railway backend | ✅ Live | SANDBOX_MODE=false, real Bland.ai calls |
+| Railway backend | ✅ Live | Recovered from voice.js syntax crash |
 | Supabase | ✅ Healthy | 7 tables, RLS enabled |
-| Netlify | ✅ Live | Upgraded to paid plan |
-| Anthropic API | ✅ Working | Chat + voice functional |
-| Bland.ai | ✅ Live | Real calls, voicemail configured |
-| Twilio | ✅ Configured | SMS notifications ready |
+| Netlify | ✅ Live | Paid plan |
+| Bland.ai | ✅ Live | Real calls, SANDBOX_MODE=false |
+| Twilio | ✅ Configured | SMS ready |
 
 ## AI Agent Names — CRITICAL
-- **Divi** = AI for CLIENT sites (Big Hat Lawn, all future clients)
-- **Zoe** = AI for 512ai.co ONLY (Ricardo's marketing/demo site)
+- **Divi** = AI for ALL client sites (Big Hat Lawn + future clients)
+- **Zoe** = AI for 512ai.co ONLY
 
 ## Big Hat Lawn — Rudy
 - Tenant ID: `1d7a261e-5e86-4037-b28a-8b7d7e583c8f`
@@ -28,32 +27,34 @@
 - Demo: `512ai.co/files/bighatlawndemo.html`
 - Logins: `rudy / BigHatLawn2026!` | `admin / 512AI@Admin2026!`
 - Hours: Mon-Fri 8am-5pm | Zips: 78742,78617,78719,78747,78744,78748,78652,78745,78725,78653,78763,78724
-- Pricing: $40(≤4k)→$45→$50→$60→$70→$80→$95→$120→$120+custom
+- Pricing: starting at $40(≤4k)→$45→$50→$60→$70→$80→$95→$120→$120+
 
-## Demo Site — Current State
-- ✅ Login, AI Chat (dynamic UUID session), Voice (real calls, 60s cooldown, transcript)
-- ✅ Scheduling (clickable slots, preferredDate/preferredTime), CRM, System tests 9/9
-- ⚠️ Voice config still says "Zoe" in voice.js ZOE_CONFIG — rename to Divi pending
-- ⚠️ Divi system prompt deployed but verify hours/pricing responses are correct
+## Divi Prompt — LIVE in Supabase
+- ✅ Name Divi, Mon-Fri 8-5, starting prices only, day-only scheduling
+- ✅ Add-on disclaimer, cancel/reschedule, recurring, out-of-area capture
+- ✅ Privacy: never assume caller identity
+- ✅ Voice: separate prompt, no phone refs, transfer to Rudy
 
-## Integrations
-- LawnPro + Zapier: Ricardo has full access + Zapier Pro paid. NOT blocked. Build it.
-- Squarespace embed: planned — need standalone widget-bighatlawn.js
+## Demo Site
+- ✅ Login, chat (dynamic UUID session), voice (real calls, 60s cooldown)
+- ✅ Scheduling (clickable slots), CRM, 9/9 system tests
+- ✅ No mockCRM, no hardcoded session, no blocklist
 
-## QA Rules — Hard
+## QA Rules
 - NEVER call/text/email real people in QA tests
-- Use phone 5550000000, email test@test.com only
-- Real comms only when user manually triggers from demo UI
+- Run `node --check <file>` before every backend push
+- Use phone 5550000000, email test@test.com in tests
 
 ## Next Priorities
-1. Rename Zoe→Divi in voice.js + write full Divi prompt (day-only, cancel/reschedule, recurring, add-ons, Rudy-confirms-first SMS)
-2. LawnPro Zapier integration — 6 Zaps, Ricardo has access
-3. Twilio SMS workflow — Rudy confirms → client SMS
+1. Verify Divi voice prompt after crash recovery
+2. LawnPro + Zapier — build 6 Zaps (Ricardo has full access)
+3. Twilio SMS — Rudy confirms → client SMS
 4. Squarespace widget embed (standalone widget-bighatlawn.js)
-5. Cloudflare migration planning (Ricardo wants simpler unified stack)
-6. Apply Divi prompt improvements to Zoe on 512ai.co
+5. Cloudflare migration planning
+6. Zoe (512ai.co) — apply same prompt improvements as Divi
+7. Google Maps lot-size API — Phase 2
 
-## Context Rules
-- Start every chat: search STATE.md + conversation history first
-- End every chat: update STATE.md — lean, no duplicates, push to GitHub
-- Platform principle: improvements for clients propagate to 512ai.co where relevant
+## Key Lessons
+- `node --check` every JS file before pushing — no exceptions
+- Supabase chat_system_prompt overrides code fallback — update DB not code
+- CORP header must be cross-origin for browser to read API responses
