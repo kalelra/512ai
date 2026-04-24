@@ -1,58 +1,59 @@
 # 512AI — Project State
-> Last updated: 2026-04-22 | Session: infrastructure audit + fixes
+> Last updated: 2026-04-23 | Session: BHL demo QA, Divi naming, platform fixes
 
 ## Repos
-| Repo | Visibility | Updated |
-|------|-----------|---------|
-| kalelra/512ai | public | Apr 11 |
-| kalelra/512ai-backend | private | Apr 22 |
-| kalelra/512ai-skills | public | Apr 10 |
+| Repo | Branch | Notes |
+|------|--------|-------|
+| kalelra/512ai | main | Netlify auto-deploy, frontend + demo files |
+| kalelra/512ai-backend | main | Railway auto-deploy, Express API |
+| kalelra/512ai-skills | main | QA skill + teaching agent |
 
-## Infrastructure — Confirmed Live
-| Service | Status | Evidence |
-|---------|--------|----------|
-| Railway backend | ✅ Live | /health returns ok, Node 20, auto-deploys from main |
-| Supabase | ✅ Healthy | /health/deep returns ok, 7 tables, RLS enabled |
-| Netlify frontend | ✅ Live | 512ai.co auto-deploys from kalelra/512ai main |
-| Anthropic API | ⛔ BLOCKED | Billing bug — $24.97 balance but API returns "credits too low". Support ticket open. |
+## Infrastructure — All Live
+| Service | Status | Notes |
+|---------|--------|-------|
+| Railway backend | ✅ Live | SANDBOX_MODE=false, real Bland.ai calls |
+| Supabase | ✅ Healthy | 7 tables, RLS enabled |
+| Netlify | ✅ Live | Upgraded to paid plan |
+| Anthropic API | ✅ Working | Chat + voice functional |
+| Bland.ai | ✅ Live | Real calls, voicemail configured |
+| Twilio | ✅ Configured | SMS notifications ready |
 
-## Blocked: Anthropic API Billing Bug
-- Ticket open with Anthropic support as of Apr 22
-- request-id: req_011CaJBQLp19y126YrD2yTJj
-- org-id: 07e421f7-ec83-4297-a593-0b03eadd0d87
-- Last working: Apr 20. All models affected. /v1/models works, /v1/messages fails.
-- Impact: Chat and voice broken on demo site for Rudy
-- When resolved, test with: source ~/.config/512ai/.env && curl -s "$RAILWAY_BACKEND_URL/api/v1/chat" -H "X-API-Key: $BHL_API_KEY" -H "Content-Type: application/json" -d "{\"tenantId\":\"1d7a261e-5e86-4037-b28a-8b7d7e583c8f\",\"sessionId\":\"$(uuidgen | tr '[:upper:]' '[:lower:]')\",\"message\":\"hello\"}"
+## AI Agent Names — CRITICAL
+- **Divi** = AI for CLIENT sites (Big Hat Lawn, all future clients)
+- **Zoe** = AI for 512ai.co ONLY (Ricardo's marketing/demo site)
 
-## Changes Made Today (Apr 22)
-- Health check: now uses /v1/models instead of sending a real message
-- Node.js: upgraded to 20 on Railway (.node-version, .nvmrc, package.json engines)
-- Model string: reverted to claude-sonnet-4-20250514
-- Error handler: added Anthropic error detail, then reverted for production
-- CLAUDE.md: slimmed ~40% in both repos
+## Big Hat Lawn — Rudy
+- Tenant ID: `1d7a261e-5e86-4037-b28a-8b7d7e583c8f`
+- API Key: `512ai_713664dd917ee4ee35dfc569e109703f`
+- Demo: `512ai.co/files/bighatlawndemo.html`
+- Logins: `rudy / BigHatLawn2026!` | `admin / 512AI@Admin2026!`
+- Hours: Mon-Fri 8am-5pm | Zips: 78742,78617,78719,78747,78744,78748,78652,78745,78725,78653,78763,78724
+- Pricing: $40(≤4k)→$45→$50→$60→$70→$80→$95→$120→$120+custom
 
-## Clients
-| Client | Status | Notes |
-|--------|--------|-------|
-| Rudy — Big Hat Lawn | Active | Tenant 1d7a261e..., demo at 512ai.co/bighatlawndemo |
-| Daniel | Paused | No response |
+## Demo Site — Current State
+- ✅ Login, AI Chat (dynamic UUID session), Voice (real calls, 60s cooldown, transcript)
+- ✅ Scheduling (clickable slots, preferredDate/preferredTime), CRM, System tests 9/9
+- ⚠️ Voice config still says "Zoe" in voice.js ZOE_CONFIG — rename to Divi pending
+- ⚠️ Divi system prompt deployed but verify hours/pricing responses are correct
 
-## Credentials
-- Source of truth: ~/.config/512ai/.env on MacBook
-- Railway: 19 env vars, ANTHROPIC_API_KEY matches local
-- Netlify: ANTHROPIC_API_KEY, BLAND_API_KEY, TWILIO_PHONE_NUMBER
-- GitHub PAT: in ~/.config/512ai/.env
+## Integrations
+- LawnPro + Zapier: Ricardo has full access + Zapier Pro paid. NOT blocked. Build it.
+- Squarespace embed: planned — need standalone widget-bighatlawn.js
 
-## Next Priorities (after Anthropic fix)
-1. Push this STATE.md to kalelra/512ai repo
-2. Wire intake form to POST to /api/v1/leads
-3. Fix CORS on netlify/functions/voice-demo.js
-4. Migrate ZOE_CONFIG to tenant config
-5. LawnPro API — waiting on Rudy credentials
-6. LLC formation — file Form 205 ($308)
+## QA Rules — Hard
+- NEVER call/text/email real people in QA tests
+- Use phone 5550000000, email test@test.com only
+- Real comms only when user manually triggers from demo UI
+
+## Next Priorities
+1. Rename Zoe→Divi in voice.js + write full Divi prompt (day-only, cancel/reschedule, recurring, add-ons, Rudy-confirms-first SMS)
+2. LawnPro Zapier integration — 6 Zaps, Ricardo has access
+3. Twilio SMS workflow — Rudy confirms → client SMS
+4. Squarespace widget embed (standalone widget-bighatlawn.js)
+5. Cloudflare migration planning (Ricardo wants simpler unified stack)
+6. Apply Divi prompt improvements to Zoe on 512ai.co
 
 ## Context Rules
-- This project chat: planning, architecture, STATE.md
-- New chat per build feature
-- NEVER use /compact
-- Push STATE.md after each major session
+- Start every chat: search STATE.md + conversation history first
+- End every chat: update STATE.md — lean, no duplicates, push to GitHub
+- Platform principle: improvements for clients propagate to 512ai.co where relevant
