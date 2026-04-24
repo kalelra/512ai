@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "512AI Editor",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["server.js"],
+      "port": 3512
+    },
+    {
+      "name": "512AI Backend (dev)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}

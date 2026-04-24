@@ -1,5 +1,5 @@
 # 512AI — Project State
-> Last updated: 2026-04-24 | Session: Full end-to-end loop complete
+> Last updated: 2026-04-24 | Session: Security audit + credential rotation
 
 ## Repos
 | Repo | Notes |
@@ -22,29 +22,31 @@
 - **Zoe** = AI for 512ai.co ONLY
 
 ## Big Hat Lawn — Rudy
-- Tenant ID: 1d7a261e-5e86-4037-b28a-8b7d7e583c8f
-- API Key: 512ai_713664dd917ee4ee35dfc569e109703f
-- Demo: 512ai.co/files/bighatlawndemo.html | rudy/BigHatLawn2026! | admin/512AI@Admin2026!
-- Hours: Mon-Fri 8-5 | Pricing: $40→$45→$50→$60→$70→$80→$95→$120→custom
+- Tenant + API key: see secure vault (~/.config/512ai/.env)
+- Demo: 512ai.co/bighatlawndemo — credentials delivered securely
+- Hours: Mon-Fri 8-5
 
 ## Full Loop — LIVE ✅
 Customer chats Divi → info collected → booking auto-created → Rudy SMS alert → Rudy confirms → Customer SMS
 
 ## Widget — bighatlawn.com
-- URL: https://512ai.co/widget-bighatlawn.js?v=2 (Squarespace Code Injection footer)
-- Design: pill shape, bottom-LEFT, Big Hat Lawn hat SVG, bounce animation, touchend mobile fix
+- URL: https://512ai.co/widget-bighatlawn.js?v=3 (Squarespace Code Injection footer)
 
 ## LawnPro + Zapier
 - Backend fully built, Zaps drafted, blocked on Rudy's LawnPro API plan
-- Rudy calls: (661) 384-7070 to enable Zapier/API access
 
 ## QA Rules
 - NEVER call/text/email real people in QA tests
 - node --check every JS file before pushing
 - Netlify CDN: always cache-bust with ?v=N on script tags
 
+## Security
+- API keys, tenant IDs, passwords: NEVER in public files
+- All credentials in ~/.config/512ai/.env ONLY
+- _redirects blocks STATE.md, CLAUDE.md, server-side JS
+
 ## Next Priorities
-1. Architecture overhaul — ZOE_CONFIG→tenant config, multi-tenancy (blocks 2nd client)
+1. Architecture overhaul — ZOE_CONFIG→tenant config, multi-tenancy
 2. Zoe (512ai.co) — update to same quality as Divi
 3. LawnPro Zapier — activate when Rudy gets API plan
 4. Google Maps lot-size — Phase 2

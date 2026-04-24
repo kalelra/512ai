@@ -303,11 +303,11 @@ var SESSION_ID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, functio
   var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
   return v.toString(16);
 });
-var API_KEY = '512ai_713664dd917ee4ee35dfc569e109703f';
+var API_KEY = '512ai_db1fa21876bb6de02e7e6e3198d6c21e8f41a319';
 var TENANT  = '1d7a261e-5e86-4037-b28a-8b7d7e583c8f';
 var aiCount = 0, aiRev = 0;
 var USERS = {
-  'rudy':  { h: '29e4ef938e2172fb680f3043626b9dcdd00fe758b18d0664a51dba80e9e57023',  role: 'client', name: 'Rudy Cantu',    biz: 'Big Hat Lawn' },
+  'rudy':  { h: 'c6a8caf700cbb4088022d541ed4634a58bdeb5dcab39d3df913002ad57a5b1de',  role: 'client', name: 'Rudy Cantu',    biz: 'Big Hat Lawn' },
   'admin': { h: '9a96ea509c6c1f4f9ab60ca9ac55d6541ca4e62db127b2f80bf14d758feeb01f', role: 'admin',  name: 'Ricardo Avila', biz: '512AI' }
 };
 function sha256(s) {
@@ -376,8 +376,7 @@ function addAdminTab() {
     + '<div style="font-weight:700;font-size:14px;margin-bottom:10px">Demo Credentials</div>'
     + '<table style="width:100%;font-size:13px;border-collapse:collapse">'
     + '<tr><th style="text-align:left;padding:6px;color:var(--muted)">Role</th><th style="text-align:left;padding:6px;color:var(--muted)">Username</th><th style="text-align:left;padding:6px;color:var(--muted)">Password</th></tr>'
-    + '<tr><td style="padding:8px 6px">Client</td><td style="padding:8px 6px;font-family:monospace">rudy</td><td style="padding:8px 6px;font-family:monospace">BigHatLawn2026!</td></tr>'
-    + '<tr><td style="padding:8px 6px">Admin</td><td style="padding:8px 6px;font-family:monospace">admin</td><td style="padding:8px 6px;font-family:monospace">512AI@Admin2026!</td></tr>'
+    + '<tr><td style="padding:8px 6px" colspan="3"><em style="color:#6b7280">Credentials delivered via secure channel. Contact Ricardo if needed.</em></td></tr>'
     + '</table></div>'
     + '<div style="background:#f9faf7;border:1px solid var(--border);border-radius:10px;padding:16px">'
     + '<div style="font-weight:700;font-size:14px;margin-bottom:10px">Live Backend Health</div>'

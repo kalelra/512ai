@@ -10,7 +10,7 @@
   /* ─── CONFIG (update phone/apiKey when ready) ─── */
   var CONFIG = {
     apiBase:      'https://512ai-backend-production.up.railway.app/api/v1',
-    apiKey:       '512ai_713664dd917ee4ee35dfc569e109703f',
+    apiKey:       '512ai_db1fa21876bb6de02e7e6e3198d6c21e8f41a319',
     tenantId:     '1d7a261e-5e86-4037-b28a-8b7d7e583c8f',
     brandColor:   '#2E7D32',
     brandHover:   '#1B5E20',

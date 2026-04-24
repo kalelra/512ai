@@ -1538,7 +1538,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
       <div class="card" style="border-left:4px solid var(--blue)">
         <div class="card-hdr"><h3>Admin Login Credentials</h3></div>
         <div class="card-body">
-          <div class="env-row"><div><div class="env-key">diskat</div><div class="env-desc">Your admin login for this console</div></div><div>password: <strong>••••••••</strong> <em style="font-size:11px;color:#999">(stored securely)</em></div></div>
+          <div class="env-row"><div><div class="env-key">diskat</div><div class="env-desc">Your admin login for this console</div></div><div>password: <strong>512Admin!2026</strong></div></div>
           <p style="font-size:12px;color:var(--muted);margin-top:12px">To change your password, update the SHA-256 hash in admin-portal.html and push to GitHub. Hash = SHA-256(newpassword).</p>
           <div style="margin-top:12px">
             <div class="terminal">
@@ -1648,7 +1648,7 @@ textarea.ed-input{min-height:80px;resize:vertical;font-family:inherit;line-heigh
 // ── Auth ──────────────────────────────────────────────────────────────
 const ADMIN_USERS = {
   diskat: {
-    hash: '40c6d0f7ba46b132ef900f9631d0797a3d6d2c8a239df65409b38e74bc243db4', 
+    hash: 'b09e90c0da55f11aa3e7b54fc6d47037e067e98ead22340c36898120fd1fba43', // 512Admin!2026
     role: 'Super Admin',
     initials: 'D',
     displayName: 'Diskat'

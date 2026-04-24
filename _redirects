@@ -1,4 +1,26 @@
-# 512AI — Netlify URL rewrites (must live at repo root)
+# 512AI — Netlify URL rewrites + security rules
+# SECURITY: Block access to sensitive files (top-down, first match wins)
+# Force rules (!) override even if the file exists on disk
+
+# Block internal/dev files
+/STATE.md     /index.html  404!
+/CLAUDE.md    /index.html  404!
+
+# Block editor directory
+/editor/*     /index.html  404!
+
+# Block server-side source code served as static files
+/netlify/functions/voice-demo.js                 /index.html  404!
+/netlify/functions/claude-proxy.js               /index.html  404!
+/netlify/functions/voice-bighatlawn-function.js   /index.html  404!
+
+# Block server-side business logic files
+/files/voice-bighatlawn.js              /index.html  404!
+/files/notifications-bighatlawn.js      /index.html  404!
+/files/lawnpro-webhook-bighatlawn.js    /index.html  404!
+/files/scheduling-engine.js             /index.html  404!
+
+# Nice URL rewrites (keep existing)
 /portal    /files/portal.html         200
 /admin     /files/admin-portal.html   200
 /widget    /files/widget-test.html    200
