@@ -58,3 +58,10 @@
 - `node --check` every JS file before pushing — no exceptions
 - Supabase chat_system_prompt overrides code fallback — update DB not code
 - CORP header must be cross-origin for browser to read API responses
+
+## SMS Workflow — LIVE (Apr 24)
+- Booking create → Rudy gets SMS with confirm link (owner alert only)
+- Rudy taps link → confirm page → customer gets SMS
+- Idempotent: second tap shows "Already confirmed"
+- Endpoint: GET /api/v1/notifications/confirm/:bookingId
+- QA rule: customer SMS uses fake phone, Rudy's real number only gets one alert per booking
